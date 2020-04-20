@@ -198,6 +198,7 @@ class UserController extends Controller
 			$cabecera->nombre 	     	=   $personal->nombres;
 			$cabecera->name  		 	=	$request['name'];
 			$cabecera->passwordmobil  	=	$request['password'];
+			$cabecera->fecha_crea 	   	=  	$this->fechaactual;
 			$cabecera->password 	 	= 	Crypt::encrypt($request['password']);
 			$cabecera->rol_id 	 		= 	$request['rol_id'];
 			$cabecera->usuarioosiris_id	= 	$personal->id;
@@ -242,6 +243,7 @@ class UserController extends Controller
 			$cabecera            	 =	User::find($idusuario);			
 			$cabecera->name  		 =	$request['name'];
 			$cabecera->passwordmobil =	$request['password'];
+			$cabecera->fecha_mod 	 =  $this->fechaactual;
 			$cabecera->password 	 = 	Crypt::encrypt($request['password']);
 			$cabecera->activo 	 	 =  $request['activo'];			
 			$cabecera->rol_id 	 	 = 	$request['rol_id']; 
@@ -318,6 +320,7 @@ class UserController extends Controller
 
 			$cabecera            	 =	new WEBRol;
 			$cabecera->id 	     	 =  $idrol;
+			$cabecera->fecha_crea 	 =  $this->fechaactual;
 			$cabecera->nombre 	     =  $request['nombre'];
 			$cabecera->save();
 
@@ -332,6 +335,7 @@ class UserController extends Controller
 			    $detalle            =	new WEBRolOpcion;
 			    $detalle->id 	    =  	$idrolopciones;
 				$detalle->opcion_id = 	$item->id;
+				$detalle->fecha_crea =  $this->fechaactual;
 				$detalle->rol_id    =  	$idrol;
 				$detalle->orden     =  	$count;
 				$detalle->ver       =  	0;
@@ -378,6 +382,7 @@ class UserController extends Controller
 
 			$cabecera            	 =	WEBRol::find($idrol);
 			$cabecera->nombre 	     =  $request['nombre'];
+			$cabecera->fecha_mod 	 =  $this->fechaactual;
 			$cabecera->activo 	 	 =  $request['activo'];			
 			$cabecera->save();
  
@@ -435,7 +440,8 @@ class UserController extends Controller
 
 		$cabecera            	 =	WEBRolOpcion::find($idrolopcion);
 		$cabecera->ver 	     	 =  $request['ver'];
-		$cabecera->anadir 	 	 =  $request['anadir'];	
+		$cabecera->anadir 	 	 =  $request['anadir'];
+		$cabecera->fecha_mod 	 =  $this->fechaactual;
 		$cabecera->modificar 	 =  $request['modificar'];
 		$cabecera->todas 	 	 =  $request['todas'];	
 		$cabecera->save();
@@ -460,6 +466,7 @@ class UserController extends Controller
 		if(count($perfiles)>0){
 
 			$cabecera            	 =	WEBUserEmpresaCentro::find($perfiles->id);
+			$cabecera->fecha_mod 	 = 	$this->fechaactual;
 			$cabecera->activo 	     =  $check;	
 			$cabecera->save();	
 			
@@ -470,6 +477,7 @@ class UserController extends Controller
 		    $detalle->id 	    	=  	$id;
 			$detalle->empresa_id 	= 	$idempresa;
 			$detalle->centro_id    	=  	$idcentro;
+			$detalle->fecha_crea 	 = 	$this->fechaactual;
 			$detalle->usuario_id    =  	$idusuario;
 			$detalle->save();
 
