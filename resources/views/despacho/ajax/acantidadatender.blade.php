@@ -1,0 +1,1 @@
+{{number_format($catidad_atender, 2, '.', ',')}}
