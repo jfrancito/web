@@ -9,7 +9,9 @@ use App\Console\Commands\AlertaDesactivarReglas;
 use App\Console\Commands\PedidoNotificacionVendedor;
 use App\Console\Commands\PedidoNotificacionAutorizar;
 use App\Console\Commands\PedidoNotificacionDespacho;
-
+use App\Console\Commands\PedidoNotificacionRechazado;
+use App\Console\Commands\CampanaUtiles;
+use App\Console\Commands\ActualizarTablasMaestras;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -28,7 +30,10 @@ class Kernel extends ConsoleKernel
         ServicioDelivery::class,
         PedidoNotificacionVendedor::class,
         PedidoNotificacionAutorizar::class,
-        PedidoNotificacionDespacho::class
+        PedidoNotificacionDespacho::class,
+        PedidoNotificacionRechazado::class,
+        CampanaUtiles::class,
+        ActualizarTablasMaestras::class,
     ];
 
     /**
@@ -40,15 +45,17 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-
-        //$schedule->command('servicio:delivery')->dailyAt('14:00');
+        //CHICLAYO LIMA
         //$schedule->command('pedidonotificacion:despacho')->everyMinute(); // CADA MINUTO
         //$schedule->command('pedidonotificacion:autorizar')->everyMinute(); // CADA MINUTO
         //$schedule->command('pedidonotificacion:vendedor')->everyMinute(); // CADA MINUTO
+        //$schedule->command('pedidonotificacion:rechazado')->everyMinute(); // CADA MINUTO
         //$schedule->command('desactivarreglas:desactivarreglasContrato')->everyMinute(); // CADA MINUTO
         //$schedule->command('alertadesactivarreglas:desactivarreglasmanana')->dailyAt('08:00');
-        //$schedule->command('redessociales:publicidadredessociales')->dailyAt('13:59');
-        //$schedule->command('redessociales:publicidadredessociales')->dailyAt('15:00');
+
+        //RIOJA, BELLAVISTA
+        $schedule->command('actualizar:tablasmaestras')->everyMinute(); // CADA MINUTO
+
     }
 
     /**
