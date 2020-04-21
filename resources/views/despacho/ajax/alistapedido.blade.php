@@ -36,7 +36,7 @@
         <div class="panel-body">
           <div class="scroll_text_horizontal_padding" style = "padding: 0px !important;"> 
 
-            <div style="width: 1402px;margin-bottom: 10px;">
+            <div style="width: 1680px;margin-bottom: 10px;">
 
               <table class="table table-pedidos-despachos" style='font-size: 0.85em;' id="tablepedidodespacho" >
                 <thead>
@@ -68,6 +68,10 @@
                     </th>
 
                     <th>Fechas</th>
+
+                    <th>Centro Origen</th>
+                    <th>Empresa Transferencia</th>
+
                     <th class='center'>X</th>
                   </tr>
                 </thead>
@@ -97,6 +101,7 @@
                           data_cantidad="{{$item['cantidad']}}"
                           fecha_entrega="{{$item['fecha_entrega']}}"
                           nombre_producto="{{$item['nombre_producto']}}"
+                          centro_origen="{{$item['centro_atender_id']}}"
                         >
 
 
@@ -227,6 +232,45 @@
                             <span><b>Entrega</b> : {{$item['fecha_entrega']}}</span>
                           </td>
                         @endif
+
+
+                        @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 
+                          <td rowspan = "{{$item['grupo_orden_movil']}}" class='center'>
+                                {!! Form::select( 'centro_atender_id', $combo_lista_centros, array($item['centro_atender_id']),
+                                [
+                                  'class'       => 'select-centro' ,
+                                  'id'          => 'centro_atender_id',
+                                  'required'    => '',
+                                  'data-aw'     => '1',
+                                ]) !!}
+                          </td>
+                        @else
+                          @if($item['grupo_movil'] == '0') 
+                            <td class='center'>
+                                {!! Form::select( 'centro_atender_id', $combo_lista_centros, array($item['centro_atender_id']),
+                                [
+                                  'class'       => 'select-centro' ,
+                                  'id'          => 'centro_atender_id',
+                                  'required'    => '',
+                                  'data-aw'     => '1',
+                                ]) !!}
+                            </td>
+                          @endif
+                        @endif
+
+
+                        @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 
+                          <td rowspan = "{{$item['grupo_orden_movil']}}">
+                                {{$item['empresa_atender_txt']}}
+                          </td>
+                        @else
+                          @if($item['grupo_movil'] == '0') 
+                            <td>
+                                {{$item['empresa_atender_txt']}}
+                            </td>
+                          @endif
+                        @endif
+
                         <td class='center'>
                           <span class="badge badge-danger cursor eliminar-producto-despacho">
                             <span class="mdi mdi-close" style='color: #fff;'></span>

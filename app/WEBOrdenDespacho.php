@@ -38,5 +38,10 @@ class WEBOrdenDespacho extends Model
         return $this->belongsTo('App\ALMCentro', 'centro_id', 'COD_CENTRO');
     }
 
+
+    public function scopeEmpresaCentro($query,$name){
+        $query->whereRaw("1 = ".$name);
+    }
+
     
 }

@@ -362,27 +362,32 @@ $(document).ready(function(){
 
         event.preventDefault();
         var _token                      =   $('#token').val();
-        var data = [];
-        var sw   = 0;
-        var msj  = '';
+        var data                        =   [];
+        var sw                          =   0;
+        var msj                         =   '';
+        var radiomobil                  =   $("input[name='rmobil']:checked").val();
+
+        if(typeof(radiomobil)  === "undefined"){alerterrorajax('Seleccione por lo menos un mobil'); return false;}
+
 
         $(".table-pedidos-despachos tbody .fila_pedido").each(function(){
 
             nombre                  = $(this).find('.input_asignar_lp').attr('id');
             almacen_combo_id        = '';
+
             if(nombre != 'todo_asignar'){
 
                 var cabecera_tabla_tr               =   $(this);
                 var data_detalle_orden_despacho     =   $(cabecera_tabla_tr).attr('data_detalle_orden_despacho');
+                var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+
                 var data_producto                   =   $(cabecera_tabla_tr).attr('data_producto');
                 var nombre_producto                 =   $(cabecera_tabla_tr).attr('nombre_producto');
                 var unidad_medida                   =   $(cabecera_tabla_tr).attr('unidad_medida');
                 var stock_neto                      =   $(cabecera_tabla_tr).find('.stock_neto').html();
-
                 var almacen_id                      =   $(cabecera_tabla_tr).find('#almacen_id').val();
                 var almacen_nombre                  =   $(cabecera_tabla_tr).find('#almacen_id option:selected').text();
                 var array_lote_id                   =   $(cabecera_tabla_tr).find('#lote_id').val();
-
                 var costo                           =   $(cabecera_tabla_tr).find('.costo').html();            
                 var cantidad_atender                =   $(cabecera_tabla_tr).find('.updatepriceatender').val();
                 var stock_neto                      =   parseFloat(stock_neto.replace(",", ""));
@@ -392,7 +397,7 @@ $(document).ready(function(){
                 var total                           =   cantidad_atender * costo;
                 almacen_combo_id                    =   almacen_id;
 
-                if($(check).is(':checked')){
+                if(mobil_grupo==radiomobil){
 
                     if(cantidad_atender<=0){
                         msj = 'Cantidad Atender del '+nombre_producto+' debe ser mayor a cero'; 
@@ -421,10 +426,11 @@ $(document).ready(function(){
                     });
                 }
             }
+
         });
 
+
         if(sw==1){alerterrorajax(msj); return false;}
-        if(data.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
         abrircargando();
 
         $.ajax({

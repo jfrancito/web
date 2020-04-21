@@ -119,7 +119,7 @@
             numberDisplayed: -1
       });
 
-      $('.scroll_text_horizontal').scrollLeft(368);
+      $('.scroll_text_horizontal').scrollLeft(365);
 
       $('[data-toggle="tooltip"]').tooltip();
       $('form').parsley();

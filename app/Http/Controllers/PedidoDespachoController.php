@@ -23,7 +23,7 @@ class PedidoDespachoController extends Controller
 {
 
 
-	public function actionAjaxPedidoCrearUpdatePedidoDespacho(Request $request)
+	public function actionAjaxPedidoCrearUpdatePedidoDespachoCentro(Request $request)
 	{
 
 
@@ -39,18 +39,43 @@ class PedidoDespachoController extends Controller
 
 		//actualizar el array con nuevos valores(fecha de entrega) 
 		foreach($array_detalle_producto_request as $item => $row) {
-			$muestra 	= 	0.00;
-	        $precio 	= 	0.00;
+
+			$muestra 				= 	0.00;
+	        $precio 				= 	0.00;
+	        $centro_atender_id 		= 	'';
+	        $centro_atender_txt 	= 	'';
+	        $empresa_atender_id 	= 	'';
+	        $empresa_atender_txt 	= 	'';
+
 			foreach($array_data_producto_despacho as $key => $obj){
+
 				if($row['correlativo'] == $obj['data_correlativo']){
-					$muestra 	=  $obj['muestra'];
-					$precio 	=  $obj['precio'];
+
+					$muestra 			=  $obj['muestra'];
+					$precio 			=  $obj['precio'];
+					$centro_atender_id 	=  $obj['centro_atender_id'];
+
+					$data_centro 		=  $this->funciones->data_centro($centro_atender_id);
+					if(count($data_centro)>0){$centro_atender_txt = $data_centro->NOM_CENTRO;}
+
+					$data_empresa 		=  $this->funciones->data_empresa_despacho_por_centro($centro_atender_id);
+					if(count($data_empresa)>0){
+						$empresa_atender_id 	= $data_empresa->COD_EMPR;
+						$empresa_atender_txt 	= $data_empresa->NOM_EMPR;
+					}
+
 				}
-			}	
-			$array_detalle_producto_request[$key]['muestra'] 	= $muestra;
-			$array_detalle_producto_request[$key]['cantidad'] 	= $precio;
+			}
+
+			$array_detalle_producto_request[$item]['muestra'] 				= $muestra;
+			$array_detalle_producto_request[$item]['cantidad'] 				= $precio;
+			$array_detalle_producto_request[$item]['centro_atender_id'] 	= $centro_atender_id;
+			$array_detalle_producto_request[$item]['centro_atender_txt'] 	= $centro_atender_txt;
+			$array_detalle_producto_request[$item]['empresa_atender_id'] 	= $empresa_atender_id;
+			$array_detalle_producto_request[$item]['empresa_atender_txt'] 	= $empresa_atender_txt;			
 
 	    } 
+
 
 	    //agregar a un array nuevo para listar en la vista
 		foreach ($array_detalle_producto_request as $key => $item) {
@@ -61,7 +86,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
 
-		$funcion 				= 	$this;
+		$funcion 					= 	$this;
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -71,6 +99,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -150,6 +179,14 @@ class PedidoDespachoController extends Controller
 					$detalle->documento_guia_id 	    =  	'';
 					$detalle->nro_serie 	    		=  	'';
 					$detalle->nro_documento 	    	=  	'';
+
+
+					$detalle->centro_atender_id 		=  	$row['centro_atender_id'];
+					$detalle->centro_atender_txt 		=  	$row['centro_atender_txt'];
+					$detalle->empresa_atender_id 		=  	$row['empresa_atender_id'];
+					$detalle->empresa_atender_txt 		=  	$row['empresa_atender_txt'];
+					$detalle->usuario_responsable_id 	=  	'';
+					$detalle->usuario_responsable_txt 	=  	'';
 					$detalle->save();
 
 			    }
@@ -310,7 +347,9 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
 
-		$funcion 				= 	$this;
+		$funcion 					= 	$this;
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
 
 		return View::make('despacho/ajax/alistapedido',
@@ -321,6 +360,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -375,7 +415,9 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
 
-		$funcion 				= 	$this;
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		$funcion 					= 	$this;
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -385,6 +427,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -419,8 +462,9 @@ class PedidoDespachoController extends Controller
 		// ordenar el array por grupo
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
-
-		$funcion 				= 	$this;
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		$funcion 					= 	$this;
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -430,6 +474,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -479,8 +524,9 @@ class PedidoDespachoController extends Controller
 		// ordenar el array por grupo
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
-
-		$funcion 				= 	$this;
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		$funcion 					= 	$this;
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -490,6 +536,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -570,7 +617,10 @@ class PedidoDespachoController extends Controller
 		// ordenar el array por grupo
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
-		$funcion 				= 	$this;
+		$funcion 					= 	$this;
+
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -580,6 +630,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -595,6 +646,19 @@ class PedidoDespachoController extends Controller
 		$correlativo 						= 	(int)$request['correlativo'];
 		$opcion_id 							= 	$request['opcion_id'];
 		$numero_mobil 						= 	(int)$request['numero_mobil'];
+
+
+
+		//limpiar centro y empresa
+
+		foreach ($array_detalle_producto_request as $key => $item) {
+				$array_detalle_producto_request[$key]['centro_atender_id'] 		= '';
+				$array_detalle_producto_request[$key]['centro_atender_txt'] 	= '';
+				$array_detalle_producto_request[$key]['empresa_atender_id'] 	= '';
+				$array_detalle_producto_request[$key]['empresa_atender_txt'] 	= '';
+		}
+
+
 		//el mayor valor numero de movil
 		$grupo_mobil_mayor 					=	0;
 		foreach ($array_detalle_producto_request as $key => $item) {
@@ -660,9 +724,10 @@ class PedidoDespachoController extends Controller
 		$numero_mobil 												= 	$this->funciones->mayor_grupo_mobil($array_detalle_producto);
 
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
-
-
-		$funcion 				= 	$this;
+		
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		$funcion 					= 	$this;
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -672,6 +737,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -687,11 +753,17 @@ class PedidoDespachoController extends Controller
 		$grupo 								= 	(int)$request['grupo'];
 		$numero_mobil 						= 	(int)$request['numero_mobil'];
 
-
 		$correlativo 						= 	(int)$request['correlativo'];
 		$opcion_id 							= 	$request['opcion_id'];
-
 		$grupo_mobil_mayor 					=	0;
+
+		//limpiar centro y empresa
+		foreach ($array_detalle_producto_request as $key => $item) {
+				$array_detalle_producto_request[$key]['centro_atender_id'] 		= '';
+				$array_detalle_producto_request[$key]['centro_atender_txt'] 	= '';
+				$array_detalle_producto_request[$key]['empresa_atender_id'] 	= '';
+				$array_detalle_producto_request[$key]['empresa_atender_txt'] 	= '';
+		}
 
 		foreach($data_producto_pedido as $index => $itemp) {
 			//el mayor valor numero de movil
@@ -760,7 +832,10 @@ class PedidoDespachoController extends Controller
 		// ordenar el array por grupo
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
 
-		$funcion 				= 	$this;
+		$funcion 					= 	$this;
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -770,6 +845,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -828,7 +904,8 @@ class PedidoDespachoController extends Controller
 			$array_nuevo_producto		= 	
 			$this->funciones->llenar_array_productos($cliente_id,$cliente_nombre,'','',$this->fin,
 							$this->fin,$producto->COD_PRODUCTO,$producto->NOM_PRODUCTO,$producto->COD_CATEGORIA_UNIDAD_MEDIDA,$unidad_medida->NOM_CATEGORIA,
-							$cantidad_atender,$kilos,$cantidad_sacos,$palets,$grupo,'1',$numero_mobil,'1',$correlativo,'oc_individual',$producto->CAN_PESO_MATERIAL);
+							$cantidad_atender,$kilos,$cantidad_sacos,$palets,$grupo,'1',$numero_mobil,'1',$correlativo,'oc_individual',$producto->CAN_PESO_MATERIAL,
+							'','','','');
 
 
 			$rowspan 						= 	$rowspan + 1;
@@ -851,6 +928,9 @@ class PedidoDespachoController extends Controller
 
 		$funcion 	= 	$this;
 
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -859,6 +939,7 @@ class PedidoDespachoController extends Controller
 						 	'correlativo' 							=> $correlativo,
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -909,7 +990,8 @@ class PedidoDespachoController extends Controller
 
 				$this->funciones->llenar_array_productos($orden->COD_EMPR_CLIENTE,$orden->TXT_EMPR_CLIENTE,$row['COD_TABLA'],$orden->NRO_ORDEN_CEN,$this->fin,
 								$this->fin,$row['COD_PRODUCTO'],$row['TXT_NOMBRE_PRODUCTO'],$row['COD_CATEGORIA_UNIDAD_MEDIDA'],$unidad_medida->NOM_CATEGORIA,
-								$row['CAN_PRODUCTO'],$kilos,$cantidad_sacos,$palets,$grupo,'0','0','0',$correlativo,$tipo_grupo,$producto->CAN_PESO_MATERIAL);
+								$row['CAN_PRODUCTO'],$kilos,$cantidad_sacos,$palets,$grupo,'0','0','0',$correlativo,$tipo_grupo,$producto->CAN_PESO_MATERIAL,
+								'','','','');
 
 
 				$rowspan 	= 	$rowspan + 1;
@@ -945,8 +1027,11 @@ class PedidoDespachoController extends Controller
 
 		
 
-		$funcion 	= 	$this;
+		$funcion 					= 	$this;
 
+
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
 		//dd($array_detalle_producto);
 
@@ -957,6 +1042,7 @@ class PedidoDespachoController extends Controller
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
 						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'funcion' 								=> $funcion,
 						 	'ajax'   		  						=> true,
 						 ]);

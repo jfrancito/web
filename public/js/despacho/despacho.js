@@ -77,14 +77,16 @@ $(document).ready(function(){
         var numero_mobil            = $('#numero_mobil').val();
         var correlativo             = $('#correlativo').val(); 
         var opcion_id               = $('#opcion').val();
+
         var data_producto_despacho  = dataproductoatender_edit();
         if(data_producto_despacho.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
+
 
         abrircargando();
         $.ajax({
             
             type    :   "POST",
-            url     :   carpeta+"/ajax-pedido-crear-update-pedido-despacho",
+            url     :   carpeta+"/ajax-pedido-crear-update-pedido-despacho-centro",
             data    :   {
                             _token                      : _token,
                             array_detalle_producto      : array_detalle_producto,
@@ -97,7 +99,7 @@ $(document).ready(function(){
             success: function (data) {
                 cerrarcargando();
                 alertajax("Modificación exitosa");
-                $('.lista_orden_atender').html(data);
+                $('.lista_pedidos_despacho').html(data);
             },
             error: function (data) {
                 error500(data);
@@ -108,20 +110,29 @@ $(document).ready(function(){
 
 
     function dataproductoatender_edit(){
+
         var data = [];
+        var centro_atender_id = ''
 
         $(".table-pedidos-despachos tbody tr").each(function(){
 
                 data_correlativo                = $(this).attr('data_correlativo');
                 var muestra                     = $(this).find('#muestra').val();
+                var centro_atender_val          = $(this).find('#centro_atender_id').val();
+
                 var precio                      = $(this).find('#precio').val();
                 muestra                         = muestra.replace(",", "");
                 precio                          = precio.replace(",", "");
+
+                if (centro_atender_val !== undefined) {
+                    centro_atender_id  = centro_atender_val;
+                }
 
                 data.push({
                     data_correlativo        : data_correlativo,
                     muestra                 : muestra,
                     precio                  : precio,
+                    centro_atender_id       : centro_atender_id,
                 });
 
         });
@@ -144,6 +155,7 @@ $(document).ready(function(){
             mobil                   = $(this).attr('data_mobil');
             cantidad                = $(this).attr('data_cantidad');
             nombre_producto         = $(this).attr('nombre_producto');
+            centro_origen           = $(this).attr('centro_origen');
 
 
             if(parseFloat(cantidad)<=0){
@@ -158,6 +170,11 @@ $(document).ready(function(){
 
             if(fecha_entrega==''){
                 msj = nombre_producto+' no tiene fecha de entrega';
+                sw=1;
+            }
+
+            if(centro_origen==''){
+                msj = nombre_producto+' no tiene centro de origen';
                 sw=1;
             }
 

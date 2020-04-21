@@ -224,7 +224,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-pedido-modificar-fecha-de-entrega', 'PedidoDespachoController@actionAjaxPedidoModificarFechaEntrega');
 	Route::any('/ajax-modal-configuracion-producto-cantidad', 'PedidoDespachoController@actionAjaxModalConfiguracionProductoCantidad');
 	Route::any('/ajax-modificar-configuracion-del-producto', 'PedidoDespachoController@actionAjaxModificarConfiguracionDelProducto');
-	Route::any('/ajax-pedido-crear-update-pedido-despacho', 'PedidoDespachoController@actionAjaxPedidoCrearUpdatePedidoDespacho');
+	Route::any('/ajax-pedido-crear-update-pedido-despacho-centro', 'PedidoDespachoController@actionAjaxPedidoCrearUpdatePedidoDespachoCentro');
 
 
 	Route::any('/gestion-de-atender-pedido/{idopcion}', 'AtenderPedidoDespachoController@actionListarAtenderPedido');

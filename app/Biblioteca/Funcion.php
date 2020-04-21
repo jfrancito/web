@@ -17,6 +17,28 @@ use PDO;
 class Funcion{
 
 
+	public function lista_pedidos_por_empresa_por_centro(){
+
+		$valor 		= 	'0';
+		$centro_id 	= 	Session::get('centros')->COD_CENTRO;
+		$empresa_id = 	Session::get('empresas')->COD_EMPR;
+
+	    if($empresa_id == 'IACHEM0000007086'){
+	    	if($centro_id =='CEN0000000000004' or $centro_id == 'CEN0000000000006'){
+	    		$valor = '1';
+	    	}
+	    }else{
+	    	if($empresa_id =='IACHEM0000010394'){
+		    	if($centro_id =='CEN0000000000001'){
+		    		$valor = '1';
+		    	}
+	    	}
+	    }
+	    return $valor;
+	}
+
+
+
     public function combo_series($tipodocumento,$primera_letra) {
 
 
@@ -328,8 +350,8 @@ class Funcion{
 										   $fecha_entrega,$producto_id,$nombre_producto,$unidad_medida_id,$nombre_unidad_medida,
 										   $cantidad,$kilos,$cantidad_sacos,$palets,$grupo,
 										   $grupo_orden,$grupo_movil,$grupo_orden_movil,$correlativo,$tipo_grupo_oc,
-										   $presentacion_producto){
-
+										   $presentacion_producto,$centro_atender_id,$centro_atender_txt,
+										   $empresa_atender_id,$empresa_atender_txt){
 
 
 		return						array(
@@ -354,7 +376,11 @@ class Funcion{
 								            "correlativo" 				=> $correlativo,
 								            "tipo_grupo_oc" 			=> $tipo_grupo_oc,
 								            "presentacion_producto"     => $presentacion_producto,
-								            "muestra"     				=> '0'
+								            "muestra"     				=> '0',
+								            "centro_atender_id"     	=> $centro_atender_id,
+								            "centro_atender_txt"     	=> $centro_atender_txt,
+								            "empresa_atender_id"     	=> $empresa_atender_id,
+								            "empresa_atender_txt"     	=> $empresa_atender_txt
 								        );
 
 
@@ -1358,6 +1384,21 @@ class Funcion{
 			$color 		= 'color-iaa';
 		}
 		return $color;
+	}
+
+
+	public function data_empresa_despacho_por_centro($centro_id) {
+
+		if($centro_id=='CEN0000000000001'){
+			$empresa 		= 	STDEmpresa::where('COD_EMPR','=','IACHEM0000010394')->first();
+		}else{
+			if($centro_id=='CEN0000000000004' or $centro_id=='CEN0000000000006'){
+				$empresa 		= 	STDEmpresa::where('COD_EMPR','=','IACHEM0000007086')->first();
+			}else{
+				$empresa 		= 	STDEmpresa::where('COD_EMPR','=','')->first();
+			}
+		}
+		return $empresa;
 	}
 
 
@@ -2862,6 +2903,19 @@ class Funcion{
 										->toArray();
 
 		$combocentros  				= array('' => "Seleccione centro") + $lista_centros;
+
+	 	return  $combocentros;					 			
+	}
+
+
+	public function combo_lista_centro_array_filtro($array_centro_id) {
+
+		$lista_centros 				= 	ALMCentro::where('COD_ESTADO','=','1')
+										->whereIn('COD_CENTRO',$array_centro_id)
+										->pluck('NOM_CENTRO','COD_CENTRO')
+										->toArray();
+
+		$combocentros  				=   array('' => "Seleccione centro") + $lista_centros;
 
 	 	return  $combocentros;					 			
 	}

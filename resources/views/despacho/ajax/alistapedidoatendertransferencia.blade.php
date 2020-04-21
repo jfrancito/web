@@ -1,16 +1,14 @@
 <div class="scroll_text_horizontal" style = "padding: 0px !important;"> 
 
-  <div style="width: 1940px;margin-bottom: 10px;" >
+  <div style="width: 1960px;margin-bottom: 10px;" >
     <table class="table table-pedidos-despachos" style='font-size: 0.88em;' id="tablepedidodespacho" >
     <thead>
       <tr>
-
         <th>Fechas</th>
         <th width="250px">Cliente</th>
-        <th class='center'>M</th>
+        <th class='center' colspan="2">Mobil</th>
         <th>Producto</th>
         <th>Pedido</th>
-
         <th>Almacen</th>
         <th>Lote</th>
         <th>Stock</th>
@@ -133,7 +131,7 @@
         data_producto='{{$item->producto_id}}'
         nombre_producto='{{$item->producto->NOM_PRODUCTO}}'
         unidad_medida='{{$unidad_medida}}'
-
+        mobil_grupo='{{$item->grupo_movil}}'
       >
           <td class="cell-detail">
             <span><b>Pedido</b> : {{date_format(date_create($item->fecha_pedido), 'd-m-Y')}} </span> 
@@ -150,15 +148,42 @@
 
           @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
             <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='center fondogris'>
-              <b>{{$item->grupo_movil}}</b>
+              <div class="be-radio">
+                <input  type="radio"  name="rmobil" id="rad{{$item->grupo_movil}}" 
+                        value="{{$item->grupo_movil}}" 
+                        mobil_grupo_radio="{{$item->grupo_movil}}">
+                <label for="rad{{$item->grupo_movil}}"></label>
+              </div>
             </td>
           @else
             @if($item->grupo_movil == '0') 
               <td class='center'>
-                <b>{{$item->grupo_movil}}</b>
+                <div class="be-radio">
+                  <input  type="radio" name="rmobil" id="rad{{$item->grupo_movil}}" 
+                          value="{{$item->grupo_movil}}" 
+                          mobil_grupo_radio="{{$item->grupo_movil}}">
+                  <label for="rad{{$item->grupo_movil}}"></label>
+                </div>
               </td>
             @endif
           @endif
+
+
+          @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
+            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='fondogris' >
+              <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
+            </td>
+          @else
+            @if($item->grupo_movil == '0') 
+              <td>
+                <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
+              </td>
+            @endif
+          @endif
+
+
+
+
 
           <td class="cell-detail">
             <span>{{$item->producto->NOM_PRODUCTO}}</span>
@@ -269,6 +294,7 @@
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
+          <td class='despacho_totales'></td>
           <td class='despacho_totales'>
             {{number_format($funcion->funciones->totales_kilos_palets_tabla($item->ordendespacho_id,$item->grupo_movil,'kilos'),4,'.',',')}}
           </td>
@@ -293,7 +319,7 @@
     $(document).ready(function(){
        App.dataTables();
 
-      $('.scroll_text_horizontal').scrollLeft(368);
+      $('.scroll_text_horizontal').scrollLeft(365);
 
       $('.dinero').inputmask({ 'alias': 'numeric', 
       'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 

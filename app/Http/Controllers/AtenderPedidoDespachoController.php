@@ -690,7 +690,10 @@ class AtenderPedidoDespachoController extends Controller
 		$fechainicio 					=  	$this->fecha_menos_quince;
 		$fechafin 						=  	$this->fin;
 
+		$sw_empresa_centro 				= 	$this->funciones->lista_pedidos_por_empresa_por_centro();
+
 	    $listaordenatender 				=   WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
+	    									->EmpresaCentro($sw_empresa_centro)
 	    									->where('fecha_orden','>=', $fechainicio)
 	    									->where('fecha_orden','<=', $fechafin)
 	    									->orderBy('fecha_crea', 'desc')
