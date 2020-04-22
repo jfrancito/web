@@ -123,6 +123,8 @@ $(document).ready(function(){
                 var precio                      = $(this).find('#precio').val();
                 muestra                         = muestra.replace(",", "");
                 precio                          = precio.replace(",", "");
+                producto_id                     = $(this).attr('data_producto');
+
 
                 if (centro_atender_val !== undefined) {
                     centro_atender_id  = centro_atender_val;
@@ -133,6 +135,7 @@ $(document).ready(function(){
                     muestra                 : muestra,
                     precio                  : precio,
                     centro_atender_id       : centro_atender_id,
+                    producto_id             : producto_id,
                 });
 
         });
@@ -441,7 +444,6 @@ $(document).ready(function(){
                                 correlativo                 : correlativo,
                                 grupo                       : grupo,
                                 numero_mobil                : numero_mobil,
-
                                 opcion_id                   : opcion_id,
                                 fila                        : fila
                             },

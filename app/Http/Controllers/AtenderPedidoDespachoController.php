@@ -457,6 +457,10 @@ class AtenderPedidoDespachoController extends Controller
 
 		}	
 
+
+		$this->funciones->cambio_estado_parcialmente_terminado($ordendespacho_id);
+
+
 	    $ordendespacho 								=   WEBOrdenDespacho::where('id','=',$ordendespacho_id)->first();
 		$funcion 									= 	$this;
 

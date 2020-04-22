@@ -648,14 +648,14 @@ class OsirisDespacho{
                 $codorden_o = $stmt->fetch();
 
 
-
+                $IND_MATERIAL_SERVICIO                          =       'M';
                 foreach($h_array_productos_transferencia_pt as $key => $row) {
 
 
                         $producto                               =       ALMProducto::where('COD_PRODUCTO','=',$row['data_producto'])->first();
                         $COD_PRODUCTO                           =       $row['data_producto'];
                         $COD_LOTE                               =       $row['lote_id'];
-                        $NRO_LINEA                              =       (string)($key+1);
+                        $NRO_LINEA                              =       (string)($key);
                         $TXT_NOMBRE_PRODUCTO                    =       $row['nombre_producto'];
                         $CAN_PRODUCTO                           =       $row['cantidad_atender'];
                         $CAN_PESO                               =       (string)($producto->CAN_PESO_MATERIAL*$CAN_PRODUCTO);
@@ -665,7 +665,7 @@ class OsirisDespacho{
                         $CAN_PRECIO_COSTO                       =       (string)$row['costo'];
                         $CAN_VALOR_VTA                          =       (string)$row['total'];
                         $CAN_VALOR_VENTA_IGV                    =       (string)$row['total'];
-                        $CAN_PENDIENTE                          =       (string)$row['neto'];
+                        $CAN_PENDIENTE                          =       '0';
                         $COD_ALMACEN                            =       (string)$row['almacen_id'];
                         $TXT_ALMACEN                            =       (string)$row['almacen_nombre'];
                         $COD_ESTADO                             =       '1';

@@ -8,13 +8,58 @@ use App\WEBRegla,App\WEBUserEmpresaCentro,App\WEBPrecioProductoContrato,App\CMPC
 use App\WEBPrecioProductoContratoHistorial,App\WEBPrecioProductoHistorial,App\CMPOrden,App\CMPDetalleProducto,App\WEBDetallePedido;
 use App\STDEmpresa,App\ALMCentro,App\STDEmpresaDireccion,App\CMPDocumentoCtble,App\WEBDocDoc;
 use App\WEBDetalleDocumentoAsociados,App\WEBReglaCreditoCliente,App\WEBDetalleOrdenDespacho;
-use App\WEBListaClienteTodo,App\STDTrabajador,App\WEBLISTASERIE;;
+use App\WEBListaClienteTodo,App\STDTrabajador,App\WEBLISTASERIE;
+use App\WEBOrdenDespacho;
+
 
 use App\User;
 use Keygen;
 use PDO;
 
 class Funcion{
+
+	public function cambio_estado_parcialmente_terminado($orden_despacho_id){
+
+		$fechaactual 				= 		date('d-m-Y H:i:s');
+		$orden_despacho 			= 		WEBOrdenDespacho::where('id','=',$orden_despacho_id)->first();
+
+
+
+		//parcialmente
+		$count_parcialmente 		= 		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$orden_despacho_id)
+											->where(function ($query){
+									            $query->where('nro_serie', '<>', '')
+									            ->orWhere('nro_documento', '<>', '');
+											})->get();
+
+		if(count($count_parcialmente)>0){
+		    $orden_despacho->estado_id 			= 	'EPP0000000000006';
+			$orden_despacho->fecha_mod 	 		=   $fechaactual;
+			$orden_despacho->usuario_mod 		=   Session::get('usuario')->id;
+			$orden_despacho->save();
+		}
+
+
+		//terminado
+		$count_terminado 			= 		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$orden_despacho_id)
+											->where('estado_id','=','EPP0000000000002')
+											->where('estado_gruia_id','<>','EPP0000000000004')
+											->get();
+
+		if(count($count_terminado)<=0){
+		    $orden_despacho->estado_id 						= 	'EPP0000000000004';
+		    $orden_despacho->ind_notificacion_terminado 	= 	0;
+			$orden_despacho->fecha_mod 	 					=   $fechaactual;
+			$orden_despacho->usuario_mod 					=   Session::get('usuario')->id;
+			$orden_despacho->save();
+		}
+
+
+
+
+
+	}
+
 
 
 	public function lista_pedidos_por_empresa_por_centro(){

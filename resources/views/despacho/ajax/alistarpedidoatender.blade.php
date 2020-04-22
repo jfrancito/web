@@ -33,13 +33,9 @@
         <td>
 
           @if($item->COD_CATEGORIA == 'EPP0000000000003') 
-            @if($funcion->funciones->pedido_producto_registrado_despacho($item) == '0') 
               <span class="badge badge-warning">{{$item->NOM_CATEGORIA}}</span> 
-            @else
-                <span class="badge badge-success">PARCIALMENTE ATENDIDA</span> 
-            @endif
           @else
-            @if($item->COD_CATEGORIA == 'EPP0000000000002') 
+            @if($item->COD_CATEGORIA == 'EPP0000000000002' or $item->COD_CATEGORIA == 'EPP0000000000006') 
                 <span class="badge badge-primary">{{$item->NOM_CATEGORIA}}</span>
             @else
               @if($item->COD_CATEGORIA == 'EPP0000000000004') 

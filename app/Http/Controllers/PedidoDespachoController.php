@@ -42,10 +42,18 @@ class PedidoDespachoController extends Controller
 
 			$muestra 				= 	0.00;
 	        $precio 				= 	0.00;
+			$kilos 					= 	0.00;
+	        $cantidad_sacos 		= 	0.00;
+	        $palets 				= 	0.00;
+	        $cantidad_ate 			= 	0.00;
+
+
 	        $centro_atender_id 		= 	'';
 	        $centro_atender_txt 	= 	'';
 	        $empresa_atender_id 	= 	'';
 	        $empresa_atender_txt 	= 	'';
+	        $producto_id 			= 	'';
+
 
 			foreach($array_data_producto_despacho as $key => $obj){
 
@@ -54,6 +62,15 @@ class PedidoDespachoController extends Controller
 					$muestra 			=  $obj['muestra'];
 					$precio 			=  $obj['precio'];
 					$centro_atender_id 	=  $obj['centro_atender_id'];
+					$producto_id 		=  $obj['producto_id'];
+					$cantidad_ate 		=  (float)$obj['precio'];
+
+					//calculo de kilos,cantidad_sacos,palets
+					$producto 							= 	ALMProducto::where('COD_PRODUCTO','=',$producto_id)->first();
+					$kilos 								=   $cantidad_ate*$producto->CAN_PESO_MATERIAL;
+					$cantidad_sacos						= 	$cantidad_ate/$producto->CAN_BOLSA_SACO;
+					$palets 							= 	$cantidad_sacos/$producto->CAN_SACO_PALET;
+
 
 					$data_centro 		=  $this->funciones->data_centro($centro_atender_id);
 					if(count($data_centro)>0){$centro_atender_txt = $data_centro->NOM_CENTRO;}
@@ -67,8 +84,12 @@ class PedidoDespachoController extends Controller
 				}
 			}
 
+
 			$array_detalle_producto_request[$item]['muestra'] 				= $muestra;
 			$array_detalle_producto_request[$item]['cantidad'] 				= $precio;
+			$array_detalle_producto_request[$item]['kilos'] 				= $kilos;
+			$array_detalle_producto_request[$item]['cantidad_sacos'] 		= $cantidad_sacos;
+			$array_detalle_producto_request[$item]['palets'] 				= $palets;
 			$array_detalle_producto_request[$item]['centro_atender_id'] 	= $centro_atender_id;
 			$array_detalle_producto_request[$item]['centro_atender_txt'] 	= $centro_atender_txt;
 			$array_detalle_producto_request[$item]['empresa_atender_id'] 	= $empresa_atender_id;
@@ -179,8 +200,6 @@ class PedidoDespachoController extends Controller
 					$detalle->documento_guia_id 	    =  	'';
 					$detalle->nro_serie 	    		=  	'';
 					$detalle->nro_documento 	    	=  	'';
-
-
 					$detalle->centro_atender_id 		=  	$row['centro_atender_id'];
 					$detalle->centro_atender_txt 		=  	$row['centro_atender_txt'];
 					$detalle->empresa_atender_id 		=  	$row['empresa_atender_id'];
