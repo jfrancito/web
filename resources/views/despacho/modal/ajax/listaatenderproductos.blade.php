@@ -1,4 +1,15 @@
 
+<div class="col-sm-3 abajocaja" style="margin-top: 7px;">
+  {!! Form::select( 'grupo_mobil_modal', $combo_grupo_mobil, array(),
+                    [
+                      'class'       => 'select2 form-control control input-sm' ,
+                      'id'          => 'grupo_mobil_modal',
+                      'required'    => '',
+                      'data-aw'     => '1',
+                    ]) !!}
+</div>
+
+
 <table id="despacholopatender" class="table table table-hover table-fw-widget dt-responsive nowrap lista_tabla_prod" style='width: 100%;'>
   <thead>
     <tr> 

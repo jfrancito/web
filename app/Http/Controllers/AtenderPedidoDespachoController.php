@@ -159,7 +159,10 @@ class AtenderPedidoDespachoController extends Controller
 										  	);
 
 		//dd($lista_de_servicios);						  	
-		$combo_lista_centros 					= 	$this->funciones->combo_lista_centro();
+
+		$array_centro_id 						=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 					= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		//$combo_lista_centros 					= 	$this->funciones->combo_lista_centro();
 		$combo_almacen_origen 					=   array();
 		$combo_almacen_destino 					=   array();
 		$data_productos_tranferencia_pt 		=   array();
@@ -347,7 +350,7 @@ class AtenderPedidoDespachoController extends Controller
 			foreach ($array_detalle_orden_despacho_id as $values)
 			{
 				$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
-				$detalleordendespacho->fecha_entrega 	=  	$fechadeentrega;//fecha entrega falta
+				$detalleordendespacho->fecha_carga 		=  	$fechadeentrega;//fecha entrega falta
 				$detalleordendespacho->fecha_mod 		=  	$this->fechaactual;
 				$detalleordendespacho->usuario_mod 		=  	Session::get('usuario')->id;
 				$detalleordendespacho->save();
@@ -391,10 +394,12 @@ class AtenderPedidoDespachoController extends Controller
 			$array_detalle_orden_despacho_id 		= 	explode(",", $detalle_orden_despacho_id);
 			foreach ($array_detalle_orden_despacho_id as $values)
 			{
-				$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
+				$detalleordendespacho               		=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
 				$detalleordendespacho->centro_atender_id 	=  	$centro_origen_id;
-				$detalleordendespacho->fecha_mod 		=  	$this->fechaactual;
-				$detalleordendespacho->usuario_mod 		=  	Session::get('usuario')->id;
+				$detalleordendespacho->nro_serie 			=  	'';
+				$detalleordendespacho->nro_documento 		=   '';
+				$detalleordendespacho->fecha_mod 			=  	$this->fechaactual;
+				$detalleordendespacho->usuario_mod 			=  	Session::get('usuario')->id;
 				$detalleordendespacho->save();
 			}
 
@@ -435,17 +440,28 @@ class AtenderPedidoDespachoController extends Controller
 			$cantidad_atender_total						= 	$obj['cantidad_atender'];
 			$serie										= 	$obj['serie'];
 			$nro_documento								= 	$obj['nro_documento'];
-
-
+			$producto_id								= 	$obj['producto_id'];
 			$cantidad_atender 							= 	0.00;
 
 			$array_detalle_orden_despacho_id 		= 	explode(",", $detalle_orden_despacho_id);
 			foreach ($array_detalle_orden_despacho_id as $values)
 			{
 
+
 				$cantidad_atender							= 	$cantidad_atender_total/count($array_detalle_orden_despacho_id);
+				$producto 									= 	ALMProducto::where('COD_PRODUCTO','=',$producto_id)->first();
+				$kilos_atender 								=   $cantidad_atender*$producto->CAN_PESO_MATERIAL;
+				$cantidad_sacos_atender						= 	$cantidad_atender/$producto->CAN_BOLSA_SACO;
+				$palets_atende 								= 	$cantidad_sacos_atender/$producto->CAN_SACO_PALET;
+
+
+
 				$detalleordendespacho               		=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
 				$detalleordendespacho->cantidad_atender 	=  	$cantidad_atender;
+				$detalleordendespacho->kilos_atender 			=  	$kilos_atender;
+				$detalleordendespacho->cantidad_sacos_atender 	=  	$cantidad_sacos_atender;
+				$detalleordendespacho->palets_atender 			=  	$palets_atende;
+
 				$detalleordendespacho->nro_serie 			=  	$serie;
 				$detalleordendespacho->nro_documento 		=  	$nro_documento;
 				$detalleordendespacho->fecha_mod 			=  	$this->fechaactual;
@@ -489,6 +505,7 @@ class AtenderPedidoDespachoController extends Controller
 		$data_producto 							= 	$request['data_producto'];
 		$ordendespacho_id 						= 	$request['ordendespacho_id'];
 		//$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$ordendespacho_id)->first();
+		$grupo_mobil_modal 						= 	$request['grupo_mobil_modal'];
 
 		$detalleodmobil 						=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
 													->select(DB::raw('max(grupo_movil) as grupo_movil'))
@@ -496,14 +513,22 @@ class AtenderPedidoDespachoController extends Controller
 													->orderByRaw('max(grupo_movil) desc')
 													->first();
 
-		$mobil_mayor 							= 	$detalleodmobil->grupo_movil;
+		$centro 								=   ALMCentro::where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)->first();
+		$empresa 								=   $this->funciones->data_empresa_despacho_por_centro(Session::get('centros')->COD_CENTRO);
+
+		//mobil nuevo
+		if($grupo_mobil_modal=='0'){
+			$mobil_mayor 							= 	$detalleodmobil->grupo_movil;
+		}else{
+			$mobil_mayor 							= 	$grupo_mobil_modal;
+		}
+
 
 		foreach($data_producto as $obj){
 
 		    $producto_id 						= 	$obj['producto_id'];
 		    $cantidad_atender 					= 	$obj['cantidad_atender'];
 		    $mobil_mayor 						= 	$mobil_mayor + 1;
-
 
 		    $producto 							= 	ALMProducto::where('COD_PRODUCTO','=',$producto_id)->first();
 
@@ -524,17 +549,11 @@ class AtenderPedidoDespachoController extends Controller
 			$detalle->presentacion_producto 	=  	$producto->CAN_PESO_MATERIAL;
 			$detalle->grupo 					=  	0;
 			$detalle->grupo_orden 				=  	0;
-
 			$detalle->grupo_movil 				=  	$mobil_mayor;
 			$detalle->grupo_orden_movil 		=  	1;
 
-			$detalle->nro_serie 				=  	'';
-			$detalle->nro_documento 			=  	'';
-
 			$detalle->grupo_guia 				=  	1;
 			$detalle->grupo_orden_guia 			=  	1;
-
-
 			$detalle->correlativo 				=  	$detalle->correlativo + 1;
 			$detalle->tipo_grupo_oc 			=  	'';
 			$detalle->fecha_crea 	 			=   $this->fechaactual;
@@ -545,8 +564,18 @@ class AtenderPedidoDespachoController extends Controller
 			$detalle->producto_id 				=  	$producto->COD_PRODUCTO;
 			$detalle->empresa_id 				=   Session::get('empresas')->COD_EMPR;
 			$detalle->centro_id 				=   Session::get('centros')->COD_CENTRO;
-			$detalle->estado_id 	    		=  	'EPP0000000000002';	
-			$detalle->centro_atender_id 		=  	'CEN0000000000001';
+			$detalle->estado_id 	    		=  	'EPP0000000000002';
+			$detalle->estado_gruia_id 	    	=  	'EPP0000000000002';
+
+			$detalle->documento_guia_id 	    =  	'';
+			$detalle->nro_serie 				=  	'';
+			$detalle->nro_documento 			=  	'';				
+			$detalle->centro_atender_id 		=  	$centro->COD_CENTRO;
+			$detalle->centro_atender_txt 		=  	$centro->NOM_CENTRO;
+			$detalle->empresa_atender_id 		=  	$empresa->COD_EMPR;
+			$detalle->empresa_atender_txt 		=  	$empresa->NOM_EMPR;
+			$detalle->usuario_responsable_id 	=  	'';
+			$detalle->usuario_responsable_txt 	=  	'';
 			$detalle->save();
 
 		}
@@ -583,9 +612,17 @@ class AtenderPedidoDespachoController extends Controller
 	    									->whereIn('COD_CATEGORIA_UNIDAD_MEDIDA',['UME0000000000001','UME0000000000013'])
 				    					 	->orderBy('NOM_PRODUCTO', 'asc')
 				    					 	->get();
+
+		$array_grupo_mobil 				= 	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+											->select('grupo_movil')
+											->groupBy('grupo_movil')
+											->pluck('grupo_movil','grupo_movil')
+                                        	->toArray();
+		    					 	
+		$combo_grupo_mobil           	=   array('0' => "Nuevo") + $array_grupo_mobil;
+
+
 		$funcion 						= 	$this;
-
-
 
 
 		return View::make('despacho/modal/ajax/lproducto',
@@ -593,8 +630,8 @@ class AtenderPedidoDespachoController extends Controller
 						 	'ordendespacho_id' 			=> $ordendespacho_id,
 						 	'ordendespacho' 			=> $ordendespacho,
 						 	'listaproductos' 			=> $listaproductos,
+						 	'combo_grupo_mobil' 		=> $combo_grupo_mobil,
 						 	'funcion' 					=> $funcion,
-
 						 	'ajax' 						=> true,
 						 ]);
 

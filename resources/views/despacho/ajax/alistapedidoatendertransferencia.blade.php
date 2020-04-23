@@ -1,6 +1,6 @@
 <div class="scroll_text_horizontal" style = "padding: 0px !important;"> 
 
-  <div style="width: 1960px;margin-bottom: 10px;" >
+  <div style="width: 2180px;margin-bottom: 10px;" >
     <table class="table table-pedidos-despachos" style='font-size: 0.88em;' id="tablepedidodespacho" >
     <thead>
       <tr>
@@ -31,10 +31,10 @@
 
         <th class='center'>Guia Remitente</th>
 
-        <th>Origen</th>
+        <th>Guia Remision</th>
         <th>Transferencia PT</th>
-
-
+        <th>Origen</th>
+        <th>Fecha Carga</th>
 
         <th>Kilos</th>
         <th>Sacos</th>
@@ -48,7 +48,6 @@
     @php $grupo_guia    =   ""; @endphp
     @php $conteo_mobil  =   0; @endphp
     @php $grupo_movil_c =   0; @endphp
-
 
 
     @foreach($ordendespacho->viewdetalleordendespacho as $index => $item)
@@ -67,49 +66,84 @@
 
         $mobil_cero               =   $funcion->funciones->cantidad_mobil_cero($ordendespacho->id);
         $unidad_medida            =   $funcion->funciones->data_categoria($item->producto->COD_CATEGORIA_UNIDAD_MEDIDA)->NOM_CATEGORIA;
-
-        $almacen_id_sel           =   $funcion->funciones->select_almacen_unidad_centro($unidad_medida,$ultimo_almacen_id);
-        $combo_almacen_lote       =   $funcion->funciones->combo_almacen_lote($item->producto_id,$almacen_id_sel);
-        $almacen_lote_group_id    =   $funcion->funciones->select_almacen_lote_group($item->producto_id,$almacen_id_sel,$item['cantidad_atender']);
-
-        $stock_neto               =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'STK_NETO');
-        $stock_fisico             =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'CAN_FIN_MAT');
-        $costo                    =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'CAN_COSTO');
         $centro_origen            =   $funcion->funciones->data_centro($item->centro_atender_id);
         $rowspan_mobil_producto   =   $funcion->funciones->rowspan_mobil_producto($item->ordendespacho_id,$item->grupo_movil);
-
 
         $color_stock              =   '';
         $background_stock         =   '';
         $sw_transferencia         =   0;
         $check_disableb           =   '';
         $color_tr                 =   '';
+        $disabled_transferencia   =   '';
+        $disabled_guia            =   '';
+        $disabled_origen          =   '';
+        $sw_nocarga_lotes         =   '0';
 
       @endphp
 
 
-      @if((float)$stock_neto < (float)$item['cantidad_atender']) 
+      @if($item->documento_guia_id <> "") 
+        @php 
+          $disabled_guia   =   'disabled';
+        @endphp
+      @endif
+
+
+      @if($item->orden_transferencia_id <> "") 
+        @php 
+          $sw_transferencia         =   1;
+          $check_disableb           =   'check_disableb';
+          $color_tr                 =   'label-transferenciapt';
+          $disabled_transferencia   =   'disabled';
+          $almacen_id_sel           =   '';
+          $combo_almacen_lote       =    array();
+          $almacen_lote_group_id    =   '';
+          $stock_neto               =   0.0;
+          $stock_fisico             =   0.0;
+          $costo                    =   0.0;
+          $sw_nocarga_lotes         =   '1';
+        @endphp
+      @endif
+
+      @if(Session::get('centros')->COD_CENTRO <> $item->centro_atender_id) 
+        @php 
+          $sw_transferencia         =   1;
+          $check_disableb           =   'check_disableb';
+          $color_tr                 =   'label-origen';
+          $disabled_origen          =   'disabled';
+          $disabled_guia            =   'disabled';
+          $almacen_id_sel           =   '';
+          $combo_almacen_lote       =    array();
+          $almacen_lote_group_id    =   '';
+          $stock_neto               =   0.0;
+          $stock_fisico             =   0.0;
+          $costo                    =   0.0;
+          $sw_nocarga_lotes         =   '1';
+        @endphp
+      @endif
+
+
+      @if($sw_nocarga_lotes == "0") 
+        @php
+          $almacen_id_sel           =   $funcion->funciones->select_almacen_unidad_centro($unidad_medida,$ultimo_almacen_id);
+          $combo_almacen_lote       =   $funcion->funciones->combo_almacen_lote($item->producto_id,$almacen_id_sel);
+          $almacen_lote_group_id    =   $funcion->funciones->select_almacen_lote_group($item->producto_id,$almacen_id_sel,$item['cantidad_atender']);
+          $stock_neto               =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'STK_NETO');
+          $stock_fisico             =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'CAN_FIN_MAT');
+          $costo                    =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'CAN_COSTO');
+        @endphp
+      @endif
+
+
+      @if((float)$stock_neto < (float)$item['cantidad_atender'] and $sw_transferencia == 0) 
         @php 
           $color_stock          =   'color_rojo';
           $background_stock     =   'background_rojo';
         @endphp
       @endif
 
-      @if($item->orden_transferencia_id <> "") 
-        @php 
-          $sw_transferencia     =   1;
-          $check_disableb       =   'check_disableb';
-          $color_tr             =   'label-transferenciapt'
-        @endphp
-      @endif
 
-      @if(Session::get('centros')->COD_CENTRO <> $item->centro_atender_id) 
-        @php 
-          $sw_transferencia     =   1;
-          $check_disableb       =   'check_disableb';
-          $color_tr             =   'label-origen'
-        @endphp
-      @endif
+
 
       @if((int)$item->grupo_movil > 0 or $grupo_movil_c = $item->grupo_movil)
         @php 
@@ -132,9 +166,12 @@
         nombre_producto='{{$item->producto->NOM_PRODUCTO}}'
         unidad_medida='{{$unidad_medida}}'
         mobil_grupo='{{$item->grupo_movil}}'
+        centro_origen_id='{{$item->centro_atender_id}}'
+        guia_remision_id="{{$item->documento_guia_id}}"
+
       >
           <td class="cell-detail">
-            <span><b>Pedido</b> : {{date_format(date_create($item->fecha_pedido), 'd-m-Y')}} </span> 
+            <span><b>Pedido</b> : {{date_format(date_create($item->fecha_pedido), 'd-m-Y')}}</span> 
             <span><b>Entrega</b> : {{date_format(date_create($item->fecha_entrega), 'd-m-Y')}} </span>
           </td>
           <td class="cell-detail">
@@ -151,7 +188,7 @@
               <div class="be-radio">
                 <input  type="radio"  name="rmobil" id="rad{{$item->grupo_movil}}" 
                         value="{{$item->grupo_movil}}" 
-                        mobil_grupo_radio="{{$item->grupo_movil}}">
+                        mobil_grupo_radio="{{$item->grupo_movil}}" {{$disabled_transferencia}}>
                 <label for="rad{{$item->grupo_movil}}"></label>
               </div>
             </td>
@@ -161,7 +198,7 @@
                 <div class="be-radio">
                   <input  type="radio" name="rmobil" id="rad{{$item->grupo_movil}}" 
                           value="{{$item->grupo_movil}}" 
-                          mobil_grupo_radio="{{$item->grupo_movil}}">
+                          mobil_grupo_radio="{{$item->grupo_movil}}" {{$disabled_transferencia}}>
                   <label for="rad{{$item->grupo_movil}}"></label>
                 </div>
               </td>
@@ -202,6 +239,8 @@
                                   'id'          => 'almacen_id',
                                   'required'    => '',
                                   'data-aw'     => '1',
+                                  $disabled_origen => $disabled_origen,
+                                  $disabled_transferencia => $disabled_origen
                                 ]) !!}
           </td>
           <td class='ajax_combo_lote'>
@@ -213,6 +252,7 @@
                                   'required'    => '',
                                   'multiple'    => 'multiple',
                                   'data-aw'     => '1',
+                                  $disabled_transferencia
                                 ]) !!}
 
           </td>
@@ -263,11 +303,19 @@
             @endif
           @endif
 
+          <td class='center'>
+            {{$item->documento_guia_id}}
+          </td>
+
+          <td>
+            {{$item->orden_transferencia_id}}
+          </td>
           <td>
             {{$centro_origen->NOM_CENTRO}}
           </td>
           <td>
-            {{$item->orden_transferencia_id}}
+            {{date_format(date_create($item->fecha_carga), 'd-m-Y')}}
+
           </td>
           <td>{{number_format($item->kilos, 4, '.', ',')}}</td>
           <td>{{number_format($item->cantidad_sacos, 4, '.', ',')}}</td>
@@ -283,6 +331,8 @@
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>          
+          <td class='despacho_totales'></td>
+          <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>

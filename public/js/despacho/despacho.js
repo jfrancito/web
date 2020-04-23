@@ -364,8 +364,9 @@ $(document).ready(function(){
     $(".despacho").on('click','.cambiarfechaentrega', function() {
 
         event.preventDefault();
-        data_producto_pedido        = dataproductopedidos();
-        if(data_producto_pedido.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
+        var radiomobil                  =   $("input[name='rmobil']:checked").val();
+        if(typeof(radiomobil)  === "undefined"){alerterrorajax('Seleccione por lo menos un mobil'); return false;}
+
         $('#modal-entrega').niftyModal();
 
     });
@@ -379,14 +380,33 @@ $(document).ready(function(){
         var grupo                   = $('#grupo').val();
         var numero_mobil            = $('#numero_mobil').val();
         var correlativo             = $('#correlativo').val();
-        var data_producto_pedido    = dataproductopedidos();
         var fechadeentrega          = $('#fechadeentrega').val(); 
         var opcion_id               = $('#opcion').val();
+        var radiomobil              = $("input[name='rmobil']:checked").val();
 
         if(fechadeentrega == ''){
             alerterrorajax("Seleccione una fecha de entrega");
             return false;
         }
+
+
+        var data_producto_pedido = [];
+        $(".table-pedidos-despachos tbody tr").each(function(){
+
+            nombre                  = $(this).find('.input_asignar_lp').attr('id');
+
+            if(nombre != 'todo_asignar'){
+
+                var cabecera_tabla_tr               =   $(this);
+                correlativo                         =   $(this).attr('data_correlativo');
+                var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+                if(mobil_grupo==radiomobil){
+                    data_producto_pedido.push({
+                        correlativo     : correlativo
+                    });
+                }
+            }
+        });
 
         $.ajax({
             

@@ -163,6 +163,14 @@ class PedidoDespachoController extends Controller
 
 				foreach($array_detalle_producto_request as $key => $row) {
 
+					$cantidad_atender 					= 	(float)$row['cantidad'] + (float)$row['muestra'];
+
+					//calculo de kilos,cantidad_sacos,palets
+					$producto 							= 	ALMProducto::where('COD_PRODUCTO','=',$row['producto_id'])->first();
+					$kilos_atender 						=   $cantidad_atender*$producto->CAN_PESO_MATERIAL;
+					$cantidad_sacos_atender				= 	$cantidad_atender/$producto->CAN_BOLSA_SACO;
+					$palets_atende 						= 	$cantidad_sacos_atender/$producto->CAN_SACO_PALET;
+
 
 					$iddetalleordendespacho				= 	$this->funciones->getCreateIdMaestra('WEB.detalleordendespachos');
 					$detalle            	 			=	new WEBDetalleOrdenDespacho;
@@ -174,11 +182,13 @@ class PedidoDespachoController extends Controller
 					$detalle->fecha_entrega 			=  	$row['fecha_entrega'];
 					$detalle->muestra 					=  	$row['muestra'];
 					$detalle->cantidad 					=  	$row['cantidad'];
-					$detalle->cantidad_atender 			=  	(float)$row['cantidad'] + (float)$row['muestra'];
+					$detalle->cantidad_atender 			=  	$cantidad_atender;
 					$detalle->centro_atender_id 		=  	'CEN0000000000001';
+
 					$detalle->kilos 					=  	$row['kilos'];
 					$detalle->cantidad_sacos 			=  	$row['cantidad_sacos'];
 					$detalle->palets 					=  	$row['palets'];
+
 					$detalle->presentacion_producto 	=  	$row['presentacion_producto'];
 					$detalle->grupo 					=  	$row['grupo'];
 					$detalle->grupo_orden 				=  	$row['grupo_orden'];
@@ -206,6 +216,14 @@ class PedidoDespachoController extends Controller
 					$detalle->empresa_atender_txt 		=  	$row['empresa_atender_txt'];
 					$detalle->usuario_responsable_id 	=  	'';
 					$detalle->usuario_responsable_txt 	=  	'';
+
+					$detalle->kilos_atender 			=  	$kilos_atender;
+					$detalle->cantidad_sacos_atender 	=  	$cantidad_sacos_atender;
+					$detalle->palets_atender 			=  	$palets_atende;
+					$detalle->fecha_carga 				=  	'';
+					$detalle->fecha_recepcion 			=  	'';
+
+
 					$detalle->save();
 
 			    }
@@ -220,15 +238,12 @@ class PedidoDespachoController extends Controller
 															->groupBy('grupo_movil')
 															->get();
 
-
-
 				foreach($group_mobiles as $index => $item){
 
 					$detalle_orden_despacho 			=	WEBViewDetalleOrdenDespacho::where('ordendespacho_id','=',$idordendespacho)
 															->where('grupo_movil','=',$item->grupo_movil)
 															->orderBy('id', 'asc')
 															->get();
-
 
 					$cantidad_productos 				=   count($detalle_orden_despacho);
 					$parte_entera_division 				=   floor($cantidad_productos/8);
@@ -242,11 +257,6 @@ class PedidoDespachoController extends Controller
 					if($resto_division>0){
 						$parte_entera_division 			= 	$parte_entera_division + 1;
 					}
-
-
-					/*print_r($cantidad_productos);
-					print_r($parte_entera_division);
-					dd($resto_division);*/
 
 					foreach($detalle_orden_despacho as $indexd => $itemd){
 
@@ -669,12 +679,12 @@ class PedidoDespachoController extends Controller
 
 
 		//limpiar centro y empresa
-
 		foreach ($array_detalle_producto_request as $key => $item) {
 				$array_detalle_producto_request[$key]['centro_atender_id'] 		= '';
 				$array_detalle_producto_request[$key]['centro_atender_txt'] 	= '';
 				$array_detalle_producto_request[$key]['empresa_atender_id'] 	= '';
 				$array_detalle_producto_request[$key]['empresa_atender_txt'] 	= '';
+				$array_detalle_producto_request[$key]['fecha_entrega'] 			= '';
 		}
 
 
@@ -782,6 +792,7 @@ class PedidoDespachoController extends Controller
 				$array_detalle_producto_request[$key]['centro_atender_txt'] 	= '';
 				$array_detalle_producto_request[$key]['empresa_atender_id'] 	= '';
 				$array_detalle_producto_request[$key]['empresa_atender_txt'] 	= '';
+				$array_detalle_producto_request[$key]['fecha_entrega'] 			= '';
 		}
 
 		foreach($data_producto_pedido as $index => $itemp) {

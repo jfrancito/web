@@ -41,7 +41,7 @@
               <table class="table table-pedidos-despachos" style='font-size: 0.85em;' id="tablepedidodespacho" >
                 <thead>
                   <tr>
-                    <th>Mobil</th>
+                    <th class='center' colspan="2">Mobil</th>
                     <th>Cliente</th>
                     <th>Producto</th>
                     <th class='center'>Muestra</th>
@@ -102,18 +102,44 @@
                           fecha_entrega="{{$item['fecha_entrega']}}"
                           nombre_producto="{{$item['nombre_producto']}}"
                           centro_origen="{{$item['centro_atender_id']}}"
+                          mobil_grupo="{{$item['grupo_movil']}}"
                         >
+
+
+                        @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 
+                          <td rowspan = "{{$item['grupo_orden_movil']}}" class='center fondogris'>
+
+                            <div class="be-radio">
+                              <input  type="radio"  name="rmobil" id="rad{{$item['grupo_movil']}}" 
+                                      value="{{$item['grupo_movil']}}" 
+                                      mobil_grupo_radio="{{$item['grupo_movil']}}">
+                              <label for="rad{{$item['grupo_movil']}}"></label>
+                            </div>
+
+                          </td>
+                        @else
+                          @if($item['grupo_movil'] == '0') 
+                            <td class='center'>
+                            <div class="be-radio">
+                              <input  type="radio"  name="rmobil" id="rad{{$item['grupo_movil']}}" 
+                                      value="{{$item['grupo_movil']}}" 
+                                      mobil_grupo_radio="{{$item['grupo_movil']}}">
+                              <label for="rad{{$item['grupo_movil']}}"></label>
+                            </div>
+                            </td>
+                          @endif
+                        @endif
 
 
 
                         @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 
                           <td rowspan = "{{$item['grupo_orden_movil']}}" class='center fondogris'>
-                            <b>{{$item['grupo_movil']}}</b>
+                            <b style="padding-right: 4px;">{{$item['grupo_movil']}}</b>
                           </td>
                         @else
                           @if($item['grupo_movil'] == '0') 
                             <td class='center'>
-                              <b>{{$item['grupo_movil']}}</b>
+                              <b style="padding-right: 4px;">{{$item['grupo_movil']}}</b>
                             </td>
                           @endif
                         @endif
@@ -226,12 +252,14 @@
 
                         </td>
 
-                        @if($sw_crear == 1) 
-                          <td class="cell-detail" rowspan = "{{$item['grupo_orden']}}">
+
+                        @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 
+                          <td class="cell-detail" rowspan = "{{$item['grupo_orden_movil']}}">
                             <span><b>Pedido</b> : {{$item['fecha_pedido']}}</span>
                             <span><b>Entrega</b> : {{$item['fecha_entrega']}}</span>
                           </td>
                         @endif
+
 
 
                         @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 

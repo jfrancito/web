@@ -597,15 +597,34 @@ $(document).ready(function(){
     $(".despacho").on('click','#modificarfechadeentrega', function() {
 
         event.preventDefault();
-        var _token                      = $('#token').val();
-        var data_producto_despacho      = dataproductoatender_fecha_entrega();
-        var fechadeentrega          = $('#fechadeentrega').val(); 
+        var _token                  = $('#token').val();
+        //var data_producto_despacho      = dataproductoatender_fecha_entrega();
+        var fechadeentrega          = $('#fechadecarga').val(); 
         var ordendespacho_id        = $('#ordendespacho_id').val();
+        var radiomobil              = $("input[name='rmobil']:checked").val();
 
         if(fechadeentrega == ''){
             alerterrorajax("Seleccione una fecha de entrega");
             return false;
         }
+
+        var data_producto_despacho = [];
+        $(".table-pedidos-despachos tbody tr").each(function(){
+            //debugger;
+                nombre                  = $(this).find('.input_asignar_lp').attr('id');
+                if(nombre != 'todo_asignar'){
+
+                    var cabecera_tabla_tr               =   $(this);
+                    data_detalle_orden_despacho         =   $(this).attr('data_detalle_orden_despacho');
+                    var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+                    if(mobil_grupo==radiomobil){
+                        data_producto_despacho.push({
+                            data_detalle_orden_despacho     : data_detalle_orden_despacho
+                        });
+                    }
+                }            
+        });
+
 
         abrircargando();
 
@@ -623,7 +642,7 @@ $(document).ready(function(){
                 cerrarcargando();
                 alertajax("Modificación exitosa");
                 $('.lista_orden_atender').html(data);
-                $('#modal-entrega').niftyModal('hide');
+                $('#modal-carga').niftyModal('hide');
 
             },
             error: function (data) {
@@ -637,8 +656,33 @@ $(document).ready(function(){
     $(".despacho").on('click','#modificarorigen', function() {
 
         event.preventDefault();
-        var _token                      = $('#token').val();
-        var data_producto_despacho      = dataproductoatender_fecha_entrega();
+        var _token                      =   $('#token').val();
+        var data_producto_despacho      =   [];
+        var sw   = 0;
+        var msj                         =   '';
+        var centro_origen_id            =   '';
+        var radiomobil                  =   $("input[name='rmobil']:checked").val();
+
+        $(".table-pedidos-despachos tbody .fila_pedido").each(function(){
+
+            nombre                  = $(this).find('.input_asignar_lp').attr('id');
+            almacen_combo_id        = '';
+            if(nombre != 'todo_asignar'){
+
+                var cabecera_tabla_tr               =   $(this);
+                var data_detalle_orden_despacho     =   $(cabecera_tabla_tr).attr('data_detalle_orden_despacho');
+                var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+                var guia_remision_id                =   $(cabecera_tabla_tr).attr('guia_remision_id');
+                centro_origen_id                   =   $(cabecera_tabla_tr).attr('centro_origen_id');
+
+                if(mobil_grupo==radiomobil){
+                    data_producto_despacho.push({
+                        data_detalle_orden_despacho     : data_detalle_orden_despacho
+                    });
+                }
+            }
+        });
+
         var centro_origen_id            = $('#centro_origen_id').val(); 
         var ordendespacho_id            = $('#ordendespacho_id').val();
 
@@ -675,14 +719,13 @@ $(document).ready(function(){
 
 
 
-
-
     $(".despacho").on('click','.cambiarfechaentrega', function() {
 
         event.preventDefault();
-        data_producto_despacho        = dataproductoatender_fecha_entrega();
-        if(data_producto_despacho.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
-        $('#modal-entrega').niftyModal();
+        var radiomobil                  =   $("input[name='rmobil']:checked").val();
+        if(typeof(radiomobil)  === "undefined"){alerterrorajax('Seleccione por lo menos un mobil'); return false;}
+
+        $('#modal-carga').niftyModal();
 
     });
 
@@ -690,8 +733,46 @@ $(document).ready(function(){
     $(".despacho").on('click','.cambiarorigen', function() {
 
         event.preventDefault();
-        data_producto_despacho        = dataproductoatender_fecha_entrega();
-        if(data_producto_despacho.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
+        var radiomobil                  =   $("input[name='rmobil']:checked").val();
+        if(typeof(radiomobil)  === "undefined"){alerterrorajax('Seleccione por lo menos un mobil'); return false;}
+
+        //servicio 
+        var data = [];
+        var sw   = 0;
+        var msj  = '';
+        var centro_origen_id = '';
+
+        $(".table-pedidos-despachos tbody .fila_pedido").each(function(){
+
+            nombre                  = $(this).find('.input_asignar_lp').attr('id');
+            almacen_combo_id        = '';
+            if(nombre != 'todo_asignar'){
+
+                var cabecera_tabla_tr               =   $(this);
+                var data_detalle_orden_despacho     =   $(cabecera_tabla_tr).attr('data_detalle_orden_despacho');
+                var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+                var guia_remision_id                =   $(cabecera_tabla_tr).attr('guia_remision_id');
+
+
+                if(mobil_grupo==radiomobil){
+
+                    if(guia_remision_id != ''){
+                        msj = 'Mobil ('+mobil_grupo+') ya tienen una guia de remisión'; 
+                        sw=1;
+                    }
+
+                    centro_origen_id                   =   $(cabecera_tabla_tr).attr('centro_origen_id');
+                    data.push({
+                        data_detalle_orden_despacho     : data_detalle_orden_despacho
+                    });
+                }
+            }
+        });
+
+        if(sw==1){alerterrorajax(msj); return false;}
+
+        //$('#centro_origen_id').val(centro_origen_id).trigger('change');
+        $('#centro_origen_id').val(centro_origen_id).change();
         $('#modal-cambiar-origen').niftyModal();
 
     });
@@ -735,6 +816,7 @@ $(document).ready(function(){
 
         var _token                  = $('#token').val();
         var tabestado               = $('#tabestado').val();
+        var grupo_mobil_modal       = $('#grupo_mobil_modal').val();
 
         if(tabestado == 'prod'){
 
@@ -754,6 +836,7 @@ $(document).ready(function(){
                                 _token                  : _token,
                                 data_producto           : data_producto,
                                 ordendespacho_id        : ordendespacho_id,
+                                grupo_mobil_modal       : grupo_mobil_modal,
                             },    
                 success: function (data) {
                     cerrarcargando();
@@ -868,6 +951,8 @@ function validarrelleno(accion,name,estado,check,token){
     }
 }
 
+
+
 function dataproductoatender_fecha_entrega(){
     var data = [];
     $(".table-pedidos-despachos tbody tr").each(function(){
@@ -900,6 +985,7 @@ function dataproductoatender_edit(){
             var cantidad_atender            = $(this).find('.updatepriceatender').val();
             var serie                       = $(this).find('#serie_guia').val();
             var nro_documento               = $(this).find('.nro_documento').val();
+            var producto_id                 = $(this).attr('data_producto');
 
             if (serie !== undefined) {
                 serie_registro  = serie;
@@ -914,7 +1000,7 @@ function dataproductoatender_edit(){
                     cantidad_atender                : cantidad_atender,
                     serie                           : serie_registro,
                     nro_documento                   : nro_registro,
-
+                    producto_id                     : producto_id,
                 });
 
             }

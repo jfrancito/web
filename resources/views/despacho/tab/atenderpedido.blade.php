@@ -7,6 +7,7 @@
     <div class='col-sm-4'>
         <span class="label label-transferenciapt">Transferencia PT</span>
         <span class="label label-origen">Origen</span>
+        <span class="label label-guia-utilizada">Guia ejecutada</span>
     </div>
     
     <div class="tools dropdown show">
@@ -16,9 +17,11 @@
 
         <span class="icon mdi mdi-more-vert dropdown-toggle" id="menudespacho" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></span>
         <ul class="dropdown-menu" aria-labelledby="menudespacho" style="margin: 7px -169px 0px;">
-          <li><a href="#" class='agregarproductoatender'>Agregar Producto</a></li>
-          <li><a href="#" class='cambiarfechaentrega'>Modificar fecha de entrega</a></li>
+
+          <!-- <li><a href="#" class='agregarproductoatender'>Agregar Producto</a></li> -->
+          <li><a href="#" class='cambiarfechaentrega'>Modificar fecha de carga</a></li>
           <li><a href="#" class='cambiarorigen'>Cambiar Origen</a></li>
+          
           <li><a href="#" class='transferenciapt'>Transferencia PT</a></li>
         </ul>
       </div>

@@ -1,6 +1,5 @@
 
 
-
 <table id="despacholop" class="table table table-hover table-fw-widget dt-responsive nowrap lista_tabla_prod" style='width: 100%;'>
   <thead>
     <tr> 

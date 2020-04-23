@@ -7,11 +7,12 @@
           'style'       => 'width: 85px;height: 24px;padding: 3px 9px;',
           'required'    => '',
           'data-aw'     => '2',
+          $disabled_guia
         ]) !!}
       </span>
         <input type="text"
          name="nro_documento"
          value="{{$item->nro_documento}}"
-         class="form-control input-sm dineronrodoc nro_documento"
+         class="form-control input-sm dineronrodoc nro_documento" {{$disabled_guia}}
         >
 </div>
