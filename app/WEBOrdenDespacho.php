@@ -16,14 +16,17 @@ class WEBOrdenDespacho extends Model
     {
         return $this->hasMany('App\WEBDetalleOrdenDespacho', 'ordendespacho_id', 'id')->where('activo','=', 1)
                                                                                       ->orderBy('grupo_movil', 'asc')
-                                                                                      ->orderBy('grupo_guia', 'asc');
+                                                                                      ->orderBy('grupo', 'asc')
+                                                                                      ->orderBy('id', 'asc');
     }
 
     public function viewdetalleordendespacho()
     {
         return $this->hasMany('App\WEBViewDetalleOrdenDespacho', 'ordendespacho_id', 'id')->where('activo','=', 1)
         ->orderBy('grupo_movil', 'asc')
+        ->orderBy('grupo', 'asc')
         ->orderBy('id', 'asc');
+        //->orderBy('id', 'asc');
     }
 
 

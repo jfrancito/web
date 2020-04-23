@@ -7,7 +7,7 @@ use App\WEBRolOpcion,App\WEBListaCliente,App\STDTipoDocumento,App\WEBPrecioProdu
 use App\WEBRegla,App\WEBUserEmpresaCentro,App\WEBPrecioProductoContrato,App\CMPCategoria,App\WEBPedido;
 use App\WEBPrecioProductoContratoHistorial,App\WEBPrecioProductoHistorial,App\CMPOrden,App\CMPDetalleProducto,App\WEBDetallePedido;
 use App\STDEmpresa,App\ALMCentro,App\STDEmpresaDireccion,App\CMPDocumentoCtble,App\WEBDocDoc;
-use App\WEBDetalleDocumentoAsociados,App\WEBReglaCreditoCliente,App\WEBDetalleOrdenDespacho;
+use App\WEBDetalleDocumentoAsociados,App\WEBReglaCreditoCliente,App\WEBDetalleOrdenDespacho,App\WEBViewDetalleOrdenDespacho;
 use App\WEBListaClienteTodo,App\STDTrabajador,App\WEBLISTASERIE;
 use App\WEBOrdenDespacho;
 
@@ -18,6 +18,68 @@ use PDO;
 
 class Funcion{
 
+
+
+	public function recalcular_las_guias_remision($orden_despacho_id,$mobil_mayor){
+
+		$detalle_orden_despacho 			=	WEBViewDetalleOrdenDespacho::where('ordendespacho_id','=',$orden_despacho_id)
+												->where('grupo_movil','=',$mobil_mayor)
+												->orderBy('id', 'asc')
+												->get();
+
+		if(count($detalle_orden_despacho)>0){
+
+			$cantidad_productos 				=   count($detalle_orden_despacho);
+			$parte_entera_division 				=   floor($cantidad_productos/8);
+			$resto_division 					= 	$cantidad_productos%8;
+			$conteo_productos 					=   1;
+			$grupo_guia 						= 	0;
+			$grupo_orden_guia 					=	0;
+			$contador_por_producto 				=   1;
+			if($resto_division>0){
+				$parte_entera_division 			= 	$parte_entera_division + 1;
+			}
+			foreach($detalle_orden_despacho as $indexd => $itemd){
+
+				if($conteo_productos < $parte_entera_division){
+					$grupo_guia 				= 	$conteo_productos;
+					$grupo_orden_guia 			= 	8;
+				}else{
+
+					if($resto_division==0){
+						$grupo_guia 			= 	$conteo_productos;
+						$grupo_orden_guia 		= 	8;
+					}else{
+						$grupo_guia 			= 	$conteo_productos;
+						$grupo_orden_guia 		= 	$resto_division;
+					}
+
+				}
+
+				$array_detalle_orden_despacho_id 		= 	explode(",", substr($itemd->id, 0, -1));
+				foreach ($array_detalle_orden_despacho_id as $values)
+				{
+					$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
+					$detalleordendespacho->grupo_guia 	    =  	$grupo_guia;
+					$detalleordendespacho->grupo_orden_guia =  	$grupo_orden_guia;
+					$detalleordendespacho->save();
+				}
+
+
+				$contador_por_producto 			= 	$contador_por_producto + 1;
+
+				if($contador_por_producto>8){
+					$conteo_productos 			=   $conteo_productos + 1;
+					$contador_por_producto 		= 	1;
+				}
+
+			}
+		}
+
+	}
+
+
+
 	public function cambio_estado_parcialmente_terminado($orden_despacho_id){
 
 		$fechaactual 				= 		date('d-m-Y H:i:s');
@@ -27,6 +89,7 @@ class Funcion{
 
 		//parcialmente
 		$count_parcialmente 		= 		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$orden_despacho_id)
+											->where('activo','=','1')
 											->where(function ($query){
 									            $query->where('nro_serie', '<>', '')
 									            ->orWhere('nro_documento', '<>', '');
@@ -42,6 +105,7 @@ class Funcion{
 
 		//terminado
 		$count_terminado 			= 		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$orden_despacho_id)
+											->where('activo','=','1')
 											->where('estado_id','=','EPP0000000000002')
 											->where('estado_gruia_id','<>','EPP0000000000004')
 											->get();
@@ -53,10 +117,6 @@ class Funcion{
 			$orden_despacho->usuario_mod 					=   Session::get('usuario')->id;
 			$orden_despacho->save();
 		}
-
-
-
-
 
 	}
 
@@ -150,6 +210,7 @@ class Funcion{
 		
 		$descuento 					= 	0;
 		$detalle_orden_despacho 	=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+										->where('activo','=','1')
 										->where('grupo_movil','=',$grupo_movil)
 										->select(DB::raw('(count(producto_id)-1) as count_descuento'))
 										->groupBy('producto_id')
@@ -354,6 +415,7 @@ class Funcion{
 	public function cantidad_mobil_cero($ordendespacho_id){
 	    
 		$listadetalleordendespacho    =	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+										->where('activo','=','1')
 										->where('grupo_movil','=','0')
 										->get();
 
@@ -363,7 +425,7 @@ class Funcion{
 	public function totales_kilos_palets_tabla($ordendespacho_id,$grupo_movil,$atributo){
 	    
 	    $total = 0;
-		$listadetalleordendespacho    =	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)->get();
+		$listadetalleordendespacho    =	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)->where('activo','=','1')->get();
 
 		foreach($listadetalleordendespacho as $index => $item){
 			if($item->grupo_movil == $grupo_movil){

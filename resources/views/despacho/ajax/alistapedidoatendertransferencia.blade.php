@@ -168,7 +168,9 @@
         mobil_grupo='{{$item->grupo_movil}}'
         centro_origen_id='{{$item->centro_atender_id}}'
         guia_remision_id="{{$item->documento_guia_id}}"
-
+        nro_serie="{{$item->nro_serie}}"
+        nro_documento="{{$item->nro_documento}}"
+        orden_transferencia_id="{{$item->orden_transferencia_id}}"
       >
           <td class="cell-detail">
             <span><b>Pedido</b> : {{date_format(date_create($item->fecha_pedido), 'd-m-Y')}}</span> 

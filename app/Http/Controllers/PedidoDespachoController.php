@@ -183,7 +183,6 @@ class PedidoDespachoController extends Controller
 					$detalle->muestra 					=  	$row['muestra'];
 					$detalle->cantidad 					=  	$row['cantidad'];
 					$detalle->cantidad_atender 			=  	$cantidad_atender;
-					$detalle->centro_atender_id 		=  	'CEN0000000000001';
 
 					$detalle->kilos 					=  	$row['kilos'];
 					$detalle->cantidad_sacos 			=  	$row['cantidad_sacos'];
@@ -234,6 +233,7 @@ class PedidoDespachoController extends Controller
 			    //agrupar cuantos mobiles hay
 
 				$group_mobiles 							=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$idordendespacho)
+															->where('activo','=','1')
 															->select(DB::raw('grupo_movil'))
 															->groupBy('grupo_movil')
 															->get();

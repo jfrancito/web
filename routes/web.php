@@ -244,8 +244,10 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-lista-productos-transferencia-pt', 'AtenderPedidoDespachoController@actionAjaxListaProductosTransferenciaPt');
 	Route::any('/crear-transferencia-pt/{idopcion}/{idordendespacho}', 'AtenderPedidoDespachoController@actionCrearTransferenciaPt');
 	Route::any('/ajax-agregar-servicio', 'AtenderPedidoDespachoController@actionAjaxAgregarServicio');
+	Route::any('/ajax-rechazar-producto', 'AtenderPedidoDespachoController@actionAjaxRechazarProducto');
 
-	/*Route::any('/crear-orden-pedido-despacho/{idopcion}', 'PedidoDespachoController@actionCrearPedidoDepacho');*/
+
+
 
 
    	Route::get('buscarcliente', function (Illuminate\Http\Request  $request) {

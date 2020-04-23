@@ -148,6 +148,7 @@ class AtenderPedidoDespachoController extends Controller
 
 	    $listatranferenciaspt 		=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$idordendespacho)
 	    								->where('orden_transferencia_id','<>','')
+	    								->where('activo','=','1')
 	    								->select('orden_transferencia_id')
 	    								->groupBy('orden_transferencia_id')
 	    								->get();
@@ -499,6 +500,102 @@ class AtenderPedidoDespachoController extends Controller
 
 
 
+	public function actionAjaxRechazarProducto(Request $request)
+	{
+
+
+		$array_data_producto_despacho 				= 	$request['data_productos_rechazar'];
+		$ordendespacho_id 							= 	$request['ordendespacho_id'];
+
+
+		foreach($array_data_producto_despacho as $key => $obj){
+
+			$detalle_orden_despacho_id				= 	$obj['data_detalle_orden_despacho'];
+			$mobil_grupo							= 	$obj['mobil_grupo'];
+
+
+			//actualizar fechas en detalle de pedido despacho
+			$array_detalle_orden_despacho_id 		= 	explode(",", $detalle_orden_despacho_id);
+			foreach ($array_detalle_orden_despacho_id as $values)
+			{
+
+				$detalle_orden_despacho 		    =   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
+
+				//cambiar el estado al detalle del pedido
+				WEBDetalleOrdenDespacho::where('id','=',$values)
+										->update([	'activo' 		=> '0',
+													'estado_id' 	=> 'EPP0000000000005',
+													'fecha_mod' 	=> $this->fechaactual,
+													'usuario_mod' 	=> Session::get('usuario')->id
+												 ]);
+
+ 				//disminuir grupo_orden_movil en 1
+				$count_grupo_movil 					=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+														->where('activo','=','1')
+														->where('grupo_movil','=',$mobil_grupo)
+														->select(DB::raw('max(grupo_orden_movil) as grupo_orden_movil'))
+														->groupBy('grupo_orden_movil')
+														->first();
+
+
+				if(count($count_grupo_movil)>0){
+
+					WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+											->where('grupo_movil','=',$mobil_grupo)
+											->where('activo','=','1')
+											->update([	'grupo_orden_movil' 		=> $count_grupo_movil->grupo_orden_movil -1,
+														'fecha_mod' 				=> $this->fechaactual,
+														'usuario_mod' 				=> Session::get('usuario')->id
+													 ]);
+
+					//disminuir en uno grupo_orden_cen	en 1
+					$count_grupo_cen 					=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+															->where('activo','=','1')
+															->where('grupo_movil','=',$mobil_grupo)
+															->where('grupo','=',$detalle_orden_despacho->grupo)
+															->select(DB::raw('max(grupo_orden) as grupo_orden'))
+															->groupBy('grupo_orden')
+															->first();
+
+					if(count($count_grupo_cen)>0){
+
+						WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+												->where('grupo_movil','=',$mobil_grupo)
+												->where('grupo','=',$detalle_orden_despacho->grupo)
+												->where('activo','=','1')
+												->update([	'grupo_orden' 				=> $count_grupo_cen->grupo_orden-1,
+															'fecha_mod' 				=> $this->fechaactual,
+															'usuario_mod' 				=> Session::get('usuario')->id
+														 ]);
+					}
+
+					//Recalculcular guia 
+					$this->funciones->recalcular_las_guias_remision($ordendespacho_id,$mobil_grupo);
+
+				}
+			}
+		}	
+
+
+	    $ordendespacho 								=   WEBOrdenDespacho::where('id','=',$ordendespacho_id)->first();
+		$funcion 									= 	$this;
+		$combo_almacen 								= 	$this->funciones->combo_almacen(Session::get('centros')->COD_CENTRO,'TODOS');	
+		$ultimo_almacen_id 							= 	$this->funciones->ultimo_almacen_id();
+		$combo_serie_guia 							=   $this->funciones->combo_series('TDO0000000000009','0');
+
+
+		return View::make('despacho/ajax/alistapedidoatendertransferencia',
+						 [
+						 	'ordendespacho' 			=> $ordendespacho,
+						 	'funcion' 					=> $funcion,
+						 	'combo_almacen' 			=> $combo_almacen,
+						 	'ultimo_almacen_id' 		=> $ultimo_almacen_id,
+						 	'ajax'   		  			=> true,
+						 	'combo_serie_guia'   		=> $combo_serie_guia,	
+						 ]);
+	}
+
+
 	public function actionAjaxModalAgregarProductosPedidoAtender(Request $request)
 	{
 
@@ -508,6 +605,7 @@ class AtenderPedidoDespachoController extends Controller
 		$grupo_mobil_modal 						= 	$request['grupo_mobil_modal'];
 
 		$detalleodmobil 						=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+													//->where('activo','=','1')
 													->select(DB::raw('max(grupo_movil) as grupo_movil'))
 													->groupBy('grupo_movil')
 													->orderByRaw('max(grupo_movil) desc')
@@ -516,29 +614,75 @@ class AtenderPedidoDespachoController extends Controller
 		$centro 								=   ALMCentro::where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)->first();
 		$empresa 								=   $this->funciones->data_empresa_despacho_por_centro(Session::get('centros')->COD_CENTRO);
 
-		//mobil nuevo
-		if($grupo_mobil_modal=='0'){
-			$mobil_mayor 							= 	$detalleodmobil->grupo_movil;
+
+
+		// PRODUCTO MOBIL NUEVO
+		if($grupo_mobil_modal == "0" ){
+
+
+			$mobil_mayor 							= 	$detalleodmobil->grupo_movil + 1;
+			$fecha_pedido 							= 	$this->fecha_sin_hora;
+			$fecha_entrega 							= 	$this->fecha_sin_hora;
+			$grupo 									= 	0;
+			$grupo_orden 							= 	1;
+
+			$centro_atender_id 						=  	$centro->COD_CENTRO;
+			$centro_atender_txt 					=  	$centro->NOM_CENTRO;
+			$empresa_atender_id 					=  	$empresa->COD_EMPR;
+			$empresa_atender_txt 					=  	$empresa->NOM_EMPR;
+
 		}else{
+
+
 			$mobil_mayor 							= 	$grupo_mobil_modal;
+			//PRODUCTO MOBIL SELECCIONADO
+
+			$detalledespacho            	 		=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+														->where('activo','=','1')
+														->where('grupo_movil','=',$mobil_mayor)->first();
+
+			$count_grupo 							=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+														->where('activo','=','1')
+														->where('grupo_movil','=',$mobil_mayor)
+														->select(DB::raw('max(grupo) as grupo'))
+														->groupBy('grupo')
+														->orderByRaw('max(grupo) desc')
+														->first();
+
+			$fecha_pedido 							= 	date_format(date_create($detalledespacho->fecha_pedido), 'd-m-Y');
+			$fecha_entrega 							= 	date_format(date_create($detalledespacho->fecha_entrega), 'd-m-Y');
+
+			$centro_atender_id 						=  	$detalledespacho->centro_atender_id;
+			$centro_atender_txt 					=  	$detalledespacho->centro_atender_txt;
+			$empresa_atender_id 					=  	$detalledespacho->empresa_atender_id;
+			$empresa_atender_txt 					=  	$detalledespacho->empresa_atender_txt;
+
+			$grupo 									= 	$count_grupo->grupo;
+			$grupo_orden 							= 	1;
+
+
 		}
+
+
 
 
 		foreach($data_producto as $obj){
 
 		    $producto_id 						= 	$obj['producto_id'];
-		    $cantidad_atender 					= 	$obj['cantidad_atender'];
-		    $mobil_mayor 						= 	$mobil_mayor + 1;
-
+		    $cantidad_atender 					= 	(float)$obj['cantidad_atender'];
 		    $producto 							= 	ALMProducto::where('COD_PRODUCTO','=',$producto_id)->first();
+			$kilos_atender 						=   $cantidad_atender*$producto->CAN_PESO_MATERIAL;
+			$cantidad_sacos_atender				= 	$cantidad_atender/$producto->CAN_BOLSA_SACO;
+			$palets_atende 						= 	$cantidad_sacos_atender/$producto->CAN_SACO_PALET;
 
+			$grupo                              =   $grupo+1;
 			$iddetalleordendespacho				= 	$this->funciones->getCreateIdMaestra('WEB.detalleordendespachos');
 			$detalle            	 			=	new WEBDetalleOrdenDespacho;
 			$detalle->id 	     	 			=  	$iddetalleordendespacho;
 			$detalle->ordendespacho_id 			=  	$ordendespacho_id;
 			$detalle->nro_orden_cen 			=  	'';
-			$detalle->fecha_pedido 				=  	$this->fecha_sin_hora; 
-			$detalle->fecha_entrega 			=  	$this->fecha_sin_hora;//fecha entrega falta
+			$detalle->fecha_pedido 				=  	$fecha_pedido; 
+			$detalle->fecha_entrega 			=  	$fecha_entrega;//fecha entrega falta
 			$detalle->muestra 					=  	0.0000;
 			$detalle->cantidad 					=  	0.0000;
 			$detalle->cantidad_atender 			=  	$cantidad_atender;
@@ -547,15 +691,16 @@ class AtenderPedidoDespachoController extends Controller
 			$detalle->cantidad_sacos 			=  	0.0000;
 			$detalle->palets 					=  	0.0000;
 			$detalle->presentacion_producto 	=  	$producto->CAN_PESO_MATERIAL;
-			$detalle->grupo 					=  	0;
-			$detalle->grupo_orden 				=  	0;
-			$detalle->grupo_movil 				=  	$mobil_mayor;
-			$detalle->grupo_orden_movil 		=  	1;
+			$detalle->grupo 					=  	$grupo;
+			$detalle->grupo_orden 				=  	$grupo_orden;
 
-			$detalle->grupo_guia 				=  	1;
-			$detalle->grupo_orden_guia 			=  	1;
+			$detalle->grupo_movil 				=  	$mobil_mayor; 
+			$detalle->grupo_orden_movil 		=  	1; 			  //recalcular cuendo es mobil existente
+			$detalle->grupo_guia 				=  	1;            //recalcular cuendo es mobil existente
+			$detalle->grupo_orden_guia 			=  	1;            //recalcular cuendo es mobil existente
+
 			$detalle->correlativo 				=  	$detalle->correlativo + 1;
-			$detalle->tipo_grupo_oc 			=  	'';
+			$detalle->tipo_grupo_oc 			=  	'oc_individual';
 			$detalle->fecha_crea 	 			=   $this->fechaactual;
 			$detalle->usuario_crea 				=   Session::get('usuario')->id;
 			$detalle->unidad_medida_id 			=  	$producto->COD_CATEGORIA_UNIDAD_MEDIDA;
@@ -566,23 +711,58 @@ class AtenderPedidoDespachoController extends Controller
 			$detalle->centro_id 				=   Session::get('centros')->COD_CENTRO;
 			$detalle->estado_id 	    		=  	'EPP0000000000002';
 			$detalle->estado_gruia_id 	    	=  	'EPP0000000000002';
-
 			$detalle->documento_guia_id 	    =  	'';
 			$detalle->nro_serie 				=  	'';
-			$detalle->nro_documento 			=  	'';				
-			$detalle->centro_atender_id 		=  	$centro->COD_CENTRO;
-			$detalle->centro_atender_txt 		=  	$centro->NOM_CENTRO;
-			$detalle->empresa_atender_id 		=  	$empresa->COD_EMPR;
-			$detalle->empresa_atender_txt 		=  	$empresa->NOM_EMPR;
+			$detalle->nro_documento 			=  	'';
+
+			$detalle->centro_atender_id 		=  	$centro_atender_id;
+			$detalle->centro_atender_txt 		=  	$centro_atender_txt;
+			$detalle->empresa_atender_id 		=  	$empresa_atender_id;
+			$detalle->empresa_atender_txt 		=  	$empresa_atender_txt;
+
+
 			$detalle->usuario_responsable_id 	=  	'';
 			$detalle->usuario_responsable_txt 	=  	'';
+			$detalle->kilos_atender 			=  	$kilos_atender;
+			$detalle->cantidad_sacos_atender 	=  	$cantidad_sacos_atender;
+			$detalle->palets_atender 			=  	$palets_atende;
+			$detalle->fecha_carga 				=  	'';
+			$detalle->fecha_recepcion 			=  	'';
 			$detalle->save();
 
 		}
 
+
+
+
+			//Actualizar grupo mobil 
+			$count_grupo_movil 					=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+													->where('activo','=','1')
+													->where('grupo_movil','=',$mobil_mayor)
+													->select(DB::raw('count(grupo_movil) as grupo_movil'))
+													->groupBy('grupo_movil')
+													->first();
+
+			WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+									->where('activo','=','1')
+									->where('grupo_movil','=',$mobil_mayor)
+									->update([	'grupo_orden_movil' => $count_grupo_movil->grupo_movil,
+												'fecha_mod' 	=> $this->fechaactual,
+												'usuario_mod' 	=> Session::get('usuario')->id
+											 ]);
+
+
+
+			//Recalculcular guia 
+			$this->funciones->recalcular_las_guias_remision($ordendespacho_id,$mobil_mayor);
+
+
+
+
+
+
 	    $ordendespacho 							=   WEBOrdenDespacho::where('id','=',$ordendespacho_id)->first();
 		$funcion 								= 	$this;
-
 		$combo_almacen 							= 	$this->funciones->combo_almacen(Session::get('centros')->COD_CENTRO,'TODOS');	
 		$ultimo_almacen_id 						= 	$this->funciones->ultimo_almacen_id();
 		$combo_serie_guia 						=   $this->funciones->combo_series('TDO0000000000009','0');
@@ -614,13 +794,19 @@ class AtenderPedidoDespachoController extends Controller
 				    					 	->get();
 
 		$array_grupo_mobil 				= 	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+											->where('activo','=','1')
 											->select('grupo_movil')
+											->select(DB::raw('grupo_movil 
+															,max(orden_transferencia_id) orden_transferencia_id
+															,max(nro_serie) nro_serie')
+													)
 											->groupBy('grupo_movil')
+											->havingRaw("(max(orden_transferencia_id) is NULL or max(orden_transferencia_id) = '') 
+														 and max(nro_serie) = '' and max(nro_documento) = ''")
 											->pluck('grupo_movil','grupo_movil')
                                         	->toArray();
 		    					 	
 		$combo_grupo_mobil           	=   array('0' => "Nuevo") + $array_grupo_mobil;
-
 
 		$funcion 						= 	$this;
 

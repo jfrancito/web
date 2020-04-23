@@ -362,6 +362,9 @@ $(document).ready(function(){
 
         event.preventDefault();
         var _token                      =   $('#token').val();
+
+
+
         var data                        =   [];
         var sw                          =   0;
         var msj                         =   '';
@@ -881,6 +884,81 @@ $(document).ready(function(){
         });
 
     });
+
+
+    $(".despacho").on('click','.rechazarproductoatender', function() {
+
+        var _token                      = $('#token').val();
+        var ordendespacho_id            = $('#ordendespacho_id').val();
+        var data                        = [];
+        var sw                          = 0;
+        var msj                         = '';
+
+        $(".table-pedidos-despachos tbody tr").each(function(){
+            check                               =   $(this).find('.input_asignar_lp');
+
+            if($(check).is(':checked')){
+
+                var cabecera_tabla_tr               =   $(this);
+                var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+                var guia_remision_id                =   $(cabecera_tabla_tr).attr('guia_remision_id');
+                var nro_serie                       =   $(cabecera_tabla_tr).attr('nro_serie');
+                var nro_documento                   =   $(cabecera_tabla_tr).attr('nro_documento');
+                var orden_transferencia_id          =   $(cabecera_tabla_tr).attr('orden_transferencia_id');
+                var nombre_producto                 =   $(cabecera_tabla_tr).attr('nombre_producto');
+                var data_detalle_orden_despacho     =   $(cabecera_tabla_tr).attr('data_detalle_orden_despacho');
+
+                if(guia_remision_id != ''){
+                    msj = nombre_producto+' tiene guia de remision asociada';
+                    sw=1;
+                }
+                if(nro_serie != ''){
+                    msj = nombre_producto+' tiene una serie asignada';
+                    sw=1;
+                }
+                if(nro_documento != ''){
+                    msj = nombre_producto+' tiene un numero de documento asignada';
+                    sw=1;
+                }
+                if(orden_transferencia_id != ''){
+                    msj = nombre_producto+' tiene una Transferencia PT asignada';
+                    sw=1;
+                }
+
+                data.push({
+                    data_detalle_orden_despacho  : data_detalle_orden_despacho,
+                    mobil_grupo                  : mobil_grupo,
+                });
+            }               
+        });
+
+        if(sw==1){alerterrorajax(msj); return false;}
+        if(data.length<=0){alerterrorajax('Seleccione por lo menos un producto'); return false;}
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-rechazar-producto",
+            data    :   {
+                            _token                      : _token,
+                            ordendespacho_id            : ordendespacho_id,
+                            data_productos_rechazar    : data,
+                        },
+            success: function (data) {
+                cerrarcargando();
+                alertajax("Producto agregado exitosa");
+                $('.lista_orden_atender').html(data);
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
+
+
 
     $(".despacho").on('click','.checkbox_asignar_lp', function() {
 
