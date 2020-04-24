@@ -131,11 +131,6 @@ $(document).ready(function(){
             alerterrorajax("Ingrese Cantidad");
             return false;
         }
-
-
-
-
-
     });
 
 

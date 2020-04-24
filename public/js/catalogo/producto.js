@@ -4,6 +4,25 @@ $(document).ready(function(){
     var carpeta = $("#carpeta").val();
 
 
+
+    $(".configuracionproducto").on('click','.producto_edit', function() {
+
+
+
+
+
+    });
+
+
+
+
+    $(".configuracionproducto").on('keypress keyup keydown','.producto_edit', function(e) {
+        var cabecera_tabla_tr           =   $(this).parents('.fila_producto');
+        var nombre                      =   $(cabecera_tabla_tr).attr('data_edit_producto','1');
+    });
+
+
+
     $(".configuracionproducto").on('click','.guardarcambios', function() {
 
         event.preventDefault();
@@ -41,12 +60,15 @@ $(document).ready(function(){
                 var data_producto_id            = $(this).attr('data_producto_id');
                 var can_bolsa_saco              = $(this).find('#can_bolsa_saco').val();                
                 var can_saco_palet              = $(this).find('#can_saco_palet').val();
+                var data_edit_producto            = $(this).attr('data_edit_producto');
 
-                data.push({
-                    data_producto_id        : data_producto_id,
-                    can_bolsa_saco          : can_bolsa_saco,
-                    can_saco_palet          : can_saco_palet
-                });
+                if(data_edit_producto == '1'){
+                    data.push({
+                        data_producto_id        : data_producto_id,
+                        can_bolsa_saco          : can_bolsa_saco,
+                        can_saco_palet          : can_saco_palet
+                    });         
+                }
 
         });
         return data;

@@ -11,7 +11,10 @@
   <tbody>
     @foreach($listaproductos as $item)
 
-      <tr data_producto_id ="{{$item->COD_PRODUCTO}}">
+      <tr class='fila_producto'
+          data_producto_id ="{{$item->COD_PRODUCTO}}"
+          data_edit_producto = "0"
+        >
       <td class="cell-detail relative">
         <span>{{$item->NOM_PRODUCTO}}</span>
         <span class="cell-detail-description-producto">
@@ -26,7 +29,7 @@
                id="can_bolsa_saco" 
                name="can_bolsa_saco"
                value="{{number_format($item->CAN_BOLSA_SACO, 4, '.', ',')}}"
-               class="form-control input-sm dinero"
+               class="form-control input-sm dinero producto_edit"
                >
       </td>
       <td class='center'>
@@ -37,7 +40,7 @@
                id="can_saco_palet" 
                name="can_saco_palet"
                value="{{number_format($item->CAN_SACO_PALET, 4, '.', ',')}}"
-               class="form-control input-sm dinero"
+               class="form-control input-sm dinero producto_edit"
                >
       </td>
       </tr>                    
