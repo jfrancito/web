@@ -27,6 +27,9 @@ $(document).ready(function(){
 
         event.preventDefault();
         var _token                  = $('#token').val();
+
+        $('input[type=search]').val('').change();
+        $("#table1").DataTable().search("").draw();
         var data_producto           = dataproducto_edit();
 
         abrircargando();
@@ -60,7 +63,7 @@ $(document).ready(function(){
                 var data_producto_id            = $(this).attr('data_producto_id');
                 var can_bolsa_saco              = $(this).find('#can_bolsa_saco').val();                
                 var can_saco_palet              = $(this).find('#can_saco_palet').val();
-                var data_edit_producto            = $(this).attr('data_edit_producto');
+                var data_edit_producto          = $(this).attr('data_edit_producto');
 
                 if(data_edit_producto == '1'){
                     data.push({
