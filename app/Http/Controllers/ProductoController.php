@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
 use App\CMPCategoria,App\WEBPrecioProducto,App\WEBPrecioProductoHistorial,App\WEBRegla;
+use App\ALMProducto;
 use View;
 use Session;
 use Hashids;
@@ -89,6 +90,70 @@ class ProductoController extends Controller
 						 ]);
 
 	}
+
+
+	public function actionConfiguracionProducto($idopcion)
+	{
+
+		/******************* validar url **********************/
+		$validarurl = $this->funciones->getUrl($idopcion,'Ver');
+	    if($validarurl <> 'true'){return $validarurl;}
+	    /******************************************************/
+
+
+	    $cod_empresa 		= 	Session::get('empresas')->COD_EMPR;
+	    $cod_centro 		= 	Session::get('centros')->COD_CENTRO;
+
+	    $listaproductos 	= 	DB::table('WEB.LISTAPRODUCTOSAVENDER')
+	    					 	->orderBy('NOM_PRODUCTO', 'asc')
+	    					 	->get();
+
+		return View::make('catalogo/configuracionproducto',
+						 [
+						 	'listaproductos' 	=> $listaproductos,
+						 	'idopcion' 			=> $idopcion,
+						 ]);
+
+	}
+
+
+	public function actionAjaxGuardarConfiguracionProducto(Request $request)
+	{
+
+		$data_producto 		= 	$request['data_producto'];
+
+		foreach($data_producto as $key => $row) {
+
+			$data_producto_id 			=  	$row['data_producto_id'];
+			$can_bolsa_saco 			=  	(float)$row['can_bolsa_saco'];
+			$can_saco_palet 			=  	(float)$row['can_saco_palet'];
+
+			$producto 					=   ALMProducto::where('COD_PRODUCTO','=',$data_producto_id)->first();
+			$producto->CAN_BOLSA_SACO 	= $can_bolsa_saco;
+			$producto->CAN_SACO_PALET 	= $can_saco_palet;
+			$producto->save();
+
+	    } 
+
+
+
+
+	    $listaproductos 	= 	DB::table('WEB.LISTAPRODUCTOSAVENDER')
+	    					 	->orderBy('NOM_PRODUCTO', 'asc')
+	    					 	->get();
+
+		return View::make('catalogo/ajax/listaconfiguracionproducto',
+						 [
+						 	'listaproductos' 	=> $listaproductos,
+						 	'ajax'   		  						=> true,
+						 ]);
+
+	}
+
+
+
+
+
 
 
 	public function actionAjaxGuardarPrecioProducto(Request $request)

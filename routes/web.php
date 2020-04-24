@@ -50,6 +50,9 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/gestion-de-precio-producto/{idopcion}', 'ProductoController@actionPrecioProducto');
 	Route::any('/ajax-guardar-precio-producto', 'ProductoController@actionAjaxGuardarPrecioProducto');
 
+	Route::any('/gestion-de-configuracion-producto/{idopcion}', 'ProductoController@actionConfiguracionProducto');
+	Route::any('/ajax-guardar-configuracion-producto', 'ProductoController@actionAjaxGuardarConfiguracionProducto');
+
 	Route::get('/gestion-de-regla-del-producto/{idopcion}', 'AsignarReglaController@actionListarClienteRegla');
 	Route::any('/ajax-modal-detalle', 'AsignarReglaController@actionAjaxModalDetalle');
 	Route::any('/ajax-modal-detalle-precio-regular', 'AsignarReglaController@actionAjaxModalDetallePrecioRegular');

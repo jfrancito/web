@@ -176,18 +176,14 @@
                         <td class="cell-detail relative">
                           <span>{{$item['nombre_producto']}}</span>
                           <span class="cell-detail-description-producto">
-                          {{$item['nombre_unidad_medida']}} de  {{$item['presentacion_producto']}} kg {{$item['grupo_movil']}} {{$item['grupo_orden_movil']}}
+                          {{$item['nombre_unidad_medida']}} de  {{$item['presentacion_producto']}} kg 
                           </span>
                           <i class="mdi mdi-settings configuracion-despacho-cantidad"></i>
                         </td>
-
-
                         <td class='center'>
                             <b>{{number_format($item['muestra'], 2, '.', ',')}}</b>
                         </td>
-
                         <td>
-
                             <input type="text"
                              id="muestra" 
                              name="muestra"
@@ -195,21 +191,16 @@
                              class="form-control input-sm dinero dineromuestra updatepricemuestrad"
                             >
                         </td>
-
                         <td class='center'>
                             <b>{{number_format($item['cantidad'], 2, '.', ',')}}</b>
                         </td>
-
                         <td>
-
                             <input type="text"
                              id="precio" 
                              name="precio"
                              value="{{number_format($item['cantidad'], 2, '.', ',')}}"
                              class="form-control input-sm dinero updatepriced"
                             >
-                          
-
                         </td>
                         <td class='center'>{{number_format($item['kilos'],4,'.',',')}}</td>
                         <td class='center'>{{number_format($item['cantidad_sacos'],4,'.',',')}}</td>
@@ -232,9 +223,7 @@
                             </td>
                           @endif
                         @endif
-
                         <td>
-
                           <div class="text-center be-checkbox be-checkbox-sm has-primary">
                             <input  
                               type="checkbox"
@@ -249,10 +238,7 @@
                                   name="{{$item['correlativo']}}"
                             ></label>
                           </div>
-
                         </td>
-
-
                         @if($sw_crear_movil == 1 and $item['grupo_movil'] <> '0') 
                           <td class="cell-detail" rowspan = "{{$item['grupo_orden_movil']}}">
                             <span><b>Pedido</b> : {{$item['fecha_pedido']}}</span>

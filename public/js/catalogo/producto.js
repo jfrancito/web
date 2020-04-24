@@ -3,6 +3,57 @@ $(document).ready(function(){
 
     var carpeta = $("#carpeta").val();
 
+
+    $(".configuracionproducto").on('click','.guardarcambios', function() {
+
+        event.preventDefault();
+        var _token                  = $('#token').val();
+        var data_producto           = dataproducto_edit();
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-guardar-configuracion-producto",
+            data    :   {
+                            _token                      : _token,
+                            data_producto               : data_producto,
+                        },
+            success: function (data) {
+                cerrarcargando();
+                alertajax("Modificación exitosa");
+                $('.ajax_lista_configuracion_producto').html(data);
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
+
+    function dataproducto_edit(){
+
+        var data = [];
+
+        $(".tablaproducto tbody tr").each(function(){
+
+                var data_producto_id            = $(this).attr('data_producto_id');
+                var can_bolsa_saco              = $(this).find('#can_bolsa_saco').val();                
+                var can_saco_palet              = $(this).find('#can_saco_palet').val();
+
+                data.push({
+                    data_producto_id        : data_producto_id,
+                    can_bolsa_saco          : can_bolsa_saco,
+                    can_saco_palet          : can_saco_palet
+                });
+
+        });
+        return data;
+    }
+
+
+
     $(".listaregladescuento").on('click','#buscarreglas', function() {
 
         var _token              = $('#token').val();

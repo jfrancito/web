@@ -1,3 +1,7 @@
+.tablaproducto td{
+  padding: 3px 10px !important;
+}
+
 .input-tabla{
   height: 26px;
   font-size: 12px;
