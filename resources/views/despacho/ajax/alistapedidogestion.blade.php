@@ -1,44 +1,28 @@
 <div class="scroll_text_horizontal" style = "padding: 0px !important;"> 
 
-  <div style="width: 2180px;margin-bottom: 10px;" >
+  <div style="width: 1800px;margin-bottom: 10px;" >
     <table class="table table-pedidos-despachos" style='font-size: 0.88em;' id="tablepedidodespacho" >
     <thead>
       <tr>
         <th>Fechas</th>
         <th width="250px">Cliente</th>
-        <th class='center' colspan="2">Mobil</th>
+        <th class='center'>Mobil</th>
+
         <th>Producto</th>
-        <th>Pedido</th>
-        <th>Almacen</th>
-        <th>Lote</th>
-        <th>Stock</th>
+        <th>Muestra</th>
+        <th>Cantidad</th>
+
         <th>Atender</th>
-        <th class='center'>Editar</th>
-
-        <th>
-          <div class="text-center be-checkbox be-checkbox-sm has-primary">
-            <input  type="checkbox"
-                    class="todo_asignar input_asignar_lp"
-                    id="todo_asignar"
-            >
-            <label  for="todo_asignar"
-                    data-atr = "todas_asignar"
-                    class = "checkbox_asignar_lp"                    
-                    name="todo_asignar"
-              ></label>
-          </div>
-        </th>
-
         <th class='center'>Serie / Número</th>
-
         <th>Guia Remision</th>
         <th>Transferencia PT</th>
         <th>Origen</th>
         <th>Fecha Carga</th>
-
         <th>Kilos</th>
         <th>Sacos</th>
         <th>Palet</th>
+
+
       </tr>
     </thead>
     <tbody>
@@ -109,7 +93,6 @@
         @php 
           $sw_transferencia         =   1;
           $check_disableb           =   'check_disableb';
-          $color_tr                 =   'label-origen';
           $disabled_origen          =   'disabled';
           $disabled_guia            =   'disabled';
           $almacen_id_sel           =   '';
@@ -122,29 +105,12 @@
         @endphp
       @endif
 
-
-      @if($sw_nocarga_lotes == "0") 
-        @php
-          $almacen_id_sel           =   $funcion->funciones->select_almacen_unidad_centro($unidad_medida,$ultimo_almacen_id);
-          $combo_almacen_lote       =   $funcion->funciones->combo_almacen_lote($item->producto_id,$almacen_id_sel);
-          $almacen_lote_group_id    =   $funcion->funciones->select_almacen_lote_group($item->producto_id,$almacen_id_sel,$item['cantidad_atender']);
-          $stock_neto               =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'STK_NETO');
-          $stock_fisico             =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'CAN_FIN_MAT');
-          $costo                    =   $funcion->funciones->select_data_almacen_lote_group($item->producto_id,$almacen_id_sel,$almacen_lote_group_id,'CAN_COSTO');
-        @endphp
-      @endif
-
-
       @if((float)$stock_neto < (float)$item['cantidad_atender'] and $sw_transferencia == 0) 
         @php 
           $color_stock          =   'color_rojo';
           $background_stock     =   'background_rojo';
         @endphp
       @endif
-
-
-
-
       @if((int)$item->grupo_movil > 0 or $grupo_movil_c = $item->grupo_movil)
         @php 
           $conteo_mobil      =   $conteo_mobil + 1 + $item->restar_grupo_orden_movil;
@@ -186,121 +152,45 @@
           </td>
 
           @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
-            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='center fondogris'>
-              <div class="be-radio">
-                <input  type="radio"  name="rmobil" id="rad{{$item->grupo_movil}}" 
-                        value="{{$item->grupo_movil}}" 
-                        mobil_grupo_radio="{{$item->grupo_movil}}" {{$disabled_transferencia}}>
-                <label for="rad{{$item->grupo_movil}}"></label>
-              </div>
-            </td>
-          @else
-            @if($item->grupo_movil == '0') 
-              <td class='center'>
-                <div class="be-radio">
-                  <input  type="radio" name="rmobil" id="rad{{$item->grupo_movil}}" 
-                          value="{{$item->grupo_movil}}" 
-                          mobil_grupo_radio="{{$item->grupo_movil}}" {{$disabled_transferencia}}>
-                  <label for="rad{{$item->grupo_movil}}"></label>
-                </div>
-              </td>
-            @endif
-          @endif
-
-
-          @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
-            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='fondogris' >
-              <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
+            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='fondogris center' >
+              <b>{{$item->grupo_movil}}</b>
             </td>
           @else
             @if($item->grupo_movil == '0') 
               <td>
-                <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
+                <b>{{$item->grupo_movil}}</b>
               </td>
             @endif
           @endif
-
-
-
-
-
           <td class="cell-detail">
             <span>{{$item->producto->NOM_PRODUCTO}}</span>
             <span class="cell-detail-description-producto">
             {{$unidad_medida}} de  {{$item->producto->CAN_PESO_SACO}} kg (group {{$item->restar_grupo_orden_movil+1}})
             </span>
           </td>
-          <td class="cell-detail">
-            <span><b>Cantidad</b> : {{number_format($item->cantidad, 2, '.', ',')}} </span> 
-            <span><b>Muestra</b> : {{number_format($item->muestra, 2, '.', ',')}} </span>
-          </td>
-          <td>
-              {!! Form::select( 'almacen_id', $combo_almacen, array($almacen_id_sel),
-                                [
-                                  'class'       => 'select-despacho select_tabla_almacen_id' ,
-                                  'id'          => 'almacen_id',
-                                  'required'    => '',
-                                  'data-aw'     => '1',
-                                  $disabled_origen => $disabled_origen,
-                                  $disabled_transferencia => $disabled_origen
-                                ]) !!}
-          </td>
-          <td class='ajax_combo_lote'>
 
-              {!! Form::select( 'lote_id', $combo_almacen_lote, $almacen_lote_group_id,
-                                [
-                                  'class'       => 'select-despacho select_tabla_lote_id' ,
-                                  'id'          => 'lote_id',
-                                  'required'    => '',
-                                  'multiple'    => 'multiple',
-                                  'data-aw'     => '1',
-                                  $disabled_transferencia
-                                ]) !!}
 
+          <td class='center'>
+              {{number_format($item['cantidad'], 2, '.', ',')}}
+          </td>
+
+          <td class='center'>
+              {{number_format($item['muestra'], 2, '.', ',')}}
           </td>
 
 
-          <td class="cell-detail ajax_stock_almacen_lote">
-            @include('despacho.ajax.astockalmacenlote')
-          </td>
-
-          <td class='center td_cantidad_atender {{$background_stock}}'>
+          <td class='center td_cantidad_atender'>
               {{number_format($item['cantidad_atender'], 2, '.', ',')}}
           </td>
-          <td>
-              <input type="text"
-               name="catidad_atender"
-               value="{{number_format($item['cantidad_atender'], 2, '.', ',')}}"
-               class="form-control input-sm dinero updatepriceatender {{$color_stock}}"
-               @if($sw_transferencia == 1) disabled @endif
-              >
-          </td>
-          <td>
-            <div class="text-center be-checkbox be-checkbox-sm has-primary">
-              <input  
-                type="checkbox"
-                class="{{$item->id}} input_asignar_lp {{$check_disableb}}"
-                id="{{$item->id}}"
-                @if($sw_transferencia == 1) disabled @endif
-                >
-              <label  for="{{$item->id}}"
-                    data-atr = "ver"
-                    class = "checkbox checkbox_asignar_lp"                    
-                    name="{{$item->id}}"
-                    style = 'margin-top:0px;'
-              ></label>
-            </div>
-          </td>
-
 
           @if($sw_crear_guia == 1 and $item->grupo_guia <> '0') 
             <td rowspan = "{{$item->grupo_orden_guia}}">
-              @include('despacho.ajax.aserienrodocumento')
+              {{$item->nro_serie}} - {{$item->nro_documento}}
             </td>
           @else
             @if($item->grupo_guia == '0') 
               <td class='center'>
-                @include('despacho.ajax.aserienrodocumento')
+                {{$item->nro_serie}} - {{$item->nro_documento}}
               </td>
             @endif
           @endif
@@ -332,11 +222,7 @@
       <tr>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
-          <td class='despacho_totales'></td>          
-          <td class='despacho_totales'></td>
-          <td class='despacho_totales'></td>
-          <td class='despacho_totales'></td>
-          <td class='despacho_totales'></td>
+
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
@@ -370,26 +256,7 @@
   <script type="text/javascript">
     $(document).ready(function(){
        App.dataTables();
-
-      $('.scroll_text_horizontal').scrollLeft(365);
-
-      $('.dinero').inputmask({ 'alias': 'numeric', 
-      'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 
-      'digitsOptional': false, 
-      'prefix': '', 
-      'placeholder': '0'});
-
-      $('.dineronrodoc').inputmask({ 'alias': 'numeric', 
-      'groupSeparator': '', 'autoGroup': true, 'digits': 0, 
-      'digitsOptional': false, 
-      'prefix': '', 
-      'placeholder': ''});
-      
-      $('.select_tabla_lote_id').multiselect({
-            buttonWidth: '100px',
-            numberDisplayed: -1
-      });
-      
+      $('.scroll_text_horizontal').scrollLeft(365);      
     });
   </script> 
 @endif

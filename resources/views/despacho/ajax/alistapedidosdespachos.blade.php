@@ -8,6 +8,7 @@
       <th>Codigo</th>
       <th>Fecha Pedido</th>
       <th>Estado</th>
+      <th>Opción</th>      
     </tr>
   </thead>
   <tbody>
@@ -47,6 +48,20 @@
 
 
         </td>
+
+        <td class="rigth">
+          <div class="btn-group btn-hspace">
+            <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">Acción <span class="icon-dropdown mdi mdi-chevron-down"></span></button>
+            <ul role="menu" class="dropdown-menu pull-right">
+              <li>
+                <a href="{{ url('/gestion-pedido-orden-despacho/'.$idopcion.'/'.Hashids::encode(substr($item->id, -8))) }}">
+                  Gestion del pedido
+                </a>  
+              </li>
+            </ul>
+          </div>
+        </td>
+
 
       </tr>                    
     @endforeach

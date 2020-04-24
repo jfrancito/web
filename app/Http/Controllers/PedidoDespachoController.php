@@ -23,6 +23,31 @@ class PedidoDespachoController extends Controller
 {
 
 
+	public function actionGestionOrdenDespacho($idopcion,$idordendespacho)
+	{
+
+		$idordendespacho_en 		= 	$idordendespacho;
+		$idordendespacho 			= 	$this->funciones->decodificarmaestra($idordendespacho);
+
+	    $ordendespacho 				=   WEBOrdenDespacho::where('id','=',$idordendespacho)->first();
+		$funcion 					= 	$this;
+
+
+		return View::make('despacho/gestionordendespacho',
+						 [
+						 	'ordendespacho' 						=> $ordendespacho,
+						 	'funcion' 								=> $funcion,
+						 	'idopcion' 								=> $idopcion,
+						 	'idordendespacho' 						=> $idordendespacho,
+						 ]);
+
+	}
+
+
+
+
+
+
 	public function actionAjaxPedidoCrearUpdatePedidoDespachoCentro(Request $request)
 	{
 
