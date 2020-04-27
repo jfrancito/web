@@ -306,6 +306,8 @@ class PedidoDespachoController extends Controller
 							$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
 							$detalleordendespacho->grupo_guia 	    =  	$grupo_guia;
 							$detalleordendespacho->grupo_orden_guia =  	$grupo_orden_guia;
+							$detalleordendespacho->fecha_mod 		=  	$this->fechaactual;
+							$detalleordendespacho->usuario_mod 		=  	Session::get('usuario')->id;
 							$detalleordendespacho->save();
 						}
 

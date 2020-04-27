@@ -22,6 +22,8 @@ class Funcion{
 
 	public function recalcular_las_guias_remision($orden_despacho_id,$mobil_mayor){
 
+		$fechaactual 						= 	date('d-m-Y H:i:s');
+
 		$detalle_orden_despacho 			=	WEBViewDetalleOrdenDespacho::where('ordendespacho_id','=',$orden_despacho_id)
 												->where('grupo_movil','=',$mobil_mayor)
 												->orderBy('id', 'asc')
@@ -62,6 +64,8 @@ class Funcion{
 					$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$values)->first();
 					$detalleordendespacho->grupo_guia 	    =  	$grupo_guia;
 					$detalleordendespacho->grupo_orden_guia =  	$grupo_orden_guia;
+					$detalleordendespacho->fecha_mod 		=  	$fechaactual;
+					$detalleordendespacho->usuario_mod 		=  	Session::get('usuario')->id;
 					$detalleordendespacho->save();
 				}
 
