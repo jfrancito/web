@@ -1201,7 +1201,7 @@ class PedidoDespachoController extends Controller
 		}
 
 		$fecha_inicio 					= 	$this->fecha_menos_treinta_dias;
-		$fecha_fin 						= 	$this->inicio;
+		$fecha_fin 						= 	$this->fin;
 		$listaordencen					= 	$this->funciones->lista_orden_cen($empresa_id,$cliente_id,$centro_id,$fecha_inicio,$fecha_fin);
 		$combotipogrupo					= 	array('oc_grupo' => "Grupo",'oc_individual' => "Individual"); 	
 
