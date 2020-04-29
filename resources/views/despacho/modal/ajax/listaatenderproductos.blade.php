@@ -9,6 +9,31 @@
                     ]) !!}
 </div>
 
+<div class='ajax_cliente_modal'>
+  <div class="col-sm-3 abajocaja" style="margin-top: 7px;">
+    {!! Form::select( 'cuenta_id_modal', $comboclientes, array(),
+                      [
+                        'class'       => 'select2 form-control control input-sm' ,
+                        'id'          => 'cuenta_id_modal',
+                        'required'    => '',
+                        'data-aw'     => '1',
+                      ]) !!}
+  </div>
+</div>
+
+<div class='ajax_ordencen_modal'>
+  <div class="col-sm-3 abajocaja" style="margin-top: 7px;">
+    {!! Form::select( 'orden_cen_modal', $comboordencen, array(),
+                      [
+                        'class'       => 'select2 form-control control input-sm' ,
+                        'id'          => 'orden_cen_modal',
+                        'required'    => '',
+                        'data-aw'     => '1',
+                      ]) !!}
+  </div>
+</div>
+
+
 
 <table id="despacholopatender" class="table table table-hover table-fw-widget dt-responsive nowrap lista_tabla_prod" style='width: 100%;'>
   <thead>
@@ -65,6 +90,7 @@
   <script type="text/javascript">
     $(document).ready(function(){
         App.dataTables();
+        $('.select2').select2();
         $('.dinero').inputmask({ 'alias': 'numeric', 
         'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 
         'digitsOptional': false, 

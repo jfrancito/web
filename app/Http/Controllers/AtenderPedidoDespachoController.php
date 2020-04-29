@@ -596,6 +596,77 @@ class AtenderPedidoDespachoController extends Controller
 	}
 
 
+
+	public function actionAjaxClientesMobilModal(Request $request)
+	{
+
+
+		$grupo_mobil_modal 				= 	$request['grupo_mobil_modal'];
+		$ordendespacho_id 				= 	$request['ordendespacho_id'];
+
+
+		$listaclientes 					=	WEBDetalleOrdenDespacho::join('STD.EMPRESA ', 'STD.EMPRESA.COD_EMPR', '=', 'WEB.detalleordendespachos.cliente_id')
+											->where('ordendespacho_id','=',$ordendespacho_id)
+											->where('activo','=','1')
+											->where('grupo_movil','=',$grupo_mobil_modal)
+											->select(DB::raw(" (STD.EMPRESA.COD_EMPR + '-' + WEB.detalleordendespachos.nro_orden_cen) as COD_EMPR , 
+															  (max(STD.EMPRESA.NOM_EMPR) + ' - ' + WEB.detalleordendespachos.nro_orden_cen) as NOM_EMPR"))
+											->groupBy('STD.EMPRESA.COD_EMPR')
+											->groupBy('WEB.detalleordendespachos.nro_orden_cen')
+											->pluck('NOM_EMPR','COD_EMPR')
+											->toArray();
+
+		$comboclientes  				= 	array('' => "Seleccione cliente") + $listaclientes;
+
+		return View::make('despacho/modal/ajax/acombocliente',
+						 [
+						 	'comboclientes' 		=> $comboclientes,
+						 	'ajax'   		  			=> true,
+						 ]);
+	}
+
+
+
+
+	public function actionAjaxOrdenCenMobilModal(Request $request)
+	{
+
+
+		$grupo_mobil_modal 				= 	$request['grupo_mobil_modal'];
+		$ordendespacho_id 				= 	$request['ordendespacho_id'];
+		$cuenta_id_modal 				= 	$request['cuenta_id_modal'];
+
+		$cliente 						=   '';
+		$cliente_id 					=   '';
+		$cuenta 						= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id_modal)->first();
+		if(count($cuenta)>0){
+			$cliente 					= 	WEBListaCliente::where('id','=',$cuenta->id)->first();		
+		}
+
+		if(isset($cliente->id)){
+			$cliente_id 				=   $cliente->id;
+		}
+
+		$listaordencen 					=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+											->where('activo','=','1')
+											->where('grupo_movil','=',$grupo_mobil_modal)
+											->where('cliente_id','=',$cliente_id)
+											->groupBy('nro_orden_cen')
+											->pluck('nro_orden_cen','nro_orden_cen')
+											->toArray();
+
+
+		$comboordencen 					= 	array('' => "Seleccione orden cen") + $listaordencen;
+
+		return View::make('despacho/modal/ajax/acomboordencen',
+						 [
+						 	'comboordencen' 		=> $comboordencen,
+						 	'ajax'   		  			=> true,
+						 ]);
+	}
+
+
+
 	public function actionAjaxModalAgregarProductosPedidoAtender(Request $request)
 	{
 
@@ -603,6 +674,9 @@ class AtenderPedidoDespachoController extends Controller
 		$ordendespacho_id 						= 	$request['ordendespacho_id'];
 		//$detalleordendespacho               	=   WEBDetalleOrdenDespacho::where('id','=',$ordendespacho_id)->first();
 		$grupo_mobil_modal 						= 	$request['grupo_mobil_modal'];
+
+
+
 
 		$detalleodmobil 						=   WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
 													//->where('activo','=','1')
@@ -613,7 +687,8 @@ class AtenderPedidoDespachoController extends Controller
 
 		$centro 								=   ALMCentro::where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)->first();
 		$empresa 								=   $this->funciones->data_empresa_despacho_por_centro(Session::get('centros')->COD_CENTRO);
-
+		$cuenta_id_modal 						= 	$request['cuenta_id_modal'];
+		$orden_cen_modal 						= 	$request['orden_cen_modal'];
 
 
 		// PRODUCTO MOBIL NUEVO
@@ -623,13 +698,39 @@ class AtenderPedidoDespachoController extends Controller
 			$mobil_mayor 							= 	$detalleodmobil->grupo_movil + 1;
 			$fecha_pedido 							= 	$this->fecha_sin_hora;
 			$fecha_entrega 							= 	$this->fecha_sin_hora;
-			$grupo 									= 	0;
-			$grupo_orden 							= 	1;
-
 			$centro_atender_id 						=  	$centro->COD_CENTRO;
 			$centro_atender_txt 					=  	$centro->NOM_CENTRO;
 			$empresa_atender_id 					=  	$empresa->COD_EMPR;
 			$empresa_atender_txt 					=  	$empresa->NOM_EMPR;
+
+
+			$grupo 									= 	0;
+			$grupo_orden 							= 	1;
+			$sw_oc_grupo 							= 	0;
+
+			//cliente
+			$cliente 								=   '';
+			$cuenta 								= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id_modal)->first();
+
+			if(count($cuenta)>0){
+				$cliente 							= 	WEBListaCliente::where('id','=',$cuenta->id)->first();		
+			}
+
+
+			if(isset($cliente->id)){
+
+				$cliente_id 						= 	$cliente->id;
+				$orden_id 							= 	'';
+				$tipo_grupo_oc 						= 	'oc_individual';
+				$nro_orden_cen 						= 	'';
+
+			}else{
+				$cliente_id 						= 	'';
+				$orden_id 							= 	'';
+				$tipo_grupo_oc 						= 	'oc_individual';
+				$nro_orden_cen 						= 	'';
+			}
+
 
 		}else{
 
@@ -657,8 +758,79 @@ class AtenderPedidoDespachoController extends Controller
 			$empresa_atender_id 					=  	$detalledespacho->empresa_atender_id;
 			$empresa_atender_txt 					=  	$detalledespacho->empresa_atender_txt;
 
-			$grupo 									= 	$count_grupo->grupo;
-			$grupo_orden 							= 	1;
+
+
+
+
+			//cliente
+			$cliente_despacho_id             		= 	'';
+			$clientecombo 							=   '';
+			$cuenta 								= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id_modal)->first();
+
+			if(count($cuenta)>0){
+				$clientecombo 						= 	WEBListaCliente::where('id','=',$cuenta->id)->first();		
+			}
+
+			if(isset($clientecombo->id)){
+				$cliente_despacho_id 			   = 	$clientecombo->id;
+			}
+
+			//cliente
+			$cliente            	 				=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+														->where('activo','=','1')
+														->where('grupo_movil','=',$mobil_mayor)
+														->where('cliente_id','=',$cliente_despacho_id)
+														->where('nro_orden_cen','=',$orden_cen_modal)
+														->first();
+
+			if(count($cliente)>0 and $orden_cen_modal <> ''){
+
+				$cliente_id 						= 	$cliente->cliente_id;
+				$orden_id 							= 	$cliente->orden_id;
+				$tipo_grupo_oc 						= 	$cliente->tipo_grupo_oc;
+				$nro_orden_cen 						=   $cliente->nro_orden_cen;
+
+				if($tipo_grupo_oc == 'oc_grupo'){
+
+					$grupo 								= 	$cliente->grupo;
+					$grupo_orden 						= 	$cliente->grupo_orden + count($data_producto);
+					$sw_oc_grupo 						= 	1;
+
+					WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
+											->where('activo','=','1')
+											->where('grupo_movil','=',$mobil_mayor)
+											->where('cliente_id','=',$cliente_despacho_id)
+											->where('nro_orden_cen','=',$orden_cen_modal)
+											//->where('tipo_grupo_oc','=','oc_grupo')
+											->update([	'grupo_orden' => $grupo_orden,
+														'fecha_mod' 	=> $this->fechaactual,
+														'usuario_mod' 	=> Session::get('usuario')->id
+													 ]);
+			
+				}else{
+
+					$grupo 								= 	$count_grupo->grupo;
+					$grupo_orden 						= 	1;
+					$sw_oc_grupo 						= 	0;
+				}
+
+			}else{
+
+				if(isset($clientecombo->id)){
+					$cliente_id 						= 	$clientecombo->id;
+				}else{
+					$cliente_id 						= 	'';
+				}
+
+				$orden_id 							= 	'';
+				$tipo_grupo_oc 						= 	'oc_individual';
+				$nro_orden_cen 						= 	'';
+				$grupo 								= 	$count_grupo->grupo;
+				$grupo_orden 						= 	1;
+				$sw_oc_grupo 						= 	0;
+
+
+			}
 
 
 		}
@@ -675,22 +847,27 @@ class AtenderPedidoDespachoController extends Controller
 			$cantidad_sacos_atender				= 	$cantidad_atender/$producto->CAN_BOLSA_SACO;
 			$palets_atende 						= 	$cantidad_sacos_atender/$producto->CAN_SACO_PALET;
 
-			$grupo                              =   $grupo+1;
+
+			if($sw_oc_grupo == 0){
+				$grupo                          =   $grupo+1;
+			}
+			
 			$iddetalleordendespacho				= 	$this->funciones->getCreateIdMaestra('WEB.detalleordendespachos');
 			$detalle            	 			=	new WEBDetalleOrdenDespacho;
 			$detalle->id 	     	 			=  	$iddetalleordendespacho;
 			$detalle->ordendespacho_id 			=  	$ordendespacho_id;
-			$detalle->nro_orden_cen 			=  	'';
+			$detalle->nro_orden_cen 			=  	$nro_orden_cen;
 			$detalle->fecha_pedido 				=  	$fecha_pedido; 
 			$detalle->fecha_entrega 			=  	$fecha_entrega;//fecha entrega falta
 			$detalle->muestra 					=  	0.0000;
-			$detalle->cantidad 					=  	0.0000;
+			$detalle->cantidad 					=  	$cantidad_atender;
 			$detalle->cantidad_atender 			=  	$cantidad_atender;
 			$detalle->modulo 					=  	'atender_pedido';
-			$detalle->kilos 					=  	0.0000;
-			$detalle->cantidad_sacos 			=  	0.0000;
-			$detalle->palets 					=  	0.0000;
+			$detalle->kilos 					=  	$kilos_atender;
+			$detalle->cantidad_sacos 			=  	$cantidad_sacos_atender;
+			$detalle->palets 					=  	$palets_atende;
 			$detalle->presentacion_producto 	=  	$producto->CAN_PESO_MATERIAL;
+
 			$detalle->grupo 					=  	$grupo;
 			$detalle->grupo_orden 				=  	$grupo_orden;
 
@@ -698,14 +875,13 @@ class AtenderPedidoDespachoController extends Controller
 			$detalle->grupo_orden_movil 		=  	1; 			  //recalcular cuendo es mobil existente
 			$detalle->grupo_guia 				=  	1;            //recalcular cuendo es mobil existente
 			$detalle->grupo_orden_guia 			=  	1;            //recalcular cuendo es mobil existente
-
 			$detalle->correlativo 				=  	$detalle->correlativo + 1;
-			$detalle->tipo_grupo_oc 			=  	'oc_individual';
+			$detalle->tipo_grupo_oc 			=  	$tipo_grupo_oc;
 			$detalle->fecha_crea 	 			=   $this->fechaactual;
 			$detalle->usuario_crea 				=   Session::get('usuario')->id;
 			$detalle->unidad_medida_id 			=  	$producto->COD_CATEGORIA_UNIDAD_MEDIDA;
-			$detalle->cliente_id 				=  	'';
-			$detalle->orden_id 					=  	'';
+			$detalle->cliente_id 				=  	$cliente_id;
+			$detalle->orden_id 					=  	$orden_id;
 			$detalle->producto_id 				=  	$producto->COD_PRODUCTO;
 			$detalle->empresa_id 				=   Session::get('empresas')->COD_EMPR;
 			$detalle->centro_id 				=   Session::get('centros')->COD_CENTRO;
@@ -731,8 +907,6 @@ class AtenderPedidoDespachoController extends Controller
 			$detalle->save();
 
 		}
-
-
 
 
 			//Actualizar grupo mobil 
@@ -806,9 +980,11 @@ class AtenderPedidoDespachoController extends Controller
 											->pluck('grupo_movil','grupo_movil')
                                         	->toArray();
 		    					 	
-		$combo_grupo_mobil           	=   array('0' => "Nuevo") + $array_grupo_mobil;
+		$combo_grupo_mobil           	=   array('0' => "Nuevo Mobil") + $array_grupo_mobil;
 
 		$funcion 						= 	$this;
+		$comboclientes					= 	$this->funciones->combo_clientes_cuenta_lima();
+		$comboordencen 					= 	array('' => "Seleccione orden cen");
 
 
 		return View::make('despacho/modal/ajax/lproducto',
@@ -817,6 +993,8 @@ class AtenderPedidoDespachoController extends Controller
 						 	'ordendespacho' 			=> $ordendespacho,
 						 	'listaproductos' 			=> $listaproductos,
 						 	'combo_grupo_mobil' 		=> $combo_grupo_mobil,
+						 	'comboclientes' 			=> $comboclientes,
+						 	'comboordencen' 			=> $comboordencen,
 						 	'funcion' 					=> $funcion,
 						 	'ajax' 						=> true,
 						 ]);

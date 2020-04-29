@@ -2,6 +2,46 @@
 $(document).ready(function(){
 	var carpeta = $("#carpeta").val();
 
+
+
+    $(".despacho").on('change','#grupo_mobil_modal,#cuenta_id_modal', function() {
+
+        var _token                      =   $('#token').val();
+        var grupo_mobil_modal           =   $('#grupo_mobil_modal').val();
+        var cuenta_id_modal             =   $('#cuenta_id_modal').val();        
+        var ordendespacho_id            =   $('#ordendespacho_id').val();
+
+        cargar_combo_orden_cen(ordendespacho_id,grupo_mobil_modal,cuenta_id_modal,_token)
+
+
+    });
+
+
+    function cargar_combo_orden_cen(ordendespacho_id,grupo_mobil_modal,cuenta_id_modal,_token){
+
+
+        abrircargando();
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-orden-cen-mobil-modal",
+            data    :   {
+                            _token                  : _token,
+                            grupo_mobil_modal       : grupo_mobil_modal,
+                            ordendespacho_id        : ordendespacho_id,
+                            cuenta_id_modal         : cuenta_id_modal,
+                        },
+            success: function (data) {
+                $(".ajax_ordencen_modal").html(data);
+                cerrarcargando();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    }
+
+
     $(".despacho").on('click','.agregar_servicio', function() {
 
         var _token                      =   $('#token').val();
@@ -815,6 +855,9 @@ $(document).ready(function(){
         var _token                  = $('#token').val();
         var tabestado               = $('#tabestado').val();
         var grupo_mobil_modal       = $('#grupo_mobil_modal').val();
+        var cuenta_id_modal         = $('#cuenta_id_modal').val();
+        var orden_cen_modal         = $('#orden_cen_modal').val();
+
 
         if(tabestado == 'prod'){
 
@@ -835,6 +878,8 @@ $(document).ready(function(){
                                 data_producto           : data_producto,
                                 ordendespacho_id        : ordendespacho_id,
                                 grupo_mobil_modal       : grupo_mobil_modal,
+                                cuenta_id_modal         : cuenta_id_modal,
+                                orden_cen_modal         : orden_cen_modal,
                             },    
                 success: function (data) {
                     cerrarcargando();

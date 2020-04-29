@@ -62,7 +62,7 @@
         $disabled_guia            =   '';
         $disabled_origen          =   '';
         $sw_nocarga_lotes         =   '0';
-
+        $stock_neto               =   0.0;
       @endphp
 
 
@@ -171,11 +171,11 @@
 
 
           <td class='center'>
-              {{number_format($item['cantidad'], 2, '.', ',')}}
+              {{number_format($item['muestra'], 2, '.', ',')}}
           </td>
 
           <td class='center'>
-              {{number_format($item['muestra'], 2, '.', ',')}}
+              {{number_format($item['cantidad'], 2, '.', ',')}}
           </td>
 
 

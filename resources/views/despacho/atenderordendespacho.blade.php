@@ -145,8 +145,6 @@
       'prefix': '', 
       'placeholder': '0'});
 
-
-
       $('.empresa_select').select2({
           // Activamos la opcion "Tags" del plugin
           placeholder: 'Seleccione una empresa',

@@ -926,6 +926,17 @@ class Funcion{
 	    } 
  	    return $toOrderArray; 
 	}
+	
+	public function agregar_cantidad_mobil_producto($toOrderArray, $grupo_orden_movil , $grupo_movil){
+
+	    foreach($toOrderArray as $key => $row) {
+	    	if($row['grupo_orden_movil'] == 0){
+	    		$toOrderArray[$key]['grupo_orden_movil'] = $grupo_orden_movil;
+	    	}
+	    } 
+ 	    return $toOrderArray; 
+	}
+
 
 
 	public function modificar_individual_multidimensionalarray($toOrderArray, $field){
@@ -2410,6 +2421,17 @@ class Funcion{
 		return $combolistaclientes;		 			
 	}
 
+
+	public function combo_clientes_cuenta_lima() {
+
+		$listaclientes   		=	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
+					    			->where('COD_CENTRO','=','CEN0000000000002')
+									->pluck('NOM_EMPR','COD_CONTRATO')
+									->toArray();
+
+		$combolistaclientes  	= 	array('' => "Seleccione cliente") + $listaclientes;
+		return $combolistaclientes;		 			
+	}
 
 	public function combo_centro() {
 

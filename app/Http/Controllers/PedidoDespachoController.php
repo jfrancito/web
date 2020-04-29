@@ -1023,18 +1023,26 @@ class PedidoDespachoController extends Controller
 		    $orden 							= 	CMPOrden::where('COD_ORDEN','=',$ordencen_id)->first();
 			$lista_detalle_ordencen			= 	$this->funciones->lista_orden_cen_detalle($ordencen_id);
 			$array_nuevo_producto 			=	array();
-			if($tipo_grupo == 'oc_grupo'){	$grupo 	= 	$grupo + 1;	$numero_mobil 	= 	$numero_mobil + 1;}	
-			$rowspan 						= 	0;
+			$grupo_orden 					= 	'0';
+			$grupo_movil 					= 	'0';
+			$grupo_orden_movil 				= 	'0';
 
+			if($tipo_grupo == 'oc_grupo'){	$grupo 	= 	$grupo + 1;}	
+			$rowspan 						= 	0;
+			$numero_mobil 					= 	$numero_mobil + 1;
 
 			while($row = $lista_detalle_ordencen->fetch())
 			{
 
-				if($tipo_grupo == 'oc_individual'){	$grupo 	= 	$grupo + 1;	$numero_mobil 	= 	$numero_mobil + 1;}
+				if($tipo_grupo == 'oc_individual'){	
+					$grupo = $grupo + 1;
+					$grupo_orden = '1'; 
+					$grupo_movil = $numero_mobil; 
+					$grupo_orden_movil = '0';
+				}
 
 				$unidad_medida 				= 	CMPCategoria::where('COD_CATEGORIA','=',$row['COD_CATEGORIA_UNIDAD_MEDIDA'])->first();
 				$correlativo 				= 	$correlativo + 1;
-
 
 				//calculo de kilos,cantidad_sacos,palets
 				$producto 					= 	ALMProducto::where('COD_PRODUCTO','=',$row['COD_PRODUCTO'])->first();
@@ -1046,31 +1054,27 @@ class PedidoDespachoController extends Controller
 				$array_nuevo_producto		= 	
 
 				$this->funciones->llenar_array_productos($orden->COD_EMPR_CLIENTE,$orden->TXT_EMPR_CLIENTE,$row['COD_TABLA'],$orden->NRO_ORDEN_CEN,$this->fin,
-								$this->fin,$row['COD_PRODUCTO'],$row['TXT_NOMBRE_PRODUCTO'],$row['COD_CATEGORIA_UNIDAD_MEDIDA'],$unidad_medida->NOM_CATEGORIA,
-								$row['CAN_PRODUCTO'],$kilos,$cantidad_sacos,$palets,$grupo,'0','0','0',$correlativo,$tipo_grupo,$producto->CAN_PESO_MATERIAL,
-								'','','','');
-
+					$this->fin,$row['COD_PRODUCTO'],$row['TXT_NOMBRE_PRODUCTO'],$row['COD_CATEGORIA_UNIDAD_MEDIDA'],$unidad_medida->NOM_CATEGORIA,
+					$row['CAN_PRODUCTO'],$kilos,$cantidad_sacos,$palets,$grupo,$grupo_orden,$grupo_movil,$grupo_orden_movil,$correlativo,$tipo_grupo,$producto->CAN_PESO_MATERIAL,
+					'','','','');
 
 				$rowspan 	= 	$rowspan + 1;
 				array_push($array_detalle_producto,$array_nuevo_producto);
 
 			}
-
 			
-
 			// modificar un valor en array
 			if($tipo_grupo == 'oc_grupo'){
-
-
 				$array_detalle_producto = $this->funciones->modificarmultidimensionalarray($array_detalle_producto,'grupo_orden',$rowspan,$orden->NRO_ORDEN_CEN);
 				$array_detalle_producto = $this->funciones->agregar_mobil_producto($array_detalle_producto,$rowspan,$numero_mobil);
 			}else{
-
-				$array_detalle_producto = $this->funciones->modificar_individual_multidimensionalarray($array_detalle_producto,'grupo_orden');
-				$array_detalle_producto = $this->funciones->agregar_mobil_producto($array_detalle_producto,$rowspan,$numero_mobil);
+				$array_detalle_producto = $this->funciones->agregar_cantidad_mobil_producto($array_detalle_producto,$rowspan,$grupo_movil);
 			}
 
 		}
+
+		//dd($array_detalle_producto);
+
 
 		if(count($array_detalle_producto_request)>0){
 			foreach ($array_detalle_producto_request as $key => $item) {
