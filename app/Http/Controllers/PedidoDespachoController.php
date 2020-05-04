@@ -22,6 +22,278 @@ use App\WEBViewDetalleOrdenDespacho;
 class PedidoDespachoController extends Controller
 {
 
+	public function actionAjaxCrearMobil33Palets(Request $request)
+	{
+
+		$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto'],true);
+		$correlativo 						= 	$request['correlativo'];
+		$grupo 								= 	$request['grupo'];
+		$numero_mobil 						= 	$request['numero_mobil'];		
+		$opcion_id 							= 	$request['opcion_id'];
+
+
+		//solo mobil seleccionada 33 PALETS
+		$array_detalle_producto_33_palets 			=	array();
+		$array_detalle_producto_resto_palets 		=	array();
+
+
+		//MOBIL SELECCINADA
+		$suma_palest 								=   0.0;
+		foreach ($array_detalle_producto_request as $key => $item) {
+			if((int)$item['grupo_movil'] == (int)$numero_mobil){
+				array_push($array_detalle_producto_33_palets,$item);
+				$suma_palest 			    =   $suma_palest + (float)$item["palets"];
+			}else{
+				array_push($array_detalle_producto_resto_palets,$item);
+			}
+		}
+
+
+
+		$array_detalle_producto_33_palets   = 	$this->funciones->ordernar_array_despacho_33($array_detalle_producto_33_palets);
+
+		$array_detalle_producto 			=	array();
+		$array_nuevo_producto 				=	array();
+		$conteo_productos 					=   1;
+		$grupo_mobil 						=   0;
+		$cantidad_productos 				=   $suma_palest;  				   //cantidad de palets
+		$parte_entera_division 				=   floor($cantidad_productos/33);
+		$resto_division 					= 	$cantidad_productos%33;
+		if($resto_division>0){
+			$parte_entera_division 			= 	$parte_entera_division + 1;
+		}
+
+		$contador_de_palest 				=   0;
+		$faltante_palets 					=   0;
+		$paletsprimer_corte 				=   0;
+		$paletssegundo_corte 				=   0;
+		$correlativo 						=   1;
+		$sumar_33_paltes  					=   0;
+		$count_33_paltes  					=   0;
+
+		foreach ($array_detalle_producto_33_palets as $key => $item) {
+
+
+			$cant_partes_cortar_producto 			=   0;
+			$parte_entera_division_producto 		=  	0;
+			$resto_division_producto 				= 	0;
+
+			//$contador_de_palest 					=   $contador_de_palest%33;
+			$palest 								= 	(float)$item['palets'];
+			$faltante_palets 						=   33 - $contador_de_palest;
+			$diferencia_palets_faltante 			= 	$palest - $faltante_palets;
+
+			if($palest > $faltante_palets){
+				$parte_entera_division_producto 	=   floor($palest/33);
+				if($palest<33){
+					$cant_partes_cortar_producto 	= 	$cant_partes_cortar_producto + 1;
+				}
+				$cant_partes_cortar_producto 		= 	$cant_partes_cortar_producto + $parte_entera_division_producto;
+				$resto_division_producto 			= 	$cantidad_productos%33;
+				if($resto_division_producto>0){
+					$cant_partes_cortar_producto 	= 	$cant_partes_cortar_producto + 1;
+				}
+			}else{
+				$cant_partes_cortar_producto 		=   1;
+			}
+
+
+
+			$diferencia_palets_faltante 			= 	0;
+			$contador_hacia_atras 					= 	$cant_partes_cortar_producto;
+
+			for ($i = 0; $i < $cant_partes_cortar_producto; $i++) {
+
+
+				if($cant_partes_cortar_producto == 1){
+
+					$faltante_palets 						=   $palest;
+					$diferencia_palets_faltante 			= 	$palest - $faltante_palets;
+
+
+				    $producto 								= 	ALMProducto::where('COD_PRODUCTO','=',$item['producto_id'])->first();
+					$cantidad_sacos							= 	$faltante_palets*$producto->CAN_SACO_PALET;
+					$cantidad_atender						= 	$cantidad_sacos*$producto->CAN_BOLSA_SACO;
+					$kilos 									=   $cantidad_atender*$producto->CAN_PESO_MATERIAL;
+
+					//primer corte
+					$array_nuevo_producto 		=	array();
+
+					$array_nuevo_producto		= 	
+					$this->funciones->llenar_array_productos($item['empresa_cliente_id'],$item['empresa_cliente_nombre'],$item['orden_id'],$item['orden_cen'],
+									$item['fecha_pedido'],
+									$item['fecha_entrega'],$item['producto_id'],$item['nombre_producto'],$item['unidad_medida_id'],$item['nombre_unidad_medida'],
+									$cantidad_atender,$kilos,$cantidad_sacos,$faltante_palets,$correlativo,
+									'1',$grupo_mobil,$item['grupo_orden_movil'],$correlativo,'oc_individual',
+									$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']);
+					array_push($array_detalle_producto,$array_nuevo_producto);
+
+					$sumar_33_paltes 			=   $sumar_33_paltes + $faltante_palets;
+					$count_33_paltes 			=   $count_33_paltes + 1;
+
+					if($sumar_33_paltes == 33){
+						$array_detalle_producto		= 	$this->funciones->recalcular_grupo_orden_mobil_33_palets($array_detalle_producto,$count_33_paltes);
+						$sumar_33_paltes 			=   0;
+						$count_33_paltes 			=   0;
+
+					}
+
+					$contador_de_palest 		=   $contador_de_palest + $faltante_palets;
+					$correlativo 				=   $correlativo + 1;
+
+
+				}else{
+
+					if($cant_partes_cortar_producto == 2){
+
+						$faltante_palets 						=   33 - $contador_de_palest + $diferencia_palets_faltante;
+						$diferencia_palets_faltante 			= 	$palest - $faltante_palets;
+
+					    $producto 								= 	ALMProducto::where('COD_PRODUCTO','=',$item['producto_id'])->first();
+						$cantidad_sacos							= 	$faltante_palets*$producto->CAN_SACO_PALET;
+						$cantidad_atender						= 	$cantidad_sacos*$producto->CAN_BOLSA_SACO;
+						$kilos 									=   $cantidad_atender*$producto->CAN_PESO_MATERIAL;
+
+						//primer corte
+						$array_nuevo_producto 		=	array();
+
+						$array_nuevo_producto		= 	
+						$this->funciones->llenar_array_productos($item['empresa_cliente_id'],$item['empresa_cliente_nombre'],$item['orden_id'],$item['orden_cen'],
+										$item['fecha_pedido'],
+										$item['fecha_entrega'],$item['producto_id'],$item['nombre_producto'],$item['unidad_medida_id'],$item['nombre_unidad_medida'],
+										$cantidad_atender,$kilos,$cantidad_sacos,$faltante_palets,$correlativo,
+										'1',$grupo_mobil,$item['grupo_orden_movil'],$correlativo,'oc_individual',
+										$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']);
+						array_push($array_detalle_producto,$array_nuevo_producto);
+
+						$sumar_33_paltes 			=   $sumar_33_paltes + $faltante_palets;
+						$count_33_paltes 			=   $count_33_paltes + 1;
+						if($sumar_33_paltes == 33){
+							$array_detalle_producto		= 	$this->funciones->recalcular_grupo_orden_mobil_33_palets($array_detalle_producto,$count_33_paltes);
+							$sumar_33_paltes 			=   0;
+							$count_33_paltes 			=   0;
+
+						}
+
+
+						$contador_de_palest 		=   $contador_de_palest + $faltante_palets;
+						$correlativo 				=   $correlativo + 1;
+						if($i == 1){
+							$contador_de_palest     = 	$faltante_palets;
+						}
+
+					}else{
+
+
+						if($i==0){
+							$faltante_palets 					=   33 - $contador_de_palest + $diferencia_palets_faltante;
+						}else{
+							if($i == $cant_partes_cortar_producto - 1){
+								$faltante_palets 					=   33 - $contador_de_palest + $diferencia_palets_faltante;
+							}else{
+								$faltante_palets 					=   33;			
+							}
+						}
+
+						$diferencia_palets_faltante 			= 	$palest - $faltante_palets;
+					    $producto 								= 	ALMProducto::where('COD_PRODUCTO','=',$item['producto_id'])->first();
+						$cantidad_sacos							= 	$faltante_palets*$producto->CAN_SACO_PALET;
+						$cantidad_atender						= 	$cantidad_sacos*$producto->CAN_BOLSA_SACO;
+						$kilos 									=   $cantidad_atender*$producto->CAN_PESO_MATERIAL;
+
+						//primer corte
+						$array_nuevo_producto 		=	array();
+
+						$array_nuevo_producto		= 	
+						$this->funciones->llenar_array_productos($item['empresa_cliente_id'],$item['empresa_cliente_nombre'],$item['orden_id'],$item['orden_cen'],
+										$item['fecha_pedido'],
+										$item['fecha_entrega'],$item['producto_id'],$item['nombre_producto'],$item['unidad_medida_id'],$item['nombre_unidad_medida'],
+										$cantidad_atender,$kilos,$cantidad_sacos,$faltante_palets,$correlativo,
+										'1',$grupo_mobil,$item['grupo_orden_movil'],$correlativo,'oc_individual',
+										$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']);
+						array_push($array_detalle_producto,$array_nuevo_producto);
+
+						$sumar_33_paltes 			=   $sumar_33_paltes + $faltante_palets;
+						$count_33_paltes 			=   $count_33_paltes + 1;
+
+						if($sumar_33_paltes == 33){
+							$array_detalle_producto		= 	$this->funciones->recalcular_grupo_orden_mobil_33_palets($array_detalle_producto,$count_33_paltes);
+							$sumar_33_paltes 			=   0;
+							$count_33_paltes 			=   0;
+
+						}
+
+						$contador_de_palest 		=   $contador_de_palest + $faltante_palets;
+						$correlativo 				=   $correlativo + 1;
+						$contador_hacia_atras 		= 	$contador_hacia_atras - 1;
+
+						if($i == $cant_partes_cortar_producto - 1){
+							$contador_de_palest     = 	$faltante_palets;
+						}
+					}
+				}
+			}
+		}
+
+		$array_detalle_producto										= 	$this->funciones->recalcular_grupo_orden_mobil_33_palets($array_detalle_producto,$count_33_paltes);
+
+
+		$array_detalle_producto_resto_palets 						= 	$this->funciones->ordernar_array_despacho_restante($array_detalle_producto_resto_palets);
+		$menor_mobil 												= 	$this->funciones->menor_grupo_mobil($array_detalle_producto_resto_palets);
+		$numero_mobil 												= 	$this->funciones->mayor_grupo_mobil($array_detalle_producto);
+
+
+
+
+		foreach ($array_detalle_producto_resto_palets as $key => $item) {
+
+			if($menor_mobil == $item['grupo_movil']){
+				$array_detalle_producto_resto_palets[$key]['grupo_movil'] = $numero_mobil + 1;
+				$array_detalle_producto_resto_palets[$key]['correlativo'] = $correlativo;
+			}else{
+				$numero_mobil  = $numero_mobil + 1;
+				$array_detalle_producto_resto_palets[$key]['grupo_movil'] = $numero_mobil + 1;
+				$array_detalle_producto_resto_palets[$key]['correlativo'] = $correlativo;
+				$menor_mobil   = $item['grupo_movil'];
+			}
+			$correlativo 				=   $correlativo + 1;
+		}
+
+		foreach ($array_detalle_producto_resto_palets as $key => $item) {
+			array_push($array_detalle_producto,$item);
+		}
+
+
+
+		//dd($array_detalle_producto);
+
+		// ordenar el array por grupo
+		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
+		$numero_mobil 												= 	$this->funciones->mayor_grupo_mobil($array_detalle_producto);
+
+
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		$funcion 					= 	$this;
+
+		return View::make('despacho/ajax/alistapedido',
+						 [
+						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'grupo' 								=> $grupo,
+						 	'numero_mobil' 							=> $numero_mobil,
+						 	'correlativo' 							=> $correlativo,
+						 	'funcion' 								=> $funcion,
+						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
+						 	'ajax'   		  						=> true,
+						 ]);
+
+		
+	}
+
+
+
+
 
 	public function actionGestionOrdenDespacho($idopcion,$idordendespacho)
 	{

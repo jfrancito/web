@@ -19,6 +19,20 @@ use PDO;
 class Funcion{
 
 
+	public function recalcular_grupo_orden_mobil_33_palets($array_detalle_producto,$count_33_paltes){
+
+		$mayor_mobil						= 	$this->mayor_grupo_mobil($array_detalle_producto);
+		foreach ($array_detalle_producto as $key => $item) {
+			if((float)$item['grupo_movil']==0){
+				$array_detalle_producto[$key]['grupo_movil'] = $mayor_mobil + 1;
+				$array_detalle_producto[$key]['grupo_orden_movil'] = $count_33_paltes;
+			}
+
+		}
+		return $array_detalle_producto;
+	}
+
+
 
 	public function recalcular_las_guias_remision($orden_despacho_id,$mobil_mayor){
 
@@ -203,6 +217,38 @@ class Funcion{
 		}
 		array_multisort($array_grupo_movil, $array_grupo, $array_correlativo, SORT_ASC, $array_detalle_producto);
 
+
+		return $array_detalle_producto;
+	}
+
+
+	public function ordernar_array_despacho_33($array_detalle_producto){
+	    
+		//order array
+		$array_grupo_movil 		= array();
+		$array_grupo 			= array();
+		$array_correlativo 		= array();
+		foreach ($array_detalle_producto as $clave=>$empleado){
+			$array_grupo_movil[$clave] 		= $empleado["grupo"];
+			$array_grupo[$clave] 			= $empleado["palets"];
+		}
+		array_multisort($array_grupo_movil, $array_grupo, SORT_DESC, $array_detalle_producto);
+
+
+		return $array_detalle_producto;
+	}
+
+	public function ordernar_array_despacho_restante($array_detalle_producto){
+	    
+		//order array
+		$array_grupo_movil 		= array();
+		$array_grupo 			= array();
+		$array_correlativo 		= array();
+		foreach ($array_detalle_producto as $clave=>$empleado){
+			$array_grupo_movil[$clave] 		= $empleado["grupo_movil"];
+			$array_grupo[$clave] 			= $empleado["correlativo"];
+		}
+		array_multisort($array_grupo_movil, $array_grupo, SORT_DESC, $array_detalle_producto);
 
 		return $array_detalle_producto;
 	}
@@ -873,6 +919,26 @@ class Funcion{
 
 	}
 
+
+	public function menor_grupo_mobil($toOrderArray){
+		$mayor 	=	0;
+		foreach($toOrderArray as $key => $row)
+		{
+		    if(empty($nro))
+		    {
+		        $nro = (int)$row['grupo_movil'];
+		        $mayor = $nro;
+		    }
+		    else
+		    {
+		        if((int)$row['grupo_movil'] < $mayor)
+		        {
+		            $mayor = (int)$row['grupo_movil'];
+		        }
+		    }
+		}
+ 	    return $mayor; 
+	}
 
 
 	public function mayor_grupo_mobil($toOrderArray){

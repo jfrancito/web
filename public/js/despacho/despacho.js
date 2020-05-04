@@ -435,11 +435,55 @@ $(document).ready(function(){
     });
 
 
+    $(".despacho").on('click','.crearmobil33palets', function() {
+
+        event.preventDefault();
+        var _token                  = $('#token').val();
+        var array_detalle_producto  = $('#array_detalle_producto').val();
+        var grupo                   = $('#grupo').val();
+        var numero_mobil            = $('#numero_mobil').val();
+        var correlativo             = $('#correlativo').val();
+        var opcion_id               = $('#opcion').val();
+
+        var radiomobil              = $("input[name='rmobil']:checked").val();
+
+
+        if(typeof(radiomobil)  === "undefined"){alerterrorajax('Seleccione por lo menos un mobil'); return false;}
+
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-pedido-crear-mobil-33-palets",
+            data    :   {
+                            _token                      : _token,
+                            array_detalle_producto      : array_detalle_producto,
+                            grupo                       : grupo,
+                            numero_mobil                : radiomobil,
+                            correlativo                 : correlativo,
+                            opcion_id                   : opcion_id,
+                        },
+            success: function (data) {
+                alertajax("Modificación exitosa");
+                $('.lista_pedidos_despacho').html(data);
+                $('#modal-entrega').niftyModal('hide');
+
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+
+    });
+
+
+
     $(".despacho").on('keypress','.updatepriced', function(e) {
 
         event.preventDefault();
         var _token                  = $('#token').val();
         var cantidad                = $(this).val();
+        cantidad                    = cantidad.replace(",", "");
         var fila                    = $(this).parents('.fila_pedido').attr('data_correlativo');
         var producto_id             = $(this).parents('.fila_pedido').attr('data_producto');  
         var array_detalle_producto  = $('#array_detalle_producto').val();
@@ -486,6 +530,7 @@ $(document).ready(function(){
         event.preventDefault();
         var _token                  = $('#token').val();
         var muestra                 = $(this).val();
+        muestra                     = muestra.replace(",", "");
         var fila                    = $(this).parents('.fila_pedido').attr('data_correlativo');
         var producto_id             = $(this).parents('.fila_pedido').attr('data_producto');  
         var array_detalle_producto  = $('#array_detalle_producto').val();

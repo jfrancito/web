@@ -229,6 +229,8 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-configuracion-producto-cantidad', 'PedidoDespachoController@actionAjaxModalConfiguracionProductoCantidad');
 	Route::any('/ajax-modificar-configuracion-del-producto', 'PedidoDespachoController@actionAjaxModificarConfiguracionDelProducto');
 	Route::any('/ajax-pedido-crear-update-pedido-despacho-centro', 'PedidoDespachoController@actionAjaxPedidoCrearUpdatePedidoDespachoCentro');
+	Route::any('/ajax-pedido-crear-mobil-33-palets', 'PedidoDespachoController@actionAjaxCrearMobil33Palets');
+
 
 
 	Route::any('/gestion-de-atender-pedido/{idopcion}', 'AtenderPedidoDespachoController@actionListarAtenderPedido');
@@ -250,6 +252,10 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-agregar-servicio', 'AtenderPedidoDespachoController@actionAjaxAgregarServicio');
 	Route::any('/ajax-rechazar-producto', 'AtenderPedidoDespachoController@actionAjaxRechazarProducto');
 	Route::any('/ajax-orden-cen-mobil-modal', 'AtenderPedidoDespachoController@actionAjaxOrdenCenMobilModal');
+
+
+
+
 
 
 
