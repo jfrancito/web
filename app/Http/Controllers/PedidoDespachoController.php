@@ -32,6 +32,8 @@ class PedidoDespachoController extends Controller
 		$opcion_id 							= 	$request['opcion_id'];
 
 
+
+		//dd($array_detalle_producto_request);
 		//solo mobil seleccionada 33 PALETS
 		$array_detalle_producto_33_palets 			=	array();
 		$array_detalle_producto_resto_palets 		=	array();
@@ -264,8 +266,6 @@ class PedidoDespachoController extends Controller
 		}
 
 
-
-		//dd($array_detalle_producto);
 
 		// ordenar el array por grupo
 		$array_detalle_producto 									= 	$this->funciones->ordernar_array_despacho($array_detalle_producto);
@@ -609,6 +609,9 @@ class PedidoDespachoController extends Controller
 		}else{
                                    
 			$comboclientes				= 	$this->funciones->combo_clientes_cuenta();
+			$comboclientes				= 	$comboclientes + $this->funciones->cliente_extras_web();
+
+
 			$grupo						= 	0;
 			$correlativo				= 	0;
 			$numero_mobil				= 	0;
@@ -1193,13 +1196,22 @@ class PedidoDespachoController extends Controller
 
 		$cuenta_id_m 						= 	$request['cuenta_id_m'];
 		$cliente 							= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id_m)->first();
+		$nombre_cliente						= 	'';
+
 
 		if(count($cliente)>0){
 			$cliente_id 					= 	$cliente->id;
 			$cliente_nombre 				= 	$cliente->NOM_EMPR;
 		}else{
-			$cliente_id 					= 	"";
-			$cliente_nombre 				= 	"";
+
+			$nombre_cliente 				=  	$this->funciones->nombre_cliente_despacho($cuenta_id_m);
+			if($nombre_cliente <> ''){
+				$cliente_id 					= 	$cuenta_id_m;
+				$cliente_nombre 				= 	$nombre_cliente;
+			}else{
+				$cliente_id 					= 	"";
+				$cliente_nombre 				= 	"";
+			}
 		}
 
 
@@ -1470,6 +1482,7 @@ class PedidoDespachoController extends Controller
 		/******* LISTA ORDEN CEN  **********/
 		$empresa_id 					= 	Session::get('empresas')->COD_EMPR;
 		$centro_id 						= 	Session::get('centros')->COD_CENTRO;
+
 		$cliente 						= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)->first();
 		
 		if(count($cliente)>0){
@@ -1478,15 +1491,18 @@ class PedidoDespachoController extends Controller
 			$cliente_id = "";
 		}
 
+
 		$fecha_inicio 					= 	$this->fecha_menos_treinta_dias;
 		$fecha_fin 						= 	$this->fin;
 		$listaordencen					= 	$this->funciones->lista_orden_cen($empresa_id,$cliente_id,$centro_id,$fecha_inicio,$fecha_fin);
-		$combotipogrupo					= 	array('oc_grupo' => "Grupo",'oc_individual' => "Individual"); 	
 
+		$combotipogrupo					= 	array('oc_grupo' => "Grupo",'oc_individual' => "Individual"); 	
 
 		return View::make('despacho/modal/ajax/ordencenproducto',
 						 [
 						 	'cuenta_id' 				=> $cuenta_id,
+						 	'cliente_id' 				=> $cliente_id,
+
 						 	'listaproductos' 			=> $listaproductos,
 						 	'listaordencen' 			=> $listaordencen,
 						 	'funcion' 					=> $funcion,

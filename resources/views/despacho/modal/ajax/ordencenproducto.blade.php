@@ -6,7 +6,7 @@
       @if(is_null($cuenta_id)) 
         -
       @else
-        {{$funcion->funciones->data_cliente($cuenta_id)->NOM_EMPR}} 
+        {{$funcion->funciones->nombre_cliente_despacho($cuenta_id)}} 
       @endif
     </strong>
   </h3>

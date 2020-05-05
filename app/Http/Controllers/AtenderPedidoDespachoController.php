@@ -707,25 +707,37 @@ class AtenderPedidoDespachoController extends Controller
 			$grupo 									= 	0;
 			$grupo_orden 							= 	1;
 			$sw_oc_grupo 							= 	0;
+			$sw_existe_cliente 						= 	0;
+			$cliente_id 							= 	''; 
 
 			//cliente
 			$cliente 								=   '';
 			$cuenta 								= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id_modal)->first();
 
 			if(count($cuenta)>0){
-				$cliente 							= 	WEBListaCliente::where('id','=',$cuenta->id)->first();		
+				$cliente 							= 	WEBListaCliente::where('id','=',$cuenta->id)->first();
+				$cliente_id 						=   $cliente->id;
+				$sw_existe_cliente 					= 	1;	
+			}else{
+				if($cuenta_id_modal==''){
+					$cliente_id  					=   '';
+					$sw_existe_cliente 				= 	0;
+				}else{
+					$cliente_id  					=   $cuenta_id_modal;
+					$sw_existe_cliente 				= 	1;
+				}
 			}
 
 
-			if(isset($cliente->id)){
+			if($sw_existe_cliente == 1){
 
-				$cliente_id 						= 	$cliente->id;
+				$cliente_id 						= 	$cliente_id;
 				$orden_id 							= 	'';
 				$tipo_grupo_oc 						= 	'oc_individual';
 				$nro_orden_cen 						= 	'';
 
 			}else{
-				$cliente_id 						= 	'';
+				$cliente_id 						= 	$cliente_id;
 				$orden_id 							= 	'';
 				$tipo_grupo_oc 						= 	'oc_individual';
 				$nro_orden_cen 						= 	'';
@@ -769,6 +781,14 @@ class AtenderPedidoDespachoController extends Controller
 
 			if(count($cuenta)>0){
 				$clientecombo 						= 	WEBListaCliente::where('id','=',$cuenta->id)->first();		
+			}else{
+
+				if($cuenta_id_modal==''){
+					$cliente_despacho_id  			=   '';
+				}else{
+					$cliente_despacho_id  			=   $cuenta_id_modal;
+				}
+
 			}
 
 			if(isset($clientecombo->id)){
@@ -984,6 +1004,8 @@ class AtenderPedidoDespachoController extends Controller
 
 		$funcion 						= 	$this;
 		$comboclientes					= 	$this->funciones->combo_clientes_cuenta_lima();
+		$comboclientes					= 	$comboclientes + $this->funciones->cliente_extras_web();
+
 		$comboordencen 					= 	array('' => "Seleccione orden cen");
 
 

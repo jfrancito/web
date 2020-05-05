@@ -23,7 +23,7 @@
   </thead>
   <tbody>
 
-    @if(!is_null($cuenta_id)) 
+    @if($cliente_id <> '')
       @while ($row = $listaordencen->fetch())
         <tr
           class='filaoc'

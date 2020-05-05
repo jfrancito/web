@@ -516,7 +516,7 @@ class Funcion{
 											"empresa_cliente_nombre" 	=> $empresa_cliente_nombre,
 											"orden_id" 					=> $orden_id,
 											"orden_cen" 				=> $orden_cen,
-											"fecha_pedido" 				=> $fecha_entrega,
+											"fecha_pedido" 				=> $fecha_pedido,
 											"fecha_entrega" 			=> '',
 								            "producto_id" 				=> $producto_id,
 								            "nombre_producto" 			=> $nombre_producto,
@@ -613,6 +613,8 @@ class Funcion{
        	$lista_cuentas 				=   $this->lista_cuentas($empresa_cliente_id);
 		$combo_cuentas 				=	array();
 		$combo_cuentas				=	array("" => "Seleccione cuenta") + $combo_cuentas;
+
+		
 
 		while($row = $lista_cuentas->fetch())
 		{
@@ -1417,6 +1419,29 @@ class Funcion{
 		return $direccion;				
 
 	}
+
+
+	public function nombre_cliente_despacho($contrato_id) {
+
+		$nombre_cliente = 		'';
+		$cliente 		= 		WEBListaCliente::where('COD_CONTRATO','=',$contrato_id)->first();
+
+		if (count($cliente)>0){
+			$nombre_cliente = $cliente->NOM_EMPR;
+		}else{
+
+			$array_extra 	= 	$this->cliente_extras_web();
+			foreach ($array_extra as $k => $v){
+				if( $k == $contrato_id){
+					$nombre_cliente = $array_extra[$k];
+				}
+			}
+		}
+		return $nombre_cliente;				
+
+	}
+
+
 
 	public function data_cliente_cliente_id($cliente_id) {
 
@@ -2486,6 +2511,17 @@ class Funcion{
 		$combolistaclientes  	= 	array('' => "Seleccione cliente") + $listaclientes;
 		return $combolistaclientes;		 			
 	}
+
+
+	public function cliente_extras_web() {
+
+		$array_cliente_extras  	= 	['1CIX000000000001' => 'MPSA',
+									 '1CIX000000000002' => 'ALM.VILLA EL SALVADOR'
+									];
+		return $array_cliente_extras;	
+
+	}
+
 
 
 	public function combo_clientes_cuenta_lima() {
