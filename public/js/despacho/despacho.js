@@ -4,6 +4,195 @@ $(document).ready(function(){
 	var carpeta = $("#carpeta").val();
 
 
+
+    $(".despacho").on('click','.rechazarproductogestion', function() {
+
+        var _token                      = $('#token').val();
+        var ordendespacho_id            = $('#ordendespacho_id').val();
+        var data                        = [];
+        var sw                          = 0;
+        var msj                         = '';
+
+        $(".table-pedidos-despachos tbody tr").each(function(){
+            check                               =   $(this).find('.input_asignar_lp');
+
+            if($(check).is(':checked')){
+
+                var cabecera_tabla_tr               =   $(this);
+                var mobil_grupo                     =   $(cabecera_tabla_tr).attr('mobil_grupo');
+                var guia_remision_id                =   $(cabecera_tabla_tr).attr('guia_remision_id');
+                var nro_serie                       =   $(cabecera_tabla_tr).attr('nro_serie');
+                var nro_documento                   =   $(cabecera_tabla_tr).attr('nro_documento');
+                var orden_transferencia_id          =   $(cabecera_tabla_tr).attr('orden_transferencia_id');
+                var nombre_producto                 =   $(cabecera_tabla_tr).attr('nombre_producto');
+                var data_detalle_orden_despacho     =   $(cabecera_tabla_tr).attr('data_detalle_orden_despacho');
+
+                if(guia_remision_id != ''){
+                    msj = nombre_producto+' tiene guia de remision asociada';
+                    sw=1;
+                }
+                if(nro_serie != ''){
+                    msj = nombre_producto+' tiene una serie asignada';
+                    sw=1;
+                }
+                if(nro_documento != ''){
+                    msj = nombre_producto+' tiene un numero de documento asignada';
+                    sw=1;
+                }
+                if(orden_transferencia_id != ''){
+                    msj = nombre_producto+' tiene una Transferencia PT asignada';
+                    sw=1;
+                }
+
+                data.push({
+                    data_detalle_orden_despacho  : data_detalle_orden_despacho,
+                    mobil_grupo                  : mobil_grupo,
+                });
+            }               
+        });
+
+        if(sw==1){alerterrorajax(msj); return false;}
+        if(data.length<=0){alerterrorajax('Seleccione por lo menos un producto'); return false;}
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-rechazar-producto-gestion",
+            data    :   {
+                            _token                      : _token,
+                            ordendespacho_id            : ordendespacho_id,
+                            data_productos_rechazar     : data,
+                        },
+            success: function (data) {
+                cerrarcargando();
+                alertajax("Producto agregado exitosa");
+                $('.lista_orden_gestion').html(data);
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
+
+
+    $(".despacho").on('change','#grupo_mobil_modal,#cuenta_id_modal', function() {
+
+        var _token                      =   $('#token').val();
+        var grupo_mobil_modal           =   $('#grupo_mobil_modal').val();
+        var cuenta_id_modal             =   $('#cuenta_id_modal').val();        
+        var ordendespacho_id            =   $('#ordendespacho_id').val();
+
+        cargar_combo_orden_cen(ordendespacho_id,grupo_mobil_modal,cuenta_id_modal,_token)
+
+
+    });
+
+
+    function cargar_combo_orden_cen(ordendespacho_id,grupo_mobil_modal,cuenta_id_modal,_token){
+
+
+        abrircargando();
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-orden-cen-mobil-modal",
+            data    :   {
+                            _token                  : _token,
+                            grupo_mobil_modal       : grupo_mobil_modal,
+                            ordendespacho_id        : ordendespacho_id,
+                            cuenta_id_modal         : cuenta_id_modal,
+                        },
+            success: function (data) {
+                $(".ajax_ordencen_modal").html(data);
+                cerrarcargando();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    }
+
+
+    $(".despacho").on('click','#agregarproductosatender', function() {
+
+        event.preventDefault();
+
+        var _token                  = $('#token').val();
+        var tabestado               = $('#tabestado').val();
+        var grupo_mobil_modal       = $('#grupo_mobil_modal').val();
+        var cuenta_id_modal         = $('#cuenta_id_modal').val();
+        var orden_cen_modal         = $('#orden_cen_modal').val();
+
+
+        if(tabestado == 'prod'){
+
+            $('input[type=search]').val('').change();
+            $("#despacholopatender").DataTable().search("").draw();
+            var data_producto           = dataenviarproducto();
+            var ordendespacho_id        = $('#ordendespacho_id').val();
+            if(data_producto.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
+            $('#modal-detalledocumento-atender').niftyModal('hide');
+            $('.modal-detalledocumento-atender-container').html('');
+
+            $.ajax({
+
+                type    :   "POST",
+                url     :   carpeta+"/ajax-modal-agregar-producto-pedido-gestion",
+                data    :   {
+                                _token                  : _token,
+                                data_producto           : data_producto,
+                                ordendespacho_id        : ordendespacho_id,
+                                grupo_mobil_modal       : grupo_mobil_modal,
+                                cuenta_id_modal         : cuenta_id_modal,
+                                orden_cen_modal         : orden_cen_modal,
+                            },    
+                success: function (data) {
+                    cerrarcargando();
+                    alertajax("Producto agregado exitosa");
+                    $('.lista_orden_gestion').html(data);
+                },
+                error: function (data) {
+                    error500(data);
+                }
+            });
+
+
+        }
+    });
+
+
+
+
+    $(".despacho").on('click','.agregarproductogestion', function() {
+
+        var _token                      = $('#token').val();
+        var ordendespacho_id            = $('#ordendespacho_id').val();
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modal-lista-orden-gestion-producto",
+            data    :   {
+                            _token              : _token,
+                            ordendespacho_id    : ordendespacho_id,
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.modal-detalledocumento-atender-container').html(data);
+                $('#modal-detalledocumento-atender').niftyModal();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
+
     $(".despacho").on('click','.checkbox_asignar_lp', function() {
 
         var input   = $(this).siblings('.input_asignar_lp');

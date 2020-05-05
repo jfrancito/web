@@ -1441,6 +1441,26 @@ class Funcion{
 
 	}
 
+	public function nombre_cliente_despacho_cliente($cliente_id) {
+
+		$nombre_cliente = 		'';
+		$cliente 		= 		WEBListaCliente::where('id','=',$cliente_id)->first();
+
+		if (count($cliente)>0){
+			$nombre_cliente = $cliente->NOM_EMPR;
+		}else{
+
+			$array_extra 	= 	$this->cliente_extras_web();
+			foreach ($array_extra as $k => $v){
+				if( $k == $cliente_id){
+					$nombre_cliente = $array_extra[$k];
+				}
+			}
+		}
+		return $nombre_cliente;				
+
+	}
+
 
 
 	public function data_cliente_cliente_id($cliente_id) {

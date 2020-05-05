@@ -52,6 +52,9 @@
       </div>
     </div>
     </div>
+
+    @include('despacho.modal.mlistaproductoordencen')
+
   </div>
 </div>
 @stop
@@ -99,7 +102,7 @@
       App.formElements();
       App.dataTables();
 
-      $('.scroll_text_horizontal').scrollLeft(385);
+      $('.scroll_text_horizontal').scrollLeft(402);
       $('[data-toggle="tooltip"]').tooltip();
       $('form').parsley();
 

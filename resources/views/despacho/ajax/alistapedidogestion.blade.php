@@ -6,13 +6,29 @@
       <tr>
         <th>Fechas</th>
         <th width="250px">Cliente</th>
-        <th class='center'>Mobil</th>
+        <th class='center' colspan="2">Mobil</th>
 
         <th>Producto</th>
         <th>Muestra</th>
         <th>Cantidad</th>
-
         <th>Atender</th>
+
+
+        <th>
+          <div class="text-center be-checkbox be-checkbox-sm has-primary">
+            <input  type="checkbox"
+                    class="todo_asignar input_asignar_lp"
+                    id="todo_asignar"
+            >
+            <label  for="todo_asignar"
+                    data-atr = "todas_asignar"
+                    class = "checkbox_asignar_lp"                    
+                    name="todo_asignar"
+              ></label>
+          </div>
+        </th>
+
+
         <th class='center'>Serie / Número</th>
         <th>Guia Remision</th>
         <th>Transferencia PT</th>
@@ -145,23 +161,51 @@
           <td class="cell-detail">
             <span><b>Cliente</b> : 
               @if(trim($item->cliente_id) != '')
-                {{$funcion->funciones->nombre_cliente_despacho($item->cliente_id)}}
+                {{$funcion->funciones->nombre_cliente_despacho_cliente($item->cliente_id)}}
               @endif
             </span> 
             <span><b>Orden Cen</b> : {{substr($item->nro_orden_cen, 0, -1)}}</span>
           </td>
 
+
           @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
-            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='fondogris center' >
-              <b>{{$item->grupo_movil}}</b>
+            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='center fondogris'>
+              <div class="be-radio">
+                <input  type="radio"  name="rmobil" id="rad{{$item->grupo_movil}}" 
+                        value="{{$item->grupo_movil}}" 
+                        mobil_grupo_radio="{{$item->grupo_movil}}" {{$disabled_transferencia}}>
+                <label for="rad{{$item->grupo_movil}}"></label>
+              </div>
+            </td>
+          @else
+            @if($item->grupo_movil == '0') 
+              <td class='center'>
+                <div class="be-radio">
+                  <input  type="radio" name="rmobil" id="rad{{$item->grupo_movil}}" 
+                          value="{{$item->grupo_movil}}" 
+                          mobil_grupo_radio="{{$item->grupo_movil}}" {{$disabled_transferencia}}>
+                  <label for="rad{{$item->grupo_movil}}"></label>
+                </div>
+              </td>
+            @endif
+          @endif
+
+
+          @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
+            <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='fondogris' >
+              <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
             </td>
           @else
             @if($item->grupo_movil == '0') 
               <td>
-                <b>{{$item->grupo_movil}}</b>
+                <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
               </td>
             @endif
           @endif
+
+
+
+
           <td class="cell-detail">
             <span>{{$item->producto->NOM_PRODUCTO}}</span>
             <span class="cell-detail-description-producto">
@@ -183,17 +227,27 @@
               {{number_format($item['cantidad_atender'], 2, '.', ',')}}
           </td>
 
-          @if($sw_crear_guia == 1 and $item->grupo_guia <> '0') 
-            <td rowspan = "{{$item->grupo_orden_guia}}">
-              {{$item->nro_serie}} - {{$item->nro_documento}}
-            </td>
-          @else
-            @if($item->grupo_guia == '0') 
-              <td class='center'>
-                {{$item->nro_serie}} - {{$item->nro_documento}}
-              </td>
-            @endif
-          @endif
+
+          <td>
+            <div class="text-center be-checkbox be-checkbox-sm has-primary">
+              <input  
+                type="checkbox"
+                class="{{$item->id}} input_asignar_lp {{$check_disableb}}"
+                id="{{$item->id}}"
+                @if($sw_transferencia == 1) disabled @endif
+                >
+              <label  for="{{$item->id}}"
+                    data-atr = "ver"
+                    class = "checkbox checkbox_asignar_lp"                    
+                    name="{{$item->id}}"
+                    style = 'margin-top:0px;'
+              ></label>
+            </div>
+          </td>
+
+          <td class='center'>
+            {{$item->nro_serie}} - {{$item->nro_documento}}
+          </td>
 
           <td class='center'>
             {{$item->documento_guia_id}}
@@ -222,7 +276,8 @@
       <tr>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
-
+          <td class='despacho_totales'></td>
+          <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
           <td class='despacho_totales'></td>
@@ -255,8 +310,8 @@
 @if(isset($ajax))
   <script type="text/javascript">
     $(document).ready(function(){
-       App.dataTables();
-      $('.scroll_text_horizontal').scrollLeft(365);      
+      App.dataTables();
+      $('.scroll_text_horizontal').scrollLeft(402);    
     });
   </script> 
 @endif

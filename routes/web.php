@@ -213,7 +213,7 @@ Route::group(['middleware' => ['authaw']], function () {
 
     //DESPACHO (generar pedido)
 	Route::any('/gestion-de-generar-pedido/{idopcion}', 'PedidoDespachoController@actionListarGeneracionPedido');
-	Route::any('/gestion-pedido-orden-despacho/{idopcion}/{idordendespacho}', 'PedidoDespachoController@actionGestionOrdenDespacho');
+
 	Route::any('/ajax-lista-pedidos-despacho', 'PedidoDespachoController@actionAjaxListaPedidosDespacho');
 	Route::any('/crear-orden-pedido-despacho/{idopcion}', 'PedidoDespachoController@actionCrearPedidoDepacho');
 	Route::any('/ajax-modal-lista-orden-cen-producto', 'PedidoDespachoController@actionAjaxModalListaOrdenCenProducto');
@@ -231,6 +231,10 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-pedido-crear-update-pedido-despacho-centro', 'PedidoDespachoController@actionAjaxPedidoCrearUpdatePedidoDespachoCentro');
 	Route::any('/ajax-pedido-crear-mobil-33-palets', 'PedidoDespachoController@actionAjaxCrearMobil33Palets');
 
+	Route::any('/gestion-pedido-orden-despacho/{idopcion}/{idordendespacho}', 'PedidoDespachoController@actionGestionOrdenDespacho');
+	Route::any('/ajax-modal-lista-orden-gestion-producto', 'PedidoDespachoController@actionAjaxModalListaOrdenGestionProducto');
+	Route::any('/ajax-modal-agregar-producto-pedido-gestion', 'PedidoDespachoController@actionAjaxModalAgregarProductosPedidoGestion');
+	Route::any('/ajax-rechazar-producto-gestion', 'PedidoDespachoController@actionAjaxRechazarProductoGestion');
 
 
 	Route::any('/gestion-de-atender-pedido/{idopcion}', 'AtenderPedidoDespachoController@actionListarAtenderPedido');

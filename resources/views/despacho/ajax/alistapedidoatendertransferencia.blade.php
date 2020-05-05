@@ -179,7 +179,7 @@
           <td class="cell-detail">
             <span><b>Cliente</b> : 
               @if(trim($item->cliente_id) != '')
-                {{$funcion->funciones->nombre_cliente_despacho($item->cliente_id)}}
+                {{$funcion->funciones->nombre_cliente_despacho_cliente($item->cliente_id)}}
               @endif
             </span> 
             <span><b>Orden Cen</b> : {{substr($item->nro_orden_cen, 0, -1)}}</span>
