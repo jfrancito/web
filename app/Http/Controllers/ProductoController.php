@@ -131,6 +131,7 @@ class ProductoController extends Controller
 			$producto 					=   ALMProducto::where('COD_PRODUCTO','=',$data_producto_id)->first();
 			$producto->CAN_BOLSA_SACO 	= $can_bolsa_saco;
 			$producto->CAN_SACO_PALET 	= $can_saco_palet;
+			$producto->FEC_USUARIO_MODIF_AUD 	= 	$this->fechaactual;
 			$producto->save();
 
 	    } 

@@ -259,12 +259,6 @@ Route::group(['middleware' => ['authaw']], function () {
 
 
 
-
-
-
-
-
-
    	Route::get('buscarcliente', function (Illuminate\Http\Request  $request) {
         $term = $request->term ?: '';
         $tags = App\WEBListaCliente::where('NOM_EMPR', 'like', '%'.$term.'%')

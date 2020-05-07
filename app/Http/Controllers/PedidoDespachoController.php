@@ -1091,6 +1091,7 @@ class PedidoDespachoController extends Controller
 
 		$producto->CAN_BOLSA_SACO 			= 	$cantidad_bolsa_saco;
 		$producto->CAN_SACO_PALET 			= 	$cantidad_saco_palet;
+		$producto->FEC_USUARIO_MODIF_AUD 	= 	$this->fechaactual;
 		$producto->save();
 
 

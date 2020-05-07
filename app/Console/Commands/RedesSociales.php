@@ -48,7 +48,7 @@ class RedesSociales extends Command
         $email     = WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00003')->first();
 
         $array = array(
-            'aviso' => 'Nueva Presentación - Gran Chalán'
+            'aviso' => 'DÍA DE LA MADRE - INDUAMERICA'
         );
 
         Mail::send('emails.nuevapresentacion', $array, function($message) use ($emailfrom,$email)
@@ -56,7 +56,7 @@ class RedesSociales extends Command
 
             $emailprincipal     = explode(",", $email->correoprincipal);
             
-            $message->from($emailfrom->correoprincipal, 'Nueva Presentación - Gran Chalán');
+            $message->from($emailfrom->correoprincipal, 'DÍA DE LA MADRE - INDUAMERICA');
 
             if($email->correocopia<>''){
                 $emailcopias        = explode(",", $email->correocopia);

@@ -53,21 +53,19 @@
             <div class='banner'>
                 <h1>Familia Induamerica</h1>
 
-                <table  bgcolor="#f6f6f6" >
+                <table  bgcolor="#ffffff" >
 
                     <tr>
                         <td>
-                            <p class='titulo'>Ahora podemos seguir disfrutando del exquisito sabor de nuestro producto bandera en su nueva presentación: <b>Arroz Gran Chalán Gourmet - 10kg.</b> </p>
+                            <p class='titulo'>Se acerca el día de la madre y queremos junto a ti, sorprender a mamá por su día.</b> </p>
                             <br>
-                            <p class='titulo'>Para adquirirlo acercarse a la oficina de ventas.</p>
-                            <br>
-                            <p class='subtitulo'><b>*Precio para colaboradores: S/ 32.00</b></p>
+                            <p class='titulo'>¡Participa y pasa la voz!</p>
                         </td>
                     </tr>
 
                     <tr>
                         <td width='500'>
-                            <img src="{{ $message->embed('http://www.induamerica.com.pe/imgcorreo/nuevapresentacion.jpg')}}" alt="Banner" />
+                            <img src="{{ $message->embed('http://www.induamerica.com.pe/imgcorreo/foto_mama.jpg')}}" alt="Banner" />
                         </td>
                     </tr>
 

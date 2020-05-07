@@ -455,6 +455,15 @@ class Funcion{
 					$almacen_id_sel = 'IICHAL0000000035';
 				}	
 			}
+		}else{
+			if($centro_id == 'CEN0000000000006' and $empresa_id == 'IACHEM0000007086'){
+				$almacen_id_sel = 'ISBEAL0000000049';
+			}else{
+				if($centro_id == 'CEN0000000000004' and $empresa_id == 'IACHEM0000007086'){
+					$almacen_id_sel = 'ISRJAL0000000038';
+				}	
+			}
+
 		}
 		
 		return $almacen_id_sel;
