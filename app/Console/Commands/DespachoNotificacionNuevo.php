@@ -50,11 +50,13 @@ class DespachoNotificacionNuevo extends Command
 
         $lista_pedidos                  =   WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
                                             ->where('ind_notificacion','=',0)
-                                            ->where('fecha_orden','=', $fecha_actual)
+                                            //->where('fecha_orden','=', $fecha_actual)
                                             ->orderBy('fecha_crea', 'asc')
                                             ->get();
 
         $this->funciones                =   new Funcion();
+
+        //dd(count($lista_pedidos));
 
         foreach($lista_pedidos as $item){
 
