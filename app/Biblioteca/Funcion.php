@@ -772,7 +772,9 @@ class Funcion{
 
 		while($row = $lista_almance_lote->fetch())
 		{
-			$combo_almacen_lote			=	array($row['COD_LOTE'] => $row['COD_LOTE']) + $combo_almacen_lote ;
+			if ((float)$row['STK_NETO']>0){
+				$combo_almacen_lote			=	array($row['COD_LOTE'] => $row['COD_LOTE']) + $combo_almacen_lote ;			
+			}
 		}
 		return $combo_almacen_lote;
 

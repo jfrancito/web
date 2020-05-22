@@ -345,7 +345,7 @@ class OsirisDespacho{
                                 $cantidad_atender_par                            =       $cantidad_atender_total/count($array_detalle_orden_despacho_id);
                                 $asociado                                        =       WEBDetalleOrdenDespacho::where('id','=',$values)->first();
                                 $asociado->estado_id                             =       'EPP0000000000004';
-                                $asociado->cantidad_atender                      =       $cantidad_atender_par;
+                                //$asociado->cantidad_atender                      =       $cantidad_atender_par;
                                 $asociado->orden_transferencia_id                =       $codorden[0];
                                 $asociado->fecha_mod                             =       $fechaactual;
                                 $asociado->usuario_mod                           =       Session::get('usuario')->id;
