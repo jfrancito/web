@@ -411,7 +411,8 @@ $(document).ready(function(){
             data    :   {
                             _token          : _token,
                             fechainicio     : fechainicio,
-                            fechafin        : fechafin                            
+                            fechafin        : fechafin,
+                            opcion_id       : opcion_id,                      
                         },
             success: function (data) {
                 cerrarcargando();
