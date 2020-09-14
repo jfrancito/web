@@ -38,7 +38,6 @@
           <div class="scroll_text_horizontal_padding" style = "padding: 0px !important;"> 
 
             <div style="width: 1680px;margin-bottom: 10px;">
-
               <table class="table table-pedidos-despachos" style='font-size: 0.85em;' id="tablepedidodespacho" >
                 <thead>
                   <tr>

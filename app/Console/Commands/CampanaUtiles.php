@@ -48,7 +48,7 @@ class CampanaUtiles extends Command
         $email     = WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00003')->first();
 
         $array = array(
-            'aviso' => 'CAMPAÑA DE ÚTILES ESCOLARES'
+            'aviso' => '¡Feliz Día del Ingeniero!'
         );
 
         Mail::send('emails.campanautiles', $array, function($message) use ($emailfrom,$email)
@@ -56,7 +56,7 @@ class CampanaUtiles extends Command
 
             $emailprincipal     = explode(",", $email->correoprincipal);
             
-            $message->from($emailfrom->correoprincipal, 'CAMPAÑA DE ÚTILES ESCOLARES');
+            $message->from($emailfrom->correoprincipal, '¡Feliz Día del Ingeniero!');
 
             if($email->correocopia<>''){
                 $emailcopias        = explode(",", $email->correocopia);

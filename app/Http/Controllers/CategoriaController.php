@@ -68,7 +68,7 @@ class CategoriaController extends Controller
                     $categoria = CMPCategoria::from('STD.EMPRESA_DIRECCION AS ED')
                     ->select('ED.NOM_DIRECCION', 'ED.COD_DIRECCION')
                     ->where('ED.COD_ESTADO','=',1)
-                    ->where('ED.COD_EMPR', '=' , 'IACHEM0000010394')
+                    ->where('ED.COD_EMPR', '=' , Session::get('empresas')->COD_EMPR)
                     ->get();
                     return [
                         

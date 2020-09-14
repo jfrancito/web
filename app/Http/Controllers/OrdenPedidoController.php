@@ -911,6 +911,8 @@ class OrdenPedidoController extends Controller
 									->orderBy('NOM_EMPR', 'asc')
 									->get();
 	
+
+			//dd($listaclientes);
 		
 			$listaproductos 	= 	DB::table('WEB.LISTAPRODUCTOSAVENDER')
 									->where('IND_MOVIL','=',1)

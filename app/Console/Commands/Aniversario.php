@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Log;
 use App\WEBIlog,App\WEBMaestro;
 use Mail;
 
-class ServicioDelivery extends Command
+class Aniversario extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'servicio:delivery';
+    protected $signature = 'aniversario:induamerica';
     /**
      * The console command description.
      *
@@ -48,15 +48,15 @@ class ServicioDelivery extends Command
         $email     = WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00003')->first();
 
         $array = array(
-            'aviso' => '¡Feliz Día Papá!'
+            'aviso' => '¡Feliz Día del Ingeniero!'
         );
 
-        Mail::send('emails.diapadre', $array, function($message) use ($emailfrom,$email)
+        Mail::send('emails.campanautiles', $array, function($message) use ($emailfrom,$email)
         {
 
             $emailprincipal     = explode(",", $email->correoprincipal);
             
-            $message->from($emailfrom->correoprincipal, '¡Feliz Día Papá!');
+            $message->from($emailfrom->correoprincipal, '¡Feliz Día del Ingeniero!');
 
             if($email->correocopia<>''){
                 $emailcopias        = explode(",", $email->correocopia);

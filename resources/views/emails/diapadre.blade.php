@@ -51,20 +51,32 @@
     <body>
         <section>
             <div class='banner'>
-                <h1>Familia Induamerica</h1>
-                <table  bgcolor="#f6f6f6" >
-                    <tr>
-                        <td>
+                <h1>Papás Induamerica</h1>
 
-                            <p class='titulo'>Saluda, en este día, a todos los ingenieros que integran esta gran familia, asimismo eleva sus oraciones para que en el desempeño de sus funciones sean bendecidos a través del cumplimiento de sus metas.</p>
-                            
-                        </td>
-                    </tr>
+                <table  bgcolor="#ffffff" >
+
                     <tr>
                         <td width='500'>
-                            <img src="{{ $message->embed('http://www.induamerica.com.pe/imgcorreo/dia_trabajador.png')}}" alt="Banner" />
+                            <p class='titulo'>
+                            
+                                Queremos agradecerles su comprometida dedicación por hacer de nuestra empresa la número uno 
+                                y por seguir adelante con las mismas ganas de hacer de este mundo un lugar mejor para su familia. 
+                            
+                            </p>
+                            <br>
+                            <br>
+                            <p class='titulo'><b>¡Feliz día del Padre, queridos colaboradores!</b></p>
+
                         </td>
                     </tr>
+
+                    <tr>
+                        <td width='500'>
+                            <img src="{{ $message->embed('http://www.induamerica.com.pe/imgcorreo/diapadre.png')}}" alt="Banner" />
+                        </td>
+                    </tr>
+
+
                 </table>
             </div>            
         </section>
