@@ -49,6 +49,7 @@ class DespachoReporteController extends Controller
 	    $detraciongruia 		= 	WEBDetraccionGuia::where('WEB.DETRACCION_GUIA.FEC_EMISION','>=', $finicio)
 			    					->where('WEB.DETRACCION_GUIA.FEC_EMISION','<=', $ffin)
 			    					->where('WEB.DETRACCION_GUIA.COD_CENTRO','=', $centro_id)
+			    					->where('WEB.DETRACCION_GUIA.COD_EMPR','=', Session::get('empresas')->COD_EMPR)
 			    					->get();
 
 		$funcion 				= 	$this;
