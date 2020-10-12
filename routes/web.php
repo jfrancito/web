@@ -168,6 +168,12 @@ Route::group(['middleware' => ['authaw']], function () {
 
 
 
+	Route::any('/reporte-pago-detracciones/{idopcion}', 'DespachoReporteController@actionPagoDetraciones');
+	Route::any('/ajax-reporte-pago-detracciones', 'DespachoReporteController@actionAjaxReportePagoDetraccion');
+	Route::any('/descargar-detraccion-guias/{cod_guia}', 'DespachoReporteController@actionPagoDetraccionExcel');
+
+
+
 
 
 	Route::any('/gestion-de-cuentas/{idopcion}', 'CarteraController@index');
