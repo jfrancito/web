@@ -79,6 +79,7 @@
               <input  type="text"
                       id="precio" name='precio' 
                       value="" 
+                      disabled="disabled" 
                       placeholder="Precio"
                       required = "" class="form-control input-sm importe" data-parsley-type="number"
                       autocomplete="off" data-aw="2"/>
@@ -90,7 +91,7 @@
       <div class="col-sm-12">
         <div class="col-sm-12">
           <div class="be-checkbox">
-            <input id="obsequio" name='obsequio' type="checkbox">
+            <input id="obsequio" name='obsequio' type="checkbox" checked="checked" disabled="disabled">
             <label for="obsequio" >Obsequio</label>
           </div>
         </div>

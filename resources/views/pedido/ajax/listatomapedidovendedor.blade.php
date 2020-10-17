@@ -10,7 +10,8 @@
       <th>Subtotal</th>
       <th>Total</th>
       <th>Empresa (registro pedido)</th>
-      <th>Ver</th>
+      <th>Detalle</th>
+      <th>Obsequio</th>
     </tr>
   </thead>
   <tbody>
@@ -53,8 +54,18 @@
         <td>
             <span class="badge badge-primary btn-eyes btn-detalle-pedido-mobil" 
                   data-id="{{Hashids::encode(substr($item->id, -8))}}">
-              <span class="mdi mdi-eye  md-trigger"></span>
+              ver detalle
             </span>
+        </td>
+        <td>
+          
+<!--             <a href="{{ url('/obsequio-orden-pedido/'.Hashids::encode(substr($item->id, -8))).'/'.$idopcion }}" class="tooltipcss opciones">
+              <span class="badge badge-primary btn-eyes">
+                agregar obsequios
+              </span>
+            </a> -->
+
+
         </td>
 
 

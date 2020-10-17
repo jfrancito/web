@@ -165,14 +165,26 @@ class OrdenPedidoController extends Controller
 
 			    if($pedido->estado_id == 'EPP0000000000002'){ 
 
-				    $pedido->estado_id 				 	= 	'EPP0000000000005';
+			    	//existe algun estado ejecutado
+			    	$detalle_pedido_estado = WEBDetallePedido::where('estado_id','=','EPP0000000000004')->first();
+			    	if(count($detalle_pedido_estado)<=0){
+				    	$pedido->estado_id 				 	= 	'EPP0000000000005';    		
+			    	}else{
+			    		$pedido->estado_id 				 	= 	'EPP0000000000004';  
+			    	}
+
 					$pedido->fecha_autorizacion 	 	=   $this->fechaactual;
 				    $pedido->ind_notificacion_rechazado = 	0;
 					$pedido->usuario_autorizacion 		=   Session::get('usuario')->id;
    					$pedido->save();
 
+   					//solo modificar los estados vacios o null
 					WEBDetallePedido::where('pedido_id','=',$pedido_id)
 					->where('activo','=',1)
+					->where(function($query) {
+		                $query->whereNull('estado_id')
+		                      ->orWhere('estado_id', '=', '');
+		            })
 					->update([	'estado_id' => 'EPP0000000000005',
 								'fecha_mod' =>  $this->fechaactual,
 								'usuario_mod' => Session::get('usuario')->id
@@ -262,8 +274,6 @@ class OrdenPedidoController extends Controller
 					->update(['estado_id' => 'EPP0000000000003', 'fecha_mod' =>  $this->fechaactual,'usuario_mod' => Session::get('usuario')->id]);
 					
 					
-
-
 			    	$msjarray[] 			= 	array(	"data_0" => $pedido->codigo, 
 			    									"data_1" => 'pedido autorizado', 
 			    									"tipo" => 'S');
@@ -500,6 +510,7 @@ class OrdenPedidoController extends Controller
 	        $conts   			= 0;
 	        $contw				= 0;
 			$contd				= 0;
+			$respuesta_obq 		= json_decode($request['pedido'], true);
 
 
 			foreach($respuesta as $obj){
@@ -518,11 +529,12 @@ class OrdenPedidoController extends Controller
 
 				//agrupar las empresas que van a guardarse
 				$group_detalle_pedido 			=  $this->funciones->grouparray($lista_array_detalle_pedido,'empresa_id');
-
 				foreach($group_detalle_pedido as $key => $obj_empresa){
 
 					// array de id_detalle_pedido por empresa
 					$empresa_id 					=   $obj_empresa['empresa_id'];
+					//$orden_detalle_pedido_id 		=   $obj_empresa['orden_detalle_pedido_id'];
+
 					$empresa_filter 				= 	array("empresa_id" => $obj_empresa['empresa_id']);
 					$lista_array_empresa 			= 	array_filter($lista_array_detalle_pedido, function($lista_array_detalle_pedido) use ($empresa_filter){
 					    return in_array($lista_array_detalle_pedido['empresa_id'], $empresa_filter);
@@ -535,13 +547,13 @@ class OrdenPedidoController extends Controller
 						$array_detalle_pedido_id[$key] =  $obj_det['detalle_pedido_id'];
 					}
 
-
 					$pedidoagrupado 				=   WEBDetallePedido::where('pedido_id','=',$pedido_id)
 														->whereIn('id',$array_detalle_pedido_id)
 														->select(DB::raw("sum(total) as total"))
 														->first();
 
-					$respuesta 						=  	$osiris->guardar_orden_pedido_por_detalle($pedido,$pedidoagrupado,$array_detalle_pedido_id,$empresa_id);
+
+					$respuesta 						=  	$osiris->guardar_orden_pedido_por_detalle($pedido,$pedidoagrupado,$array_detalle_pedido_id,$empresa_id,$respuesta_obq);
 
 
 				}
@@ -693,6 +705,7 @@ class OrdenPedidoController extends Controller
 	}
 	public function actionAjaxDetallePedido(Request $request)
 	{
+		
 		$pedido_id_encriptado 		= 	$request['pedido_id'];
 		$pedido_id 					= 	$request['pedido_id'];
 		$data_json_detalle 			= 	$request['data_json_detalle'];
@@ -716,6 +729,17 @@ class OrdenPedidoController extends Controller
 		$comboempresas 				= 	$empresas;
 
 
+	    $orden_detalle 				= 	WEBDetallePedido::where('activo','=','1')
+	    								->where('estado_id','=','EPP0000000000004')
+	    								->where('ind_obsequio','=','0')
+	    								->where('pedido_id','=',$pedido_id)
+	    					 			->pluck('orden_id','orden_id')
+										->toArray();
+
+		$comboorden_detalle 		= 	array('' => "Venta asociada") + $orden_detalle;
+
+
+
 		return View::make('pedido/ajax/modaldetallepedido',
 						 [
 							 'pedido_id'   				=> $pedido_id_encriptado,
@@ -724,6 +748,7 @@ class OrdenPedidoController extends Controller
 							 'comboempresas'   			=> $comboempresas,
 							 'funcion'   				=> $funcion,
 							 'array_detalle_pedido'   	=> $array_detalle_pedido,
+							 'comboorden_detalle'   	=> $comboorden_detalle,
 						 ]);
 	}
 
@@ -766,7 +791,7 @@ class OrdenPedidoController extends Controller
 
 		$finicio 		=  date_format(date_create($request['finicio']), 'd-m-Y');
 		$ffin 			=  date_format(date_create($request['ffin']), 'd-m-Y');
-
+		$idopcion 		=  $request['idopcion'];
 
 	    $listapedidos	= 	WEBPedido::where('activo','=',1)
 							->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.pedidos.estado_id')
@@ -785,6 +810,7 @@ class OrdenPedidoController extends Controller
 						 	'funcion' 		=> $funcion,
 						 	'fechainicio' 	=> $finicio,
 						 	'fechafin' 		=> $ffin,
+						 	'idopcion' 		=> $idopcion,
 						 	'ajax'   		=> true,
 						 ]);
 
@@ -866,6 +892,8 @@ class OrdenPedidoController extends Controller
 					$iddetallepedido 			= 	$this->funciones->getCreateIdMaestra('WEB.detallepedidos');
 					$precio_producto 			=  	(float)$obj['precio_producto'];
 					$cantidad_producto 			=  	(float)$obj['cantidad_producto'];
+					$obsequio 					=  	(int)$obj['obsequio'];
+
 					$total_producto 			= 	$precio_producto*$cantidad_producto;
 					$producto_id 				= 	$this->funciones->desencriptar_id($obj['prefijo_producto'].'-'.$obj['id_producto'],13);
 
@@ -882,6 +910,7 @@ class OrdenPedidoController extends Controller
 					$cabecera->centro_id 		=   Session::get('centros')->COD_CENTRO;
 					$cabecera->fecha_crea 	 	=   $this->fechaactual;
 					$cabecera->usuario_crea 	=   Session::get('usuario')->id;
+					$cabecera->ind_obsequio 		=   $obsequio;
 					$cabecera->save();
 				}			
 
@@ -927,6 +956,98 @@ class OrdenPedidoController extends Controller
 						]);
 		}
 	}
+
+
+
+	public function actionObsequioOrdenPedido($idpedido,$idopcion,Request $request)
+	{
+
+		/******************* validar url **********************/
+		$validarurl = $this->funciones->getUrl($idopcion,'Ver');
+	    if($validarurl <> 'true'){return $validarurl;}
+	    /******************************************************/
+		$pedido_id 					= 	$this->funciones->desencriptar_id('1CIX-'.$idpedido,8);
+		$pedido 					=   WEBPedido::where('id','=',$pedido_id)->first();
+
+
+		if($_POST)
+		{
+
+			try{
+
+				DB::beginTransaction();
+
+				$productos 					= 	$request['productos'];
+				//DETALLE PEDIDO
+
+				$productos 					= 	json_decode($productos, true);
+
+				foreach($productos as $obj){
+
+					$iddetallepedido 			= 	$this->funciones->getCreateIdMaestra('WEB.detallepedidos');
+					$precio_producto 			=  	(float)$obj['precio_producto'];
+					$cantidad_producto 			=  	(float)$obj['cantidad_producto'];
+					$obsequio 					=  	(int)$obj['obsequio'];
+
+					$total_producto 			= 	$precio_producto*$cantidad_producto;
+					$producto_id 				= 	$this->funciones->desencriptar_id($obj['prefijo_producto'].'-'.$obj['id_producto'],13);
+
+					$cabecera            	 	=	new WEBDetallePedido;
+					$cabecera->id 	     	 	=  	$iddetallepedido;
+					$cabecera->precio 	    	=  	$precio_producto;
+					$cabecera->cantidad 	    =  	$cantidad_producto;
+					$cabecera->igv 	    		=  	$this->funciones->calculo_igv($total_producto);
+					$cabecera->subtotal 	    =  	$this->funciones->calculo_subtotal($total_producto);
+					$cabecera->total 	    	=  	$total_producto;
+					$cabecera->pedido_id 	    =  	$pedido->id;
+					$cabecera->producto_id 	    =  	$producto_id;
+					$cabecera->empresa_id 		=   Session::get('empresas')->COD_EMPR;
+					$cabecera->centro_id 		=   Session::get('centros')->COD_CENTRO;
+					$cabecera->fecha_crea 	 	=   $this->fechaactual;
+					$cabecera->usuario_crea 	=   Session::get('usuario')->id;
+					$cabecera->ind_obsequio 	=   $obsequio;
+					$cabecera->save();
+				}			
+
+				$pedido->estado_id = 'EPP0000000000002';
+				$pedido->save();
+				DB::commit();
+				//
+ 				return Redirect::to('/gestion-de-toma-de-pedido/'.$idopcion)->with('bienhecho', 'Pedido '.$pedido->codigo.' modificado con exito');
+
+			}catch(Exception $ex){
+				DB::rollback();
+				return Redirect::to('/gestion-de-toma-de-pedido/'.$idopcion)->with('errorbd', 'Ocurrio un error inesperado. Porfavor contacte con el administrador del sistema');	
+			}
+
+		}else{
+
+			$funcion 					= 	$this;		
+			$listaproductos 			= 	DB::table('WEB.LISTAPRODUCTOSAVENDER')
+											->where('IND_MOVIL','=',1)
+		    					 			->orderBy('NOM_PRODUCTO', 'asc')->get();
+
+		    $contrato  					=   WEBListaCliente::where('id','=',$pedido->cliente_id)->first();
+			$funcion 					= 	$this;	
+
+			return View::make('pedido/ordenpedidoobsequio',
+						[				
+						  	'listaproductos'  		=> $listaproductos,
+						  	'idopcion'  			=> $idopcion,
+						  	'pedido'  				=> $pedido,
+						  	'contrato'  			=> $contrato,
+						  	'funcion'  				=> $funcion,
+						]);
+		}
+	}
+
+
+
+
+
+
+
+
 	public function actionAjaxDireccioncliente(Request $request)
 	{
 
@@ -995,8 +1116,8 @@ class OrdenPedidoController extends Controller
 		$data_npr 					=  	$request['data_npr']; 
 		$data_upr 					=  	$request['data_upr']; 
 	
-		$cliente_id 					=  	$this->funciones->desencriptar_id($request['cli_id'],10);
-		$cuenta_id                  = $this->funciones->desencriptar_id($request['cuenta_id'],10);
+		$cliente_id 				=  	$this->funciones->desencriptar_id($request['cli_id'],10);
+		$cuenta_id                  = 	$this->funciones->desencriptar_id($request['cuenta_id'],10);
 
 		$producto_id 				= 	$this->funciones->desencriptar_id($data_ppr.'-'.$data_ipr,13);
 	
@@ -1028,6 +1149,50 @@ class OrdenPedidoController extends Controller
 							 'precioestandar'=>$precioestandar
 						 ]);
 	}
+
+	public function actionAjaxReglaProductoObsequio(Request $request)
+	{
+
+		$data_ipr 					=  	$request['data_ipr']; 
+		$data_ppr 					=  	$request['data_ppr']; 
+		$data_npr 					=  	$request['data_npr']; 
+		$data_upr 					=  	$request['data_upr']; 
+	
+		$cliente_id 				=  	$request['cli_id'];
+		$cuenta_id                  = 	$request['cuenta_id'];
+		$producto_id 				= 	$this->funciones->desencriptar_id($data_ppr.'-'.$data_ipr,13);
+	
+
+		$reglas		= 	WEBReglaProductoCliente::where('producto_id','=',$producto_id)
+						->where('cliente_id','=',$cliente_id)
+						->where('contrato_id','=',$cuenta_id)
+						->where('activo',1)
+						->get();
+
+		$precioregular= WEBPrecioProductoContrato::where('producto_id','=',$producto_id)
+		->where('contrato_id','=',$cuenta_id)
+		->where('activo',1)
+		->get();
+
+		$precioestandar=WEBPrecioProducto::where('producto_id',"=",$producto_id)
+		->where('activo',1)
+		->get();
+
+		return View::make('pedido/ajax/reglaproductoobsequio',
+						 [
+							 'producto_id' 	=> $producto_id,
+							 'data_ipr'     => $data_ipr,
+							 'data_ppr'     => $data_ppr,
+							 'data_npr'     => $data_npr,
+							 'data_upr'     => $data_upr,
+							 'reglas'       =>$reglas,
+							 'precioregular'=>$precioregular,
+							 'precioestandar'=>$precioestandar
+						 ]);
+	}
+
+
+
 	public function actionAjaxDeudaSectorizada(Request $request)
 	{
 

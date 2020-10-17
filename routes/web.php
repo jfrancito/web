@@ -106,6 +106,12 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-detalle-pedido-rechazar', 'OrdenPedidoController@actionAjaxDetallePedidoRechazar');
 	Route::any('/imprimir-pedido/{idpedido}', 'OrdenPedidoReporteController@actionImprimirPedido');
 
+
+	Route::any('/obsequio-orden-pedido/{idpedido}/{idopcion}', 'OrdenPedidoController@actionObsequioOrdenPedido');
+	Route::any('/ajax-regla-producto-obsequio', 'OrdenPedidoController@actionAjaxReglaProductoObsequio');
+
+
+
 	Route::any('/gestion-de-orden-de-pedido/{idopcion}', 'OrdenPedidoController@actionListarTomaPedido');
 	Route::any('/ajax-listado-de-toma-pedidos', 'OrdenPedidoController@actionAjaxListarTomaPedido');
 	Route::any('/ajax-modal-detalle-pedido', 'OrdenPedidoController@actionAjaxDetallePedido');

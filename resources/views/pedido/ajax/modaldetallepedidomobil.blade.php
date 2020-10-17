@@ -41,6 +41,10 @@
 								            @endif
 							            @endif
 						            @endif
+					                @if($item->ind_obsequio == 1)
+					                <span class="badge badge-danger">OBSEQUIO</span>
+					                @endif
+						            
 			             	</span>
 
 

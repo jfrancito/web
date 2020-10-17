@@ -173,6 +173,8 @@ $(document).ready(function(){
         event.preventDefault();
         var finicio     = $('#finicio').val();
         var ffin        = $('#ffin').val();
+        var idopcion    = $('#idopcion').val();
+
 
         var _token      = $('#token').val();
         $(".listatablapedido").html("");
@@ -184,8 +186,8 @@ $(document).ready(function(){
             data    :   {
                             _token  : _token,
                             finicio : finicio,
-
-                            ffin    : ffin
+                            ffin    : ffin,
+                            idopcion    : idopcion,
                         },
             success: function (data) {
                 cerrarcargando();
@@ -233,15 +235,24 @@ $(document).ready(function(){
 
     $(".listapedidoosiris").on('click','.btn_guardar_detalle', function() {
 
-        var data_detalle                = datadetallepedido();
-        var pedido_id                   = $("#id_pedido_modal").val();
-        var mensaje                     = "Datos guardados correctamente";
-        var data_detalle_string         = JSON.stringify(data_detalle);
+        var mensaje                     = validardatadetallepedido();
+        if(mensaje != ''){
+            alerterrorajax(mensaje); 
+            return false;
+        }else{
 
-        //agregar el json
-        $("#"+pedido_id+"pedido").attr('data-json-detalle',data_detalle_string);
-        alertajax(mensaje);
-        $("#detalle-producto .close").click()
+            var data_detalle                = datadetallepedido();
+            var pedido_id                   = $("#id_pedido_modal").val();
+            var mensaje                     = "Datos guardados correctamente";
+            var data_detalle_string         = JSON.stringify(data_detalle);
+
+            //agregar el json
+            $("#"+pedido_id+"pedido").attr('data-json-detalle',data_detalle_string);
+            alertajax(mensaje);
+            $("#detalle-producto .close").click();
+        }
+
+
 
     });
 
@@ -471,20 +482,23 @@ $(document).ready(function(){
     $('#enviarpedido').on('click', function(event){
         event.preventDefault();
 
-        $('#fechainicio').val($('#finicio').val());
-        $('#fechafin').val($('#ffin').val());
+        var mensaje                     = validarobsequios();
+        if(mensaje != ''){
+            alerterrorajax(mensaje); 
+            return false;
+        }else{
 
-        $('input[type=search]').val('').change();
-        $("#tablatomapedido").DataTable().search("").draw();
-
-        data = dataenviar();
-        if(data.length<=0){alerterrorajax("Seleccione por lo menos un pedido");return false;}
-        var datastring = JSON.stringify(data);
-        $('#pedido').val(datastring);
-
-        console.log(data);
-        abrircargando();
-        $( "#formpedido" ).submit();
+            $('#fechainicio').val($('#finicio').val());
+            $('#fechafin').val($('#ffin').val());
+            $('input[type=search]').val('').change();
+            $("#tablatomapedido").DataTable().search("").draw();
+            data = dataenviar();
+            if(data.length<=0){alerterrorajax("Seleccione por lo menos un pedido");return false;}
+            var datastring = JSON.stringify(data);
+            $('#pedido').val(datastring);
+            abrircargando();
+            $( "#formpedido" ).submit();
+        }
         
     });
 
@@ -529,9 +543,21 @@ $(document).ready(function(){
         if(data.length<=0){alertdangermobil("Seleccione por lo menos un producto"); return false;}
         var datastring = JSON.stringify(data);
         $('#productos').val(datastring);
-                abrircargando();
+        abrircargando();
         return true;
     });
+
+
+    $(".crearpedido").on('click','.btn-guardar-obsequio', function(e) {
+        // validacion productos
+        data = agregar_producto_hidden_obsequio();
+        if(data.length<=0){alertdangermobil("Seleccione por lo menos un producto (OBSEQUIO)"); return false;}
+        var datastring = JSON.stringify(data);
+        $('#productos').val(datastring);
+        abrircargando();
+        return true;
+    });
+
 
 
     $(".crearpedido").on('click','.filapedido', function(e) {
@@ -658,6 +684,48 @@ $(document).ready(function(){
 
     });
 
+
+    $(".crearpedido").on('click','.filaproductoobsequio', function(e) {
+
+        var data_ipr        =   $(this).attr('data_ipr');
+        var data_ppr        =   $(this).attr('data_ppr');
+        var data_npr        =   $(this).attr('data_npr');
+        var data_upr        =   $(this).attr('data_upr');
+        var _token          =   $('#token').val();
+        var cli_id          =   $('#cliente').val();
+        var cuenta_id       = $('#cuenta').val();
+
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-regla-producto-obsequio",
+            data    :   {
+                          _token                : _token,
+                          data_ipr              : data_ipr,
+                          data_ppr              : data_ppr,
+                          data_npr              : data_npr,
+                          data_upr              : data_upr,
+                          cli_id                : cli_id,
+                          cuenta_id             : cuenta_id
+                        },
+
+            success: function (data) {
+                $('.ajaxreglaproducto').html(data);
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+        $('.listaproductos').toggle("slow");
+        $('.precioproducto').toggle("slow");
+        tituloprecioproducto(data_npr,data_upr,data_ipr,data_ppr);
+
+    });
+
+
+
+
+
     $(".crearpedido").on('click','.mdi-close-precio', function(e) {
 
         $('.listaproductos').toggle("slow");
@@ -680,6 +748,17 @@ $(document).ready(function(){
         calcular_total();
     });
 
+    $(".crearpedido").on('click','#obsequio', function() {
+
+        if($("#obsequio").is(':checked')){
+            $( "#precio" ).prop( "disabled", true );
+            $( "#precio" ).val('0.0000');
+        }else{
+            $( "#precio" ).prop( "disabled", false );
+        }
+
+    });
+
 
     // agregando producto
     $(".crearpedido").on('click','.mdi-check-precio', function(e) {
@@ -689,18 +768,27 @@ $(document).ready(function(){
         precio                  =   precio.replace(",", "");
         cantidad                =   cantidad.replace(",", "");
 
-        
+        if($("#obsequio").is(':checked')){
+            obsequio = 1;
+            precio = '0.0000';
+        }else{
+            obsequio = 0;
+        }
+
         var data_ipr            =   $(this).attr('data_ipr');
         var data_ppr            =   $(this).attr('data_ppr');
         var data_npr            =   $(this).attr('data_npr');
         var data_upr            =   $(this).attr('data_upr');
 
         // validacion cantidad
-        if(cantidad =='0.00' || cantidad==''){ alertdangermobil("Ingrese cantidad"); return false;}
-        if(precio =='0.00' || precio==''){ alertdangermobil("Ingrese precio"); return false;}
-        if(existe_producto(data_ppr,data_ipr) == '0'){ alertdangermobil("El producto ya existe en el pedido"); return false;}
+        if(cantidad =='0.0000' || cantidad==''){ alertdangermobil("Ingrese cantidad"); return false;}
+        if(obsequio == 0){
+            if(precio =='0.0000' || precio==''){ alertdangermobil("Ingrese precio"); return false;}  
+        }
 
-        agregar_producto(data_npr,data_upr,cantidad,precio,data_ipr,data_ppr);
+        if(existe_producto(data_ppr,data_ipr,obsequio) == '0'){ alertdangermobil("El producto ya existe en el pedido"); return false;}
+
+        agregar_producto(data_npr,data_upr,cantidad,precio,data_ipr,data_ppr,obsequio);
         //agregar_producto_hidden();
         calcular_total();
         alertmobil("Producto "+data_npr+" agregado");
@@ -713,12 +801,62 @@ $(document).ready(function(){
 });
 
 
+
 function cambiar_estado_rechazado(puntero){
 
     var cadena = '';            
     cadena += "<span class='badge badge-danger'>RECHAZADO</span>";
     puntero.parents('.rechazar').siblings('.estado_detalle_pedido').html(cadena);
 
+}
+
+function validardatadetallepedido(){
+
+    var txtmensaje = '';
+    var sw_ob = 0;
+    var cont_ob = 0;
+    var sw_no_ob = 0;
+
+    var sw_dif_ob = 0;
+
+    $(".listatabledetalle .detalle_pedido").each(function(){
+
+        var check                           =   $(this).find('input');
+        var data_obsequio                   =   $(this).attr("data_obsequio");
+        var orden_detalle_pedido_id         =   $(this).find('.select_orden_detalle_pedido_id').find('#orden_detalle_pedido_id').val();
+        var orden_detalle_pedido_id_inicio  =   '';
+
+
+        if($(check).is(':checked')){
+            //si hay esta marcado el que tiene obsequio y no tiene obsequio es independiente
+            if(data_obsequio == 1){
+                sw_ob = 1;
+                cont_ob = cont_ob + 1;
+
+                if(orden_detalle_pedido_id == '' || orden_detalle_pedido_id === null){
+                    txtmensaje = 'Seleccionar la venta asociada';
+                }
+                //solo la primera vez
+                if(cont_ob == 1){
+                    orden_detalle_pedido_id_inicio        =   orden_detalle_pedido_id;
+                }
+                if(orden_detalle_pedido_id_inicio != orden_detalle_pedido_id){
+                    sw_dif_ob = 1;
+                }
+
+
+            }
+            if(data_obsequio == 0){
+                sw_no_ob = 1;
+            }
+        }
+    });
+
+    if(sw_ob == 1 &&  sw_no_ob == 1){
+        txtmensaje = 'El producto que va como obsequio tiene que ir en una sola venta';
+    }
+
+    return txtmensaje;
 }
 
 
@@ -730,8 +868,21 @@ function datadetallepedido(){
             var check                       =   $(this).find('input');
             var detalle                     =   $(this).attr("data_detalle_pedido_id");
             var empresa_id                  =   $(this).find('.select_empresa').find('#empresa_id').val();
+
+
+            var orden_detalle_pedido_id     =   $(this).find('.select_orden_detalle_pedido_id').find('#orden_detalle_pedido_id').val();
+ 
+            if (typeof orden_detalle_pedido_id === "undefined") {
+                orden_detalle_pedido_id = '';
+            }
+
+
+
             var detalle_pedido_id           =   $(this).attr("data_detalle_pedido_id");
             var estado_id                   =   $(this).attr("data_estado_id");
+            var data_obsequio               =   $(this).attr("data_obsequio");
+
+
             var checked                     =   "";
 
             if($(check).is(':checked')){
@@ -741,6 +892,8 @@ function datadetallepedido(){
             data.push({
                 detalle_pedido_id       : detalle_pedido_id,
                 empresa_id              : empresa_id,
+                orden_detalle_pedido_id : orden_detalle_pedido_id,  
+                ind_obsequio            : data_obsequio,
                 checked                 : checked,
                 estado_id               : estado_id,
             });
@@ -773,6 +926,8 @@ function actualizartotalesproducto(pedido_id){
         });
         $('.p'+pedido_id).html(importet.toFixed(4))
 }
+
+
 function dataenviar(){
         var data = [];
         $(".listatabla tr").each(function(){
@@ -795,6 +950,35 @@ function dataenviar(){
 
         });
         return data;
+}
+
+
+function validarobsequios(){
+
+    var mensaje = '';
+        $(".listatabla tr").each(function(){
+            check   = $(this).find('input');
+            nombre  = $(this).find('input').attr('id');
+
+            if(nombre != 'todo'){
+
+                //json detalle
+                var datajsondetalle  = $(this).find('.btn-detalle-pedido').attr('data-json-detalle');
+                
+                if($(check).is(':checked')){
+
+                    var datajsondetalle_array = JSON.parse(datajsondetalle);
+                    datajsondetalle_array.forEach(function(item, index) {
+                        if(item.ind_obsequio==1 && item.orden_detalle_pedido_id=='' && item.checked != ''){
+                            mensaje = 'Existe obsequios sin venta asociada';
+                        }
+                    });
+                                       
+                }               
+            }
+
+        });
+    return mensaje;
 }
 
 
@@ -885,6 +1069,8 @@ function tituloprecioproducto(data_npr,data_upr,data_ipr,data_ppr){
 function limpiar_input_producto(){
     $('#cantidad').val('');
     $('#precio').val('');
+    $( "#precio" ).prop( "disabled", false );
+    $("#obsequio").removeAttr('checked');
 }
 
 
@@ -933,16 +1119,48 @@ function agregar_producto_hidden(){
         var data_ipr_for = $(this).attr('data_ipr');
         var data_prpr_for = $(this).attr('data_prpr');
         var data_ctpr_for = $(this).attr('data_ctpr');
+        var data_obq = $(this).attr('data_obq');
+
         data.push({
             prefijo_producto    : data_ppr_for,
             id_producto         : data_ipr_for,
             precio_producto     : data_prpr_for,
             cantidad_producto   : data_ctpr_for,
+            obsequio   : data_obq,
         });
 
     });
     return data;
 }
+
+
+function agregar_producto_hidden_obsequio(){
+
+    var data = [];
+    $(".detalleproducto .productoseleccion").each(function(){
+
+        var data_ppr_for = $(this).attr('data_ppr');
+        var data_ipr_for = $(this).attr('data_ipr');
+        var data_prpr_for = $(this).attr('data_prpr');
+        var data_ctpr_for = $(this).attr('data_ctpr');
+        var data_obq = $(this).attr('data_obq');
+
+        if(data_ppr_for != 'XXX'){
+            data.push({
+                prefijo_producto    : data_ppr_for,
+                id_producto         : data_ipr_for,
+                precio_producto     : data_prpr_for,
+                cantidad_producto   : data_ctpr_for,
+                obsequio   : data_obq,
+            });
+        }
+
+    });
+    return data;
+}
+
+
+
 
 function calcular_total(){
     var total = 0.00;
@@ -955,15 +1173,27 @@ function calcular_total(){
 }
 
 
-function existe_producto(data_ppr,data_ipr){
+function existe_producto(data_ppr,data_ipr,obsequio){
 
     var sw = '1';
     $(".detalleproducto .productoseleccion").each(function(){
         var data_ppr_for = $(this).attr('data_ppr');
         var data_ipr_for = $(this).attr('data_ipr');
-        if(data_ppr_for == data_ppr && data_ipr_for == data_ipr){
-            sw = '0';
+        var data_obq = $(this).attr('data_obq');
+
+        if(obsequio == 0){
+            if(data_ppr_for == data_ppr && data_ipr_for == data_ipr && data_obq == 0){
+                sw = '0';
+            }        
         }
+        if(obsequio == 1){
+            if(data_ppr_for == data_ppr && data_ipr_for == data_ipr && data_obq == 1){
+                sw = '0';
+            }        
+        }
+
+
+
     });
     return sw;
 
@@ -971,15 +1201,20 @@ function existe_producto(data_ppr,data_ipr){
 
 
 
-function agregar_producto(nombreproducto,unidadmedida,cantidad,precio,data_ipr,data_ppr){
+function agregar_producto(nombreproducto,unidadmedida,cantidad,precio,data_ipr,data_ppr,obsequio){
+
+    var txtobsequio = '';
+    if(obsequio==1){
+        txtobsequio = ' (Obsequio)';
+    }
 
     var importe = parseFloat(cantidad)*parseFloat(precio);
     var cadena = '';  
     cadena += "<div class='col-sm-12 productoseleccion col-mobil-top'";
-    cadena += "data_ipr='"+data_ipr+"' data_ppr= '"+data_ppr+"' data_prpr='"+precio+"' data_ctpr='"+cantidad+"' >" 
+    cadena += "data_ipr='"+data_ipr+"' data_ppr= '"+data_ppr+"' data_prpr='"+precio+"' data_ctpr='"+cantidad+"' data_obq='"+obsequio+"' >" 
     cadena += "     <div class='panel panel-default panel-contrast'>";
     cadena += "         <div class='panel-heading cell-detail'>";
-    cadena +=               nombreproducto;
+    cadena +=               nombreproducto+"<span class='txtobsequio'> "+txtobsequio+"</span>";
     cadena += "             <div class='tools'>";
     cadena += "                 <span class='icon mdi mdi-close mdi-close-pedido'></span>";
     cadena += "             </div>";

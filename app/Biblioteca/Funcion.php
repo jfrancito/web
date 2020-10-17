@@ -1701,6 +1701,17 @@ class Funcion{
 	}
 
 
+	public function pedido_producto_obsequio($pedido) {
+
+		$detalle_pedido 		= 		WEBDetallePedido::where('pedido_id','=',$pedido->id)
+										->where('ind_obsequio','=',1)
+										->where('activo','=',1)
+										->get();
+
+		return count($detalle_pedido);				
+
+	}
+
 	public function pedido_producto_registrado($pedido) {
 
 		$detalle_pedido 		= 		WEBDetallePedido::where('pedido_id','=',$pedido->id)
@@ -1778,6 +1789,8 @@ class Funcion{
 									->where('activo','=',1)
 									->select(DB::raw("	id as detalle_pedido_id,
 													  	empresa_id,
+													  	'' as orden_detalle_pedido_id,
+													  	ind_obsequio,
 													    (CASE   
 														      WHEN estado_id != 'EPP0000000000004' and estado_id != 'EPP0000000000005' THEN 'checked'   
 														      ELSE ''   

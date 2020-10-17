@@ -19,10 +19,11 @@
 	      	</th>
 		    <th>Cantidad</th>
 	        <th>Producto</th>
-	        <th>Estado</th>
 	        <th>Precio</th>
 	        <th>Importe</th>
 	        <th>Empresa Recepción</th>
+	        <th>Venta Asociada</th>
+
 	      </tr>
 	    </thead>
 	    <tbody>
@@ -40,7 +41,8 @@
 
 			  	$empresa_receptora_id 	=   $empresa_id;
 			  	if(trim($item->empresa_receptora_id) != ''){$empresa_receptora_id  =   $item->empresa_receptora_id;}
-
+			  	$orden_obsequio_id 	=   '';
+				if(trim($item->orden_referencia_obsequio_id) != ''){$orden_obsequio_id  =   $item->orden_referencia_obsequio_id;}
 
             @endphp
 
@@ -49,6 +51,7 @@
 	      	<tr class='detalle_pedido'
 	      		data_detalle_pedido_id = '{{$item->id}}'
 	      		data_estado_id = '{{$item->estado_id}}'
+	      		data_obsequio = '{{$item->ind_obsequio}}'
 	      		>
 		        <td>  
 
@@ -68,10 +71,13 @@
 		        </td>
 
 		        <td>{{$item->cantidad}}</td>
-		        <td>{{$item->producto->NOM_PRODUCTO}}</td>
-
 		        <td>
-
+		        	{{$item->producto->NOM_PRODUCTO}}
+		        	@if($item->ind_obsequio == 1)
+		        		<br>
+			         	<span class="badge badge-danger">OBSEQUIO</span>
+			        @endif
+			        <br>
 		            @if($item->estado_id == 'EPP0000000000003') 
 		              <span class="badge badge-warning">{{$item->NOM_CATEGORIA}}</span> 
 		            @else
@@ -82,12 +88,13 @@
 			            @endif
 
 		            @endif
-		        </td>
 
+
+		        </td>
 
 		        <td>{{$item->precio}}</td>
 		        <td>{{$item->total}}</td>
-		        <td width="350px" class='select_empresa'>
+		        <td width="250px" class='select_empresa'>
 		        	<div class="form-group">
                         <div class="col-sm-12 abajocaja" >
 
@@ -103,13 +110,37 @@
                         </div>
                     </div>
 		        </td>
+
+		        <td width="250px" class='select_orden_detalle_pedido_id'>
+		        	<div class="form-group">
+                        <div class="col-sm-12 abajocaja" >
+
+			        	@if($item->ind_obsequio == 1)
+                          	{!! Form::select( 'orden_detalle_pedido_id', $comboorden_detalle, array($orden_obsequio_id),
+                                            [
+                                              'class'       => 'select2 form-control control input-sm' ,
+                                              'id'          => 'orden_detalle_pedido_id',
+                                              'required'    => '',
+                                              $disabled,
+                                              'data-aw'     => '1',
+                                            ]) !!}
+				        @endif
+
+ 
+
+                        </div>
+                    </div>
+		        </td>
+
+
+
 	      	</tr>                    
 	    @endforeach
 
 	    </tbody>
 	    <tfooter>
 	      <tr>
-		    <th colspan="5"></th>
+		    <th colspan="4"></th>
 	        <th>{{$pedido->total}}</th>
 	        <th></th>
 	      </tr>

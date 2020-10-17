@@ -63,6 +63,8 @@
                           </div>
                       </div>
 
+                      <input type="hidden" name="idopcion" id ='idopcion' value ='{{$idopcion}}'>
+
 
                     </div>
 

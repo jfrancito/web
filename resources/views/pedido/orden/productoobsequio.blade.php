@@ -7,7 +7,7 @@
     </thead>
     <tbody>
       @foreach($listaproductos as $item)
-        <tr class='filaproducto'
+        <tr class='filaproductoobsequio'
             data_ipr='{{Hashids::encode(substr($item->COD_PRODUCTO, -13))}}'
             data_ppr='{{substr($item->COD_PRODUCTO, 0, 3)}}'
             data_npr='{{$item->NOM_PRODUCTO}}'
@@ -69,6 +69,7 @@
               <input  type="text"
                       id="precio" name='precio' 
                       value="" 
+                      disabled="disabled" 
                       placeholder="Precio"
                       required = "" class="form-control input-sm importe" data-parsley-type="number"
                       autocomplete="off" data-aw="2"/>
@@ -80,7 +81,7 @@
       <div class="col-sm-12">
         <div class="col-sm-12">
           <div class="be-checkbox">
-            <input id="obsequio" name='obsequio' type="checkbox">
+            <input id="obsequio" name='obsequio' type="checkbox" checked="checked" disabled="disabled">
             <label for="obsequio" >Obsequio</label>
           </div>
         </div>
@@ -91,16 +92,3 @@
     </div>
 </div>
 
-<!--
-<div class='row-menu'>
-  <div class='row'>
-    <div class="col-sm-12 col-mobil">
-      <div class="col-fr-2 col-atras">
-        <span class="mdi mdi-arrow-left"></span>
-      </div> 
-      <div class="col-fr-10 col-total">
-        <strong>Seleccione un producto</strong>
-      </div> 
-    </div>
-  </div>
-</div>-->

@@ -1,3 +1,9 @@
+.txtobsequio{
+  color: #eb6357;
+  font-style: italic;
+  font-weight: bold;
+}
+
 .tablaproducto td{
   padding: 3px 10px !important;
 }
@@ -675,6 +681,19 @@
   margin-bottom: 0px;
 }
 
+
+.btn-guardar-obsequio{
+  position: absolute;
+  top: -44px;
+  right: -5px;
+  padding: 0px 10px;
+  font-size: 0.85em;
+  border-radius: 0px;
+  padding-bottom: 7px;
+}
+.btn-guardar-obsequio .mdi-check{
+  margin-bottom: 0px;
+}
 
 
 .crearpedido .productoseleccion{

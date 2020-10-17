@@ -22,11 +22,23 @@
 	    <tbody>
 
 	   @foreach($pedido->detallepedido as $item)
-		      <tr 	class= 'fila_producto'
+
+
+   			@php $disabled  =   ""; @endphp
+            @if(!is_null($item->estado_id) or $item->estado_id != '')
+            	@php $disabled  =   "disabled"; @endphp
+            @endif
+		    <tr 	class= 'fila_producto'
 		      		data_detallepedido = "{{$item->id}}" 
 		      		data_pedido = "{{$item->pedido_id}}"
+		      		dis
 		      		>
-		        <td>{{$item->producto->NOM_PRODUCTO}}</td>
+		        <td>{{$item->producto->NOM_PRODUCTO}}
+
+		        	@if($item->ind_obsequio == 1)
+			         <span class="badge badge-danger">OBSEQUIO</span>
+			        @endif
+		        </td>
 
 		        <td class='estado_detalle_pedido'>
 
@@ -40,7 +52,12 @@
 			              	{{$funcion->funciones->data_categoria($item->estado_id)->NOM_CATEGORIA}}
 			              </span> 
 			            @else
-			                <span class="badge badge-primary">GENERADO</span>
+				            @if($item->estado_id == 'EPP0000000000004') 
+				              <span class="badge badge-success">{{$funcion->funciones->data_categoria($item->estado_id)->NOM_CATEGORIA}}
+				              </span> 
+				            @else
+				                <span class="badge badge-primary">GENERADO</span>
+				            @endif
 			            @endif
 		            @endif
 		        </td>
@@ -53,6 +70,7 @@
 		                   name="cantidad"
 		                   value='{{$item->cantidad}}'
 		                   class="form-control input-sm dinero updatecantidad"
+		                   {{$disabled}}
 		                   >
 
 		        </td>
@@ -63,6 +81,7 @@
 		                   name="precio"
 		                   value='{{$item->precio}}'
 		                   class="form-control input-sm dinero updateprice"
+		                   {{$disabled}}
 		                   >
 
 		        	
@@ -72,10 +91,14 @@
 		        </td>
 
 		        <td class = 'rechazar'>
-		          <span class="badge badge-danger btn-eyes btn-detalle-pedido-rechazar" 
-		                data-id="{{$item->id}}">
-		            <span style='color:#fff' class="mdi mdi-close md-trigger"></span>
-		          </span>
+
+		            @if(is_null($item->estado_id) or $item->estado_id == '') 
+				        <span class="badge badge-danger btn-eyes btn-detalle-pedido-rechazar" 
+				                data-id="{{$item->id}}">
+				            <span style='color:#fff' class="mdi mdi-close md-trigger"></span>
+				        </span>
+		            @endif
+
 		        </td>
 
 		      </tr>                    

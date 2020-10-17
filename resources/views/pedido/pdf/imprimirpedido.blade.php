@@ -313,19 +313,18 @@
 			    <tr class='{{$color}}'>
 				    <td class='titulo'>{{$item->cantidad}}</td>
 				    <td>{{$item->producto->NOM_PRODUCTO}}
+			            @if($item->ind_obsequio == '1')
+			              	(OBSEQUIO)
+			            @endif
 				    	<br>
 				    	ORDEN : {{$item->orden_id}}
 				    </td>
-
 				    <td class='titulo'>
-
 			            @if(is_null($item->estado_id) or $item->estado_id == '')
 			              	GENERADO
 			            @else
 			                {{$funcion->funciones->data_categoria($item->estado_id)->NOM_CATEGORIA}}
 			            @endif
-
-						
 					</td>
 				    <td class='titulo'>
 			            @if(is_null($item->empresa_receptora_id) or $item->empresa_receptora_id == '')

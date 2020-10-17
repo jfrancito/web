@@ -7,6 +7,7 @@ use Session;
 use PDO;
 use App\CMPContrato,App\STDEmpresaDireccion,App\CMPCategoria,App\CMPDocumentoCtble,App\ALMProducto,App\CMPDetalleProducto,App\WEBDetalleDocumentoAsociados;
 USE App\WEBDocumentoNotaCredito,App\WEBDetallePedido,App\STDEmpresa,App\User;
+use App\CMPOrden;
 class Osiris{
 
 	public $msjerror;
@@ -25,10 +26,11 @@ class Osiris{
         /************** GUARDAR ORDEN DE PEDIDO ****************/
 
 
-        public function guardar_orden_pedido_por_detalle($pedido,$pedidoagrupado,$array_detalle_pedido_id,$empresa_id) {
+        public function guardar_orden_pedido_por_detalle($pedido,$pedidoagrupado,$array_detalle_pedido_id,$empresa_id,$respuesta_obq) {
 
 
                 //if ($pedido->estado != 'EM') { $this->msjerror = 'Documento ya fue aceptado'; return false;}
+
 
                 $detallepedido                  =       WEBDetallePedido::where('pedido_id','=',$pedido->id)
                                                         ->whereIn('id',$array_detalle_pedido_id)
@@ -91,6 +93,8 @@ class Osiris{
                 $cod_estado                                     =       '1';
                 $cod_usuario_registro                           =       Session::get('usuario')->name;
                 $cod_categoria_actividad_negocio                =       'VENTA_MERCADERIA';
+
+
 
 
 
@@ -358,14 +362,52 @@ class Osiris{
                         $stmt->execute();
 
 
+
+
+                        $orden_obsequio_id = '';
+                        foreach($respuesta_obq as $objq){
+                                $lista_array_detalle_pedido_obq         =       json_decode($objq['detalle'], true);
+                                foreach($lista_array_detalle_pedido_obq as $o){
+                                        if($o['detalle_pedido_id'] == $item->id){
+                                                $orden_obsequio_id = $o['orden_detalle_pedido_id'];
+                                        }
+                                }       
+                        }
+
+
+                        //GLOSA OBSEQUIO
+                        $glosa_orden_obsequio_id = '';
+                        foreach($respuesta_obq as $objq){
+                                $lista_array_detalle_pedido_obq         =       json_decode($objq['detalle'], true);
+                                foreach($lista_array_detalle_pedido_obq as $o){
+                                        if($o['detalle_pedido_id'] == $item->id){
+                                                $glosa_orden_obsequio_id = $glosa_orden_obsequio_id.' '.$o['orden_detalle_pedido_id'].',';
+                                        }
+                                }       
+                        }
+
+
                         $cabecera                               =   WEBDetallePedido::find($item->id);
                         $cabecera->orden_id                     =   $codorden[0];
                         $cabecera->empresa_receptora_id         =   $empresa_id;
                         $cabecera->estado_id                    =   'EPP0000000000004';
+                        $cabecera->orden_referencia_obsequio_id =   $orden_obsequio_id;
                         $cabecera->fecha_mod                    =   date('d-m-Y H:i:s');
                         $cabecera->usuario_mod                  =   Session::get('usuario')->id;
                         $cabecera->save();
 
+                        //update a documento contable
+
+                }
+
+
+
+               if($glosa_orden_obsequio_id != ''){
+
+                     $glosa_orden_obsequio_id = '//OV '.$glosa_orden_obsequio_id;
+                     $ordenpedido = CMPOrden::where('COD_ORDEN','=',$codorden[0])->first();
+                     $ordenpedido->TXT_GLOSA = $ordenpedido->TXT_GLOSA.' '.$glosa_orden_obsequio_id;
+                     $ordenpedido->save();
 
                 }
 

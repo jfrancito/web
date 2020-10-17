@@ -87,6 +87,9 @@
           <span class="cell-detail-description"><b>Producto Registrados : </b> {{$funcion->funciones->pedido_producto_registrado($item)}}</span>
           <span class="cell-detail-description"><b>Producto Rechazados : </b> {{$funcion->funciones->pedido_producto_rechazado($item)}}</span>
         
+          <span class="cell-detail-description"><b>Obsequio : </b> {{$funcion->funciones->pedido_producto_obsequio($item)}}</span>
+
+
         </td>
 
 
