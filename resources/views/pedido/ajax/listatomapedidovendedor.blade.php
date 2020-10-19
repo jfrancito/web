@@ -59,11 +59,11 @@
         </td>
         <td>
           
-<!--             <a href="{{ url('/obsequio-orden-pedido/'.Hashids::encode(substr($item->id, -8))).'/'.$idopcion }}" class="tooltipcss opciones">
-              <span class="badge badge-primary btn-eyes">
-                agregar obsequios
-              </span>
-            </a> -->
+        <a href="{{ url('/obsequio-orden-pedido/'.Hashids::encode(substr($item->id, -8))).'/'.$idopcion }}" class="tooltipcss opciones">
+          <span class="badge badge-primary btn-eyes">
+            agregar obsequios
+          </span>
+        </a>
 
 
         </td>
