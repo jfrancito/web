@@ -17,7 +17,13 @@
   <tbody>
    @foreach($listapedidos as $item)
       <tr>
-        <td>{{$item->codigo}}</td>
+
+          <td class="cell-detail">
+            <span><?php echo wordwrap($item->empresa->NOM_EMPR,20,"<br>\n"); ?></span> 
+            <span>{{$item->codigo}}</span>
+          </td>
+
+
         <td>
 
           @if($item->COD_CATEGORIA == 'EPP0000000000003') 
