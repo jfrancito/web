@@ -47,7 +47,7 @@ class PedidoNotificacionDespacho extends Command
 
 
         $lista_pedidos                  =   WEBPedido::where('WEB.pedidos.ind_notificacion_despacho','=',0)
-                                            //->where('WEB.pedidos.fecha_venta','=',$fecha_actual)
+                                            ->where('WEB.pedidos.centro_id','=','CEN0000000000002')
                                             ->get();
 
 
