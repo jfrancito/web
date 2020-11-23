@@ -54,6 +54,10 @@ class Controller extends BaseController
 		$this->prefijomaestro			= $this->funciones->prefijomaestra();
 		$this->fechavacia				= "1900-01-01 00:00:00.000";
 
+		$this->fecha_hora 				= date_format(date_create(date('Y-m-d')), 'd-m-Y H:m:s');
+		$this->fecha_pa 				= date_format(date_create(date('Y-m-d')), 'd-m-Y');
+
+
 	}
 
 

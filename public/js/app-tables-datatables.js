@@ -11,6 +11,24 @@ var App = (function () {
         "<'row be-datatable-footer'<'col-sm-5'i><'col-sm-7'p>>"
     } );
 
+    $("#tablesolicitud").dataTable({
+        "lengthMenu": [[500, 1000, -1], [500, 1000, "All"]],
+        order : [[ 2, "desc" ]],
+        "bPaginate": false,
+        "bInfo": false,
+        "oLanguage": {
+            "sSearch": ""
+        },
+        responsive: true,
+        columnDefs: [ 
+            {
+                orderable: false,
+                targets:   0
+            }
+        ],
+
+    });
+
 
 
     var collapsedGroups = {};

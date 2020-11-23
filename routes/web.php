@@ -270,6 +270,13 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-orden-cen-mobil-modal', 'AtenderPedidoDespachoController@actionAjaxOrdenCenMobilModal');
 
 
+	Route::any('/gestion-carros-ingreso-salida/{idopcion}', 'DespachoCarroController@actionListarCarros');
+	Route::any('/ajax-listar-carros-ingreso-salida', 'DespachoCarroController@actionAjaxListarCarros');
+	Route::any('/ajax-modal-detalle-carro', 'DespachoCarroController@actionAjaxModalDetalleCarro');
+	Route::any('/editar-carro-despacho', 'DespachoCarroController@actionEditarCarroDespacho');
+
+
+
 
    	Route::get('buscarcliente', function (Illuminate\Http\Request  $request) {
         $term = $request->term ?: '';

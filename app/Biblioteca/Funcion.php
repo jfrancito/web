@@ -19,6 +19,56 @@ use PDO;
 class Funcion{
 
 
+	public function lista_carro_ingreso_salida($fechainicio,$fechafin,$categoria_estado_carro_id,$tipo_ingreso_id) {
+
+
+	    $vacio 						=   "";
+	    $nulo 						=   Null;
+	    $tipooperacion 				=   'BUS';
+		$centro_id 					= 	Session::get('centros')->COD_CENTRO;
+		$empresa_id 				= 	Session::get('empresas')->COD_EMPR;
+
+
+
+	    $activo 					=   1;
+	    $idmoneda 					=   'CERO';
+	    $cero 						=   0;
+	    $uno 						=   1;
+	    $idestadoorden 				=   '1CH000000001';
+	    $categoria_estado_carro_id 			=   $categoria_estado_carro_id;
+	    $opcionfecha 				=   'FO';
+
+    	/*Lista para seleccionar solititud*/
+		$stmt = DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC ALM.CARRO_INGRESO_SALIDA_LISTAR ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?');
+
+        $stmt->bindParam(1, $tipooperacion ,PDO::PARAM_STR);
+        $stmt->bindParam(2, $vacio ,PDO::PARAM_STR);
+        $stmt->bindParam(3, $empresa_id ,PDO::PARAM_STR);
+        $stmt->bindParam(4, $centro_id ,PDO::PARAM_STR);
+
+
+        $stmt->bindParam(5, $vacio ,PDO::PARAM_STR);
+        $stmt->bindParam(6, $vacio ,PDO::PARAM_STR);
+        $stmt->bindParam(7, $vacio ,PDO::PARAM_STR);
+        $stmt->bindParam(8, $vacio ,PDO::PARAM_STR);
+
+        $stmt->bindParam(9, $uno ,PDO::PARAM_STR);
+        $stmt->bindParam(10, $tipo_ingreso_id ,PDO::PARAM_STR);
+        $stmt->bindParam(11, $categoria_estado_carro_id ,PDO::PARAM_STR);
+        $stmt->bindParam(12, $vacio ,PDO::PARAM_STR);
+
+        $stmt->bindParam(13, $fechainicio ,PDO::PARAM_STR);
+        $stmt->bindParam(14, $fechafin ,PDO::PARAM_STR);
+        $stmt->bindParam(15, $activo ,PDO::PARAM_STR);
+        $stmt->execute();
+
+        $listacarros = $stmt;
+        return $listacarros;
+
+	}
+
+
+
 	public function recalcular_grupo_orden_mobil_33_palets($array_detalle_producto,$count_33_paltes){
 
 		$mayor_mobil						= 	$this->mayor_grupo_mobil($array_detalle_producto);
@@ -1880,6 +1930,20 @@ class Funcion{
 
 		$combo_jefes_ventas  	= 	array('' => "Seleccione Responsable",'1' => "TODOS") + $lista_jefes_ventas;
 		return $combo_jefes_ventas;		 			
+	}
+
+
+	public function combo_estado_carros() {
+
+
+        $lista_estado_carros = 		CMPCategoria::where('CMP.CATEGORIA.COD_ESTADO','=',1)
+        							->where('CMP.CATEGORIA.IND_ACTIVO','=',1)
+        							->whereIn('COD_CATEGORIA',['ETC0000000000001' ,'ETC0000000000002','ETC0000000000003','ETC0000000000004'])
+        							->pluck('CMP.CATEGORIA.NOM_CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA')
+									->toArray();
+
+		$combo_estado_carros  	= 	$lista_estado_carros;
+		return $combo_estado_carros;		 			
 	}
 
 
