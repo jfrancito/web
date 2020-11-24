@@ -25,9 +25,12 @@ class OrdenPedidoController extends Controller
 		$pedido_id 					= 	$request['pedido_id'];
 		$pedido_id 					= 	$this->funciones->desencriptar_id('1CIX-'.$pedido_id,8);
 		$pedido 					=   WEBPedido::where('id','=',$pedido_id)->first();
-		$lista_deuda_cliente		= 	$this->funciones->lista_saldo_cuenta_documento($this->fechaactual,'TCO0000000000068',$pedido->cliente_id,'CON');
+		$lista_deuda_cliente		= 	$this->funciones->lista_saldo_cuenta_documento_todas_empresas($this->fechaactual,'TCO0000000000068',$pedido->cliente_id,'CON');
 		$funcion 					= 	$this;			
 		$limite_credito				= 	$this->funciones->data_regla_limite_credito($pedido->cliente_id);
+
+        $deuda_antigua      =   DB::select('exec WEB.DEUDA_MAS_ANTIGUA_CLIENTE ?,?,?,?,?,?,?,?,?,?,?', array('','','','',date("Y-m-d"),$pedido->cliente_id,'TCO0000000000068','','','',''));
+
 
 
 		return View::make('pedido/ajax/modaldeudacliente',
@@ -37,6 +40,7 @@ class OrdenPedidoController extends Controller
 							 'lista_deuda_cliente'   	=> $lista_deuda_cliente,
 							 'funcion'   				=> $funcion,
 							 'limite_credito'   		=> $limite_credito,
+							 'deuda_antigua'   			=> $deuda_antigua,
 						 ]);
 	}
 

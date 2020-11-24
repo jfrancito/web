@@ -956,6 +956,26 @@ class Funcion{
 
 	}
 
+	public function lista_saldo_cuenta_documento_todas_empresas($fecha_corte,$tipo_contrato,$cliente_id,$clase_con){
+
+		$empresa_id = Session::get('empresas')->COD_EMPR;
+
+        $stmt 	= 	DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC WEB.CMP_SALDO_CUENTA_DOCUMENTO 
+        			@FEC_CORTE = ?,
+        			@TIPO = ?,
+        			@CLIENTE = ?,
+        			@CLASECON = ?'
+        			);                  
+        $stmt->bindParam(1, $fecha_corte  ,PDO::PARAM_STR);
+        $stmt->bindParam(2, $tipo_contrato ,PDO::PARAM_STR);                   
+        $stmt->bindParam(3, $cliente_id  ,PDO::PARAM_STR);                 
+        $stmt->bindParam(4, $clase_con  ,PDO::PARAM_STR); 
+        $stmt->execute();
+        return $stmt;
+
+	}
+
+
 	public function crearrolwpan($field_grupo, $index, $grupo){
 
 		$sw_crear  =  0;

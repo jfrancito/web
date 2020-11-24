@@ -17,6 +17,112 @@
 </div>
 <div class="modal-body">
   <div class="scroll_text">
+
+
+                             <table class='table'>
+                             <tbody>
+                                 <tr>  
+                                     <td width=  "100"  style=  "font-size:13px;font-weight:bold;text-align: center;" colspan="4">  Venta mas antigua por pagar:  </td>
+                                 </tr>
+                                @php 
+                                    $sfi =  0;
+                                    $shr =  0;
+                                    $sia =  0;
+                                    $sic =  0;
+                                    $sii =  0;
+                                    $sin =  0;
+                                    $sis =  0;
+                                    $sit =  0;
+                                @endphp
+
+                                @foreach($deuda_antigua as $deu)
+                                    @if($deu->NOM_EMPR == 'FI' && $sfi ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;">
+                                            	<strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small>
+                                            </td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sfi =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'HR' && $shr ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $shr =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'IA' && $sia ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sia =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'IC' && $sic ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sic =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'II' && $sii ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sii =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'IN' && $sin ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sin =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'IS' && $sis ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sis =  1; @endphp
+                                    @endif
+
+                                    @if($deu->NOM_EMPR == 'IT' && $sit ==0)
+                                        <tr> 
+                                            <td style=  "font-size:13px;"><strong>Empresa:</strong> <small style="font-size:13px;color:#191970">{{$deu->NOM_EMPR}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Documento:</strong> <small style="font-size:13px;color:#191970">{{$deu->NroDocumento}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Días transcurrido:</strong> <small style="font-size:13px;color:#191970">{{$deu->diasTranscurridos}}</small></td>
+                                            <td style=  "font-size:13px;"><strong>Saldo a pagar:</strong> <small style="font-size:13px;color:#191970">{{number_format($deu->CAN_SALDO, 2, '.', ',')}}</small></td>
+                                        </tr>
+                                        @php $sit =  1; @endphp
+                                    @endif
+
+                                @endforeach
+                             </tbody>
+                             </table>
+
+
   	<table class="table" style="font-size: 0.85em;">
 	    <thead>
 	      <tr>
