@@ -933,8 +933,13 @@ class OrdenPedidoController extends Controller
 
 			//adicionar clientes
 			$id_vendedor_adicionar = '';
+
 			if(Session::get('usuario')->fuerzaventa_id=='JVE0000000000016'){
 				$id_vendedor_adicionar = 'adicionar';
+			}
+
+			if(Session::get('usuario')->fuerzaventa_id=='JVE0000000000091'){
+				$id_vendedor_adicionar = 'adicionarcix';
 			}
 
 

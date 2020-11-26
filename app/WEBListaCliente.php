@@ -55,10 +55,24 @@ class WEBListaCliente extends Model
 
         if(trim($name) != ''){
 
-            $query->Where(function($q){
+
+            if(trim($name)=='adicionarcix'){
+
+                $query->Where(function($q){
+                    $q->Where('COD_CATEGORIA_JEFE_VENTA','=', @Session::get('usuario')->fuerzaventa_id = null ? 'COD_CATEGORIA_JEFE_VENTA' : Session::get('usuario')->fuerzaventa_id);
+                    $q->orWhereIn('COD_CATEGORIA_JEFE_VENTA', ['JVE0000000000074']);
+                });
+
+            }else{
+
+                $query->Where(function($q){
                     $q->Where('COD_CATEGORIA_JEFE_VENTA','=', @Session::get('usuario')->fuerzaventa_id = null ? 'COD_CATEGORIA_JEFE_VENTA' : Session::get('usuario')->fuerzaventa_id);
                     $q->orWhereIn('COD_CATEGORIA_JEFE_VENTA', ['JVE0000000000041','JVE0000000000023']);
                 });
+
+            }
+
+
 
 
 
