@@ -91,7 +91,13 @@ class DespachoCarroController extends Controller
 
 
 		if($estado->COD_CATEGORIA == 'ETC0000000000001'){
-			$estado_envio 					= 	CMPCategoria::where('COD_CATEGORIA','=','ETC0000000000002')->first();
+
+			if($carro->TIPO_INGRESO == 'IGC0000000000002'){
+				$estado_envio 					= 	CMPCategoria::where('COD_CATEGORIA','=','ETC0000000000004')->first();
+			}else{
+				$estado_envio 					= 	CMPCategoria::where('COD_CATEGORIA','=','ETC0000000000002')->first();
+			}
+			
 		}else{
 			if($estado->COD_CATEGORIA == 'ETC0000000000002'){
 				$estado_envio 					= 	CMPCategoria::where('COD_CATEGORIA','=','ETC0000000000003')->first();
@@ -140,6 +146,11 @@ class DespachoCarroController extends Controller
 			$empresa_id 				= 	Session::get('empresas')->COD_EMPR;
 			$cod_estado 				=  	'1';
 			$cod_usuario_registro                           =       Session::get('usuario')->name;
+
+
+
+
+
 			// 	CMP.Isp_OrdenCompra_IAE
 	        $stmt = DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC ALM.CARRO_INGRESO_SALIDA_DETALLE_IUD ?,?,?,?,?,?,?,?,?,?,?');
 
