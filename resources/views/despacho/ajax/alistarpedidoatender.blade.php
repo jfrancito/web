@@ -58,6 +58,14 @@
                   Atender Pedido
                 </a>  
               </li>
+
+              <li>
+                <a href="{{ url('/excel-orden-despacho/'.$idopcion.'/'.Hashids::encode(substr($item->id, -8))) }}">
+                  Descargar Pedido Excel
+                </a>  
+              </li>
+
+
             </ul>
           </div>
         </td>

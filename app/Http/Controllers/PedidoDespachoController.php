@@ -1741,11 +1741,17 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto 			=	array();
 
 
+
 		foreach($data_orden_cen as $obj){
+
+
 
 		    $ordencen_id 					= 	$obj['ordencen_id'];
 		    $orden 							= 	CMPOrden::where('COD_ORDEN','=',$ordencen_id)->first();
 			$lista_detalle_ordencen			= 	$this->funciones->lista_orden_cen_detalle($ordencen_id);
+
+
+
 			$array_nuevo_producto 			=	array();
 			$grupo_orden 					= 	'0';
 			$grupo_movil 					= 	'0';
@@ -1754,6 +1760,9 @@ class PedidoDespachoController extends Controller
 			if($tipo_grupo == 'oc_grupo'){	$grupo 	= 	$grupo + 1;}	
 			$rowspan 						= 	0;
 			$numero_mobil 					= 	$numero_mobil + 1;
+
+
+
 
 			while($row = $lista_detalle_ordencen->fetch())
 			{
@@ -1774,6 +1783,8 @@ class PedidoDespachoController extends Controller
 				$cantidad_sacos				= 	$row['CAN_PRODUCTO']/$producto->CAN_BOLSA_SACO;
 				$palets 					= 	$cantidad_sacos/$producto->CAN_SACO_PALET;
 				//
+				//dd("hola3");
+
 
 				$array_nuevo_producto		= 	
 

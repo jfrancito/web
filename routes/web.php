@@ -28,6 +28,8 @@ Route::group(['middleware' => ['guestaw']], function () {
 Route::get('/cerrarsession', 'UserController@actionCerrarSesion');
 Route::get('/cambiarperfil', 'UserController@actionCambiarPerfil');
 Route::get('/despacho/print-pdf', [ 'as' => 'despacho.printpdf', 'uses' => 'OrdenPedidoController@RepSalida']);
+Route::any('/excel-orden-despacho-email/{idopcion}/{idordendespacho}', 'AtenderPedidoDespachoController@actionExcelOrdenDespachoEmail');
+
 
 Route::group(['middleware' => ['authaw']], function () {
 
@@ -268,6 +270,11 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-agregar-servicio', 'AtenderPedidoDespachoController@actionAjaxAgregarServicio');
 	Route::any('/ajax-rechazar-producto', 'AtenderPedidoDespachoController@actionAjaxRechazarProducto');
 	Route::any('/ajax-orden-cen-mobil-modal', 'AtenderPedidoDespachoController@actionAjaxOrdenCenMobilModal');
+
+	Route::any('/excel-orden-despacho/{idopcion}/{idordendespacho}', 'AtenderPedidoDespachoController@actionExcelOrdenDespacho');
+
+
+
 
 
 	Route::any('/gestion-carros-ingreso-salida/{idopcion}', 'DespachoCarroController@actionListarCarros');

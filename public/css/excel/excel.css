@@ -46,3 +46,14 @@ h1{
 .warning{
   background-color: #f6c163 !important;
 }
+
+/*.vcent { display: table;  }*/
+
+.vcent{ display: table-cell; vertical-align:middle;text-align: center;}
+
+.gris{
+    background: #C8C9CA;
+}
+.blanco{
+  background: #ffffff;
+}

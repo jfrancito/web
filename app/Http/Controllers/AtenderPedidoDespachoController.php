@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
+use Maatwebsite\Excel\Facades\Excel;
 
 use View;
 use Session;
@@ -18,8 +19,63 @@ use PDF;
 use App\WEBOrdenDespacho,App\WEBDetalleOrdenDespacho,App\CMPOrden,App\WEBListaCliente,App\ALMProducto,App\CMPCategoria;
 use App\STDEmpresa,App\ALMCentro,App\ALMAlmacen;
     
+
+
 class AtenderPedidoDespachoController extends Controller
 {
+
+
+	public function actionExcelOrdenDespacho($idopcion,$idordendespacho,Request $request)
+	{
+		
+		set_time_limit(0);
+		$idordendespacho 			= 	$this->funciones->decodificarmaestra($idordendespacho);
+
+        $pedido     =   	WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
+                                        ->where('id','=',$idordendespacho)
+                                        ->first();
+
+		$titulo 					=   'Pedido-despacho-'.$pedido->codigo;
+		$funcion 					= 	$this->funciones;
+
+
+
+	    Excel::create($titulo, function($excel) use ($pedido,$titulo,$funcion) {
+	        $excel->sheet('Pedidos', function($sheet) use ($pedido,$titulo,$funcion) {
+
+	            $sheet->loadView('despacho/excel/pedido')->with('pedido',$pedido)
+	                                         		 			   ->with('titulo',$titulo)
+	                                         		 			   ->with('funcion',$funcion);                                        		 
+	        });
+	    })->export('xls');
+
+	}
+
+
+	public function actionExcelOrdenDespachoEmail($idopcion,$idordendespacho,Request $request)
+	{
+		
+		set_time_limit(0);
+		$idordendespacho 			= 	$this->funciones->decodificarmaestra($idordendespacho);
+
+        $pedido     =   	WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
+                                        ->where('id','=',$idordendespacho)
+                                        ->first();
+
+		$titulo 					=   'Pedido-despacho-'.$pedido->codigo;
+		$funcion 					= 	$this->funciones;
+
+	    Excel::create($titulo, function($excel) use ($pedido,$titulo,$funcion) {
+	        $excel->sheet('Pedidos', function($sheet) use ($pedido,$titulo,$funcion) {
+
+	            $sheet->loadView('despacho/excel/pedido')->with('pedido',$pedido)
+	                                         		 			   ->with('titulo',$titulo)
+	                                         		 			   ->with('funcion',$funcion);                                        		 
+	        });
+	    })->store('xls');;
+
+	}
+
 
 
 	public function actionAjaxAgregarServicio(Request $request)

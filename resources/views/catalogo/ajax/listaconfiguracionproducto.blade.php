@@ -22,6 +22,7 @@
         </span>
       </td>
       <td class='center'>
+        <span class="cambiar-contrato mdi mdi-file-text file-text-0" data_sw="0"></span>
           <b>{{number_format($item->CAN_BOLSA_SACO, 4, '.', ',')}}</b>
       </td>
       <td>

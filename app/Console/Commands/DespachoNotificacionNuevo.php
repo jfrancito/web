@@ -9,6 +9,7 @@ use App\WEBRegla,App\WEBIlog,App\WEBMaestro,App\WEBOrdenDespacho,App\User,App\WE
 use Mail;
 use PDO;
 use App\Biblioteca\Funcion;
+use Hashids;
 
 class DespachoNotificacionNuevo extends Command
 {
@@ -60,6 +61,13 @@ class DespachoNotificacionNuevo extends Command
 
         foreach($lista_pedidos as $item){
 
+
+            $nombre_archivo     =   'Pedido-despacho-'.$item->codigo.'.xls';
+            $file               =   storage_path(). "/exports/".$nombre_archivo;
+            $array              =   Array();
+            file_get_contents('http://10.1.50.2:8080/web/excel-orden-despacho-email/Op/'.Hashids::encode(substr($item->id, -8)));
+
+            //file_get_contents('http://localhost:81/web/excel-orden-despacho-email/Op/'.Hashids::encode(substr($item->id, -8)));
             // correos from(de)
             $emailfrom          =   WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00001')->first();
             // correos principales y  copias
@@ -74,11 +82,15 @@ class DespachoNotificacionNuevo extends Command
                                 );
 
 
-            Mail::send('emails.notificaciondespachonuevo', $array, function($message) use ($emailfrom,$email,$codigo)
+            Mail::send('emails.notificaciondespachonuevo', $array, function($message) use ($emailfrom,$email,$codigo,$file,$nombre_archivo)
             {
 
                 $emailprincipal     = explode(",", $email->correoprincipal);
-                $message->from($emailfrom->correoprincipal, 'Pedido despacho registrado'.' '.$codigo);
+                $message->from($emailfrom->correoprincipal, 'Pedido despacho registrado'.' '.$codigo)->attach($file, [
+                        'as' => $nombre_archivo,
+                        'mime' => 'application/xls',
+                    ]);
+
                 if($email->correocopia<>''){
                     $emailcopias        = explode(",", $email->correocopia);
                     $message->to($emailprincipal)->cc($emailcopias);
