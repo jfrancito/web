@@ -10,6 +10,7 @@ use App\STDEmpresa,App\ALMCentro,App\STDEmpresaDireccion,App\CMPDocumentoCtble,A
 use App\WEBDetalleDocumentoAsociados,App\WEBReglaCreditoCliente,App\WEBDetalleOrdenDespacho,App\WEBViewDetalleOrdenDespacho;
 use App\WEBListaClienteTodo,App\STDTrabajador,App\WEBLISTASERIE;
 use App\WEBOrdenDespacho;
+use App\ALMProducto;
 
 
 use App\User;
@@ -1396,6 +1397,12 @@ class Funcion{
 
 	}
 
+
+	public function data_producto($producto_id) {
+
+		$producto 				= 	ALMProducto::where('COD_PRODUCTO','=',$producto_id)->first();
+        return $producto;
+	}
 
 	public function data_documento($documento_id) {
 

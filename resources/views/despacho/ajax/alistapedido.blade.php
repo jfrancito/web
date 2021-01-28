@@ -311,7 +311,7 @@
     <br>
     <div class="col-xs-12" >
 
-      <div class="col-xs-5">
+      <div class="col-xs-6">
 
         <div class="panel panel-default panel-table">
           <div class="panel-heading"><b>Muestras</b></div>
@@ -321,6 +321,7 @@
                 <tr>
                   <th>Producto</th>
                   <th class='center'>Muestra</th>
+                  <th class='center'>Bolsas a sacos</th>
                   <th class='center'>Editar</th>
                 </tr>
               </thead>
@@ -340,6 +341,11 @@
                         <b>{{number_format($item['muestra'], 2, '.', ',')}}</b>
                     </td>
                     <td class='center'>
+                        {{$funcion->funciones->data_producto($item['producto_id'])->CAN_BOLSA_SACO}}
+                    </td>
+            
+
+                    <td class='center'>
                         <input type="text"
                          id="muestra" 
                          name="muestra"
@@ -357,7 +363,7 @@
 
 
       </div>
-      <div class="col-xs-7" style="text-align: right;">
+      <div class="col-xs-6" style="text-align: right;">
           <form method="POST"  action="{{ url('/crear-orden-pedido-despacho/'.$opcion_id) }}" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
               {{ csrf_field() }}
             <input type="hidden" name="array_detalle_producto" id='array_detalle_producto' value='{{json_encode($array_detalle_producto)}}'>
