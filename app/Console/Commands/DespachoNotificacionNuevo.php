@@ -66,9 +66,9 @@ class DespachoNotificacionNuevo extends Command
             $file               =   storage_path(). "/exports/".$nombre_archivo;
             $array              =   Array();
 
-            //file_get_contents('http://10.1.50.2:8080/web/excel-orden-despacho-email/Op/'.Hashids::encode(substr($item->id, -8)));
+            file_get_contents('http://10.1.50.2:8080/web/excel-orden-despacho-email/Op/'.Hashids::encode(substr($item->id, -8)));
 
-            file_get_contents('http://localhost:81/web/excel-orden-despacho-email/Op/'.Hashids::encode(substr($item->id, -8)));
+            //file_get_contents('http://localhost:81/web/excel-orden-despacho-email/Op/'.Hashids::encode(substr($item->id, -8)));
             // correos from(de)
             $emailfrom          =   WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00001')->first();
             // correos principales y  copias
