@@ -23,4 +23,10 @@ class WEBDetalleOrdenDespacho extends Model
     }
 
 
+    public function unidadmedida()
+    {
+        return $this->belongsTo('App\CMPCategoria', 'unidad_medida_id', 'COD_CATEGORIA');
+    }
+
+
 }

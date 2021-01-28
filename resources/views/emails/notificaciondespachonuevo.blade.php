@@ -3,36 +3,36 @@
     <head>
         <meta charset="UTF-8" />
         <style type="text/css">
-        	section{
-        		width: 100%;
-        		background: #E8E8E8;
-        		padding: 0px;
-        		margin: 0px;
-        	}
+            section{
+                width: 100%;
+                background: #E8E8E8;
+                padding: 0px;
+                margin: 0px;
+            }
 
-        	.panelcontainer{
-        		width: 50%;
-        		background: #fff;
-        		margin: 0 auto;
+            .panelcontainer{
+                width: 50%;
+                background: #fff;
+                margin: 0 auto;
 
 
-        	}
+            }
             .fondogris{
                 background: #cce6fd;
                 text-align: center;
             }
-        	.panelhead{
-        		background: #eb6357;
-        		padding-top: 10px;
-        		padding-bottom: 10px;
-        		color: #fff;
-        		text-align: center;
-        		font-size: 1.2em;
-        	}
-        	.panelbody,.panelbodycodigo{
-        		padding-left: 15px;
-        		padding-right: 15px;
-        	}
+            .panelhead{
+                background: #eb6357;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                color: #fff;
+                text-align: center;
+                font-size: 1.2em;
+            }
+            .panelbody,.panelbodycodigo{
+                padding-left: 15px;
+                padding-right: 15px;
+            }
             .panelbodycodigo h3 small{
                 color: #08257C;
             }
@@ -58,14 +58,14 @@
 
 
     <body>
-    	<section>
-    		<div class='panelcontainer'>
-    			<div class="panel">
+        <section>
+            <div class='panelcontainer'>
+                <div class="panel">
                     <div class='panelbodycodigo'>
-                        	<h3>Pedido de Despacho  {{$codigo}}  </h3>
+                            <h3>Pedido de Despacho  {{$codigo}}  </h3>
                     </div>
-    				<div class="panelhead">Pedido</div>
-    				<div class='panelbody'>
+                    <div class="panelhead">Pedido</div>
+                    <div class='panelbody'>
                             <table  class="table demo" >
                                 <tr>
                                     <th>
@@ -85,14 +85,14 @@
                                     </th>                                       
                                 </tr>
                                 <tr>
-	                                <td>{{$pedido->empresa->NOM_EMPR}}</td>
+                                    <td>{{$pedido->empresa->NOM_EMPR}}</td>
                                     <td>{{$pedido->centro->NOM_CENTRO}}</td>
                                     <td>{{$funcion->data_usuario($pedido->usuario_crea)->nombre}}</td>
                                     <td>{{$pedido->codigo}}</td>
                                     <td>{{date_format(date_create($pedido->fecha_crea), 'd-m-Y H:i')}}</td>
                                 </tr>
                             </table>
-    				</div>
+                    </div>
                     <div class='panelbodycodigo'>
                         <h3>Detalle Pedido</h3>
                     </div>
@@ -208,9 +208,9 @@
                     </div>
 
 
-    			</div>
-    		</div>
-		</section>
+                </div>
+            </div>
+        </section>
     </body>
 
 </html>

@@ -19,6 +19,42 @@ use PDO;
 class Funcion{
 
 
+	public function producto_asignado_mobil($pedidodespacho_id) {
+		$mobil = '';
+		$detalleordendespacho = WEBDetalleOrdenDespacho::where('id','=',$pedidodespacho_id)->first();
+		if(count($detalleordendespacho)>0){
+			$mobil= $detalleordendespacho->grupo_movil;
+		}
+		return $mobil;
+	}
+
+
+	public function crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra) {
+
+		//recorre todos los productos y guardo sin repetirse
+		$sw=0;
+		foreach($array_detalle_producto as $key => $row) {
+			$encontro = array_search($row['producto_id'], array_column($array_detalle_producto_muestra, 'producto_id'));
+		    if (is_bool($encontro)){
+		    	$array = array(				"correlativo"               => $sw,
+								            "unidad_medida_id" 			=> $row['unidad_medida_id'],
+								            "nombre_unidad_medida" 		=> $row['nombre_unidad_medida'],
+								            "presentacion_producto"     => $row['presentacion_producto'],		    		
+		    								"producto_id" 				=> $row['producto_id'],
+								            "nombre_producto" 			=> $row['nombre_producto'],
+								            "muestra"     				=> '0'
+								        );
+		    	array_push($array_detalle_producto_muestra,$array);
+		    	$sw=$sw + 1;
+		    }
+	    }
+        return $array_detalle_producto_muestra;
+
+	}
+
+
+
+
 	public function lista_carro_ingreso_salida($fechainicio,$fechafin,$categoria_estado_carro_id,$tipo_ingreso_id) {
 
 

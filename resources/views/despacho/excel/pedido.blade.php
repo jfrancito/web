@@ -32,8 +32,11 @@
           <th class= 'center tablaho'>Cliente</th>
           <th class= 'center tablaho'>Orden Cen</th> 
           <th class= 'center tablaho'>Producto</th>
-          <th class= 'center tablaho' >Muestra</th>
+          <th class= 'center tablaho'>Unidad medida</th>
           <th class= 'center tablaho' >Cantidad</th>
+          <th class= 'center tablaho' >Muestra</th>
+          <th class= 'center tablaho' >Atender</th>
+
           <th class= 'center tablaho' >Origen</th>  
           <th class= 'center tablaho' >Kilos</th>
           <th class= 'center tablaho' >Sacos</th>
@@ -78,20 +81,18 @@
                   @endif</td>
               <td>{{substr($item->nro_orden_cen, 0, -1)}}</td>
 
-
-
-              <td>{{$item->producto->NOM_PRODUCTO}} ({{$unidad_medida}} de  {{$item->producto->CAN_PESO_SACO}} kg) </td>
-
-
-
-              <td class='center'>
-                  {{number_format($item->muestra, 2, '.', ',')}}
-              </td>
+              <td>{{$item->producto->NOM_PRODUCTO}}</td>
+              <td>{{$unidad_medida}}</td>
 
               <td class='center'>
                   {{number_format($item->cantidad, 2, '.', ',')}}
               </td>
-
+              <td class='center'>
+                  {{number_format($item->muestra, 2, '.', ',')}}
+              </td>
+              <td class='center'>
+                  {{number_format($item->cantidad_atender, 2, '.', ',')}}
+              </td>
 
               <td>
                 {{$centro_origen->NOM_CENTRO}}
@@ -126,7 +127,49 @@
         @endforeach
      
 
+
+
+
     </table>
 
+
+
+      <table class="table demo" >
+          <tr><th></th></tr>  
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Muestras</th>
+          </tr>                            
+      </table>
+
+
+      <table>
+          <tr>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th class= 'center tablaho'>Producto</th>
+              <th class= 'center tablaho'>Unidad de medida</th>
+              <th class= 'center tablaho'>muestra</th>
+          </tr>
+          @foreach($muestras as $index => $item)
+              <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>{{$item->producto->NOM_PRODUCTO}}</td>
+                  <td>{{$item->producto->unidadmedida->NOM_CATEGORIA}}</td>
+                  <td>{{$item->muestra}}</td>
+              </tr>
+          @endforeach
+      </table>
 
 </html>

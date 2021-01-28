@@ -715,6 +715,58 @@ $(document).ready(function(){
         }
     });
 
+
+    $(".despacho").on('keypress','.updatepricemuestradseparado', function(e) {
+
+        event.preventDefault();
+        var _token                  = $('#token').val();
+        var muestra                 = $(this).val();
+        muestra                     = muestra.replace(",", "");
+        var fila                    = $(this).parents('.fila_pedido_muestras').attr('data_correlativo');
+        var producto_id             = $(this).parents('.fila_pedido_muestras').attr('data_producto'); 
+        var array_detalle_producto_muestra  = $('#array_detalle_producto_muestra').val();
+        var correlativo             = $('#correlativo').val();
+        var grupo                   = $('#grupo').val();
+        var opcion_id               = $('#opcion').val();
+        var numero_mobil            = $('#numero_mobil').val();
+        var array_detalle_producto  = $('#array_detalle_producto').val();
+
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if(code==13){
+
+            $.ajax({
+                
+                type    :   "POST",
+                url     :   carpeta+"/ajax-modificar-muestra-producto-fila-separado",
+                data    :   {
+                                _token                      : _token,
+                                array_detalle_producto      : array_detalle_producto,
+                                array_detalle_producto_muestra      : array_detalle_producto_muestra,
+                                muestra                     : muestra,
+                                producto_id                 : producto_id,
+                                correlativo                 : correlativo,
+                                grupo                       : grupo,
+                                numero_mobil                : numero_mobil,
+                                opcion_id                   : opcion_id,
+                                fila                        : fila
+                            },
+                success: function (data) {
+
+                    alertajax("Modificación exitosa");
+                    $('.lista_pedidos_despacho').html(data);
+
+                },
+                error: function (data) {
+                    error500(data);
+                }
+            });
+
+        }
+    });
+
+
+
+
     $(".despacho").on('keypress','.updatepricemuestrad', function(e) {
 
         event.preventDefault();

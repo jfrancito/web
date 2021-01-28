@@ -712,9 +712,16 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 		$funcion 					= 	$this;
 
+		//crear tabla muestras
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -848,9 +855,15 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -883,6 +896,8 @@ class PedidoDespachoController extends Controller
 				$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto'],true);
 				$idordendespacho			= 	$this->funciones->getCreateIdMaestra('WEB.ordendespachos');
 				$codigo 					= 	$this->funciones->generar_codigo('WEB.ordendespachos',8);
+				$array_detalle_producto_muestra_request 	= 	json_decode($request['array_detalle_producto_muestra'],true);
+
 
 				//PEDIDO
 				$cabecera            	 	=	new WEBOrdenDespacho;
@@ -895,7 +910,6 @@ class PedidoDespachoController extends Controller
 				$cabecera->empresa_id 		=   Session::get('empresas')->COD_EMPR;
 				$cabecera->centro_id 		=   Session::get('centros')->COD_CENTRO;
 				$cabecera->save();
-
 
 				foreach($array_detalle_producto_request as $key => $row) {
 
@@ -960,16 +974,69 @@ class PedidoDespachoController extends Controller
 
 
 					$detalle->save();
-
 			    }
 
+			    
+			    //guardar lista de muestras
+				foreach($array_detalle_producto_muestra_request as $key => $row) {
+
+					//calculo de kilos,cantidad_sacos,palets
+					$iddetalleordendespacho				= 	$this->funciones->getCreateIdMaestra('WEB.detalleordendespachos');
+					$detalle            	 			=	new WEBDetalleOrdenDespacho;
+
+					$detalle->id 	     	 			=  	$iddetalleordendespacho;
+					$detalle->ordendespacho_id 			=  	$idordendespacho;
+					$detalle->nro_orden_cen 			=  	'';
+					$detalle->fecha_pedido 				=  	$this->fechaactual;
+					$detalle->fecha_entrega 			=  	$this->fechaactual;
+					$detalle->muestra 					=  	$row['muestra'];
+					$detalle->cantidad 					=  	0;
+					$detalle->cantidad_atender 			=  	0;
+					$detalle->kilos 					=  	0;
+					$detalle->cantidad_sacos 			=  	0;
+					$detalle->palets 					=  	0;
+					$detalle->presentacion_producto 	=  	$row['presentacion_producto'];
+					$detalle->grupo 					=  	0;
+					$detalle->grupo_orden 				=  	0;
+					$detalle->grupo_movil 				=  	0;
+					$detalle->grupo_orden_movil 		=  	0;
+					$detalle->correlativo 				=  	$row['correlativo'];
+					$detalle->tipo_grupo_oc 			=  	'muestras';
+					$detalle->fecha_crea 	 			=   $this->fechaactual;
+					$detalle->usuario_crea 				=   Session::get('usuario')->id;
+					$detalle->unidad_medida_id 			=  	'';
+					$detalle->modulo 					=  	'muestras';
+					$detalle->cliente_id 				=  	'';
+					$detalle->orden_id 					=  	'';
+					$detalle->producto_id 				=  	$row['producto_id'];
+					$detalle->empresa_id 				=   Session::get('empresas')->COD_EMPR;
+					$detalle->centro_id 				=   Session::get('centros')->COD_CENTRO;
+					$detalle->estado_id 	    		=  	'EPP0000000000002';
+					$detalle->estado_gruia_id 	    	=  	'';
+					$detalle->documento_guia_id 	    =  	'';
+					$detalle->nro_serie 	    		=  	'';
+					$detalle->nro_documento 	    	=  	'';
+					$detalle->centro_atender_id 		=  	'';
+					$detalle->centro_atender_txt 		=  	'';
+					$detalle->empresa_atender_id 		=  	'';
+					$detalle->empresa_atender_txt 		=  	'';
+					$detalle->usuario_responsable_id 	=  	'';
+					$detalle->usuario_responsable_txt 	=  	'';
+
+					$detalle->kilos_atender 			=  	0;
+					$detalle->cantidad_sacos_atender 	=  	0;
+					$detalle->palets_atender 			=  	0;
+					$detalle->fecha_carga 				=  	'';
+					$detalle->fecha_recepcion 			=  	'';
 
 
-			    //recalcular numero de guias
+					$detalle->save();
+			    }
+
 			    //agrupar cuantos mobiles hay
-
 				$group_mobiles 							=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$idordendespacho)
 															->where('activo','=','1')
+															->where('tipo_grupo_oc','<>','muestras')
 															->select(DB::raw('grupo_movil'))
 															->groupBy('grupo_movil')
 															->get();
@@ -978,6 +1045,7 @@ class PedidoDespachoController extends Controller
 
 					$detalle_orden_despacho 			=	WEBViewDetalleOrdenDespacho::where('ordendespacho_id','=',$idordendespacho)
 															->where('grupo_movil','=',$item->grupo_movil)
+															->where('tipo_grupo_oc','<>','muestras')
 															->orderBy('id', 'asc')
 															->get();
 
@@ -1123,9 +1191,14 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -1190,9 +1263,13 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 		$funcion 					= 	$this;
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -1204,6 +1281,54 @@ class PedidoDespachoController extends Controller
 	}
 
 	
+	public function actionAjaxModificarMuestraProductoFilaSeparado(Request $request)
+	{
+
+		$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto_muestra'],true);
+		$array_detalle_producto 			=	json_decode($request['array_detalle_producto'],true);
+		$array_detalle_producto_muestra 	=	array();
+		$muestra 							= 	(float)$request['muestra'];
+		$fila 								= 	$request['fila'];
+		$producto_id 						= 	$request['producto_id'];
+		$correlativo 						= 	$request['correlativo'];
+		$grupo 								= 	$request['grupo'];
+		$opcion_id 							= 	$request['opcion_id'];
+		$numero_mobil 						= 	$request['numero_mobil'];
+
+
+
+		//actualizar el array con nuevos valores
+		foreach ($array_detalle_producto_request as $key => $item) {
+            if((int)$item['correlativo'] == $fila) {
+				$array_detalle_producto_request[$key]['muestra'] 		= $muestra;
+            }
+		}
+
+	    //agregar a un array nuevo para listar en la vista
+		foreach ($array_detalle_producto_request as $key => $item) {
+			array_push($array_detalle_producto_muestra,$item);
+		}
+
+		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		$funcion 					= 	$this;
+
+
+		return View::make('despacho/ajax/alistapedido',
+						 [
+						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
+						 	'grupo' 								=> $grupo,
+						 	'numero_mobil' 							=> $numero_mobil,
+						 	'correlativo' 							=> $correlativo,
+						 	'funcion' 								=> $funcion,
+						 	'opcion_id' 							=> $opcion_id,
+						 	'combo_lista_centros' 					=> $combo_lista_centros,
+						 	'ajax'   		  						=> true,
+						 ]);
+	}
+
+
 	public function actionAjaxModificarMuestraProductoFila(Request $request)
 	{
 
@@ -1237,9 +1362,14 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 		$funcion 					= 	$this;
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -1299,9 +1429,14 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 		$funcion 					= 	$this;
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil, 	
 						 	'correlativo' 							=> $correlativo,
@@ -1393,9 +1528,14 @@ class PedidoDespachoController extends Controller
 		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,						 	
 						 	'correlativo' 							=> $correlativo,
@@ -1500,9 +1640,14 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 		$funcion 					= 	$this;
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -1609,9 +1754,15 @@ class PedidoDespachoController extends Controller
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
 
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -1712,9 +1863,15 @@ class PedidoDespachoController extends Controller
 		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
+
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,
@@ -1741,7 +1898,6 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto 			=	array();
 
 
-
 		foreach($data_orden_cen as $obj){
 
 
@@ -1749,7 +1905,6 @@ class PedidoDespachoController extends Controller
 		    $ordencen_id 					= 	$obj['ordencen_id'];
 		    $orden 							= 	CMPOrden::where('COD_ORDEN','=',$ordencen_id)->first();
 			$lista_detalle_ordencen			= 	$this->funciones->lista_orden_cen_detalle($ordencen_id);
-
 
 
 			$array_nuevo_producto 			=	array();
@@ -1829,11 +1984,17 @@ class PedidoDespachoController extends Controller
 		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
-		//dd($array_detalle_producto);
+
+
+		//crear tabla muestras
+		$array_detalle_producto_muestra = array();
+		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
+						 	'array_detalle_producto_muestra' 		=> $array_detalle_producto_muestra,
 						 	'grupo' 								=> $grupo,
 						 	'numero_mobil' 							=> $numero_mobil,
 						 	'correlativo' 							=> $correlativo,

@@ -47,7 +47,10 @@
             <div class="tab-content" style = "padding: 0px !important;">
 
               <div id="atenderpedido" class="tab-pane active cont">
+
                 @include('despacho.tab.atenderpedido')
+
+                
               </div>
               <div id="tranferenciapt" class="tab-pane  cont">
 
@@ -125,7 +128,7 @@
       $('form').parsley();
 
 
-      $('.dinero').inputmask({ 'alias': 'numeric', 
+      $('.despacho .dinero').inputmask({ 'alias': 'numeric', 
       'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 
       'digitsOptional': false, 
       'prefix': '', 

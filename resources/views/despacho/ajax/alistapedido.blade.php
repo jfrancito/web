@@ -44,8 +44,10 @@
                     <th class='center' colspan="2">Mobil</th>
                     <th>Cliente</th>
                     <th>Producto</th>
-                    <th class='center'>Muestra</th>
-                    <th class='center'>Editar</th>
+
+                    <th class='center ocultar' >Muestra</th>
+                    <th class='center ocultar'>Editar</th>
+
                     <th class='center'>Cantidad</th>
                     <th class='center'>Editar</th>
                     <th>Kilos</th>
@@ -173,17 +175,17 @@
                         </td> 
                         @endif
 
-                        <td class="cell-detail relative">
+                        <td class="cell-detail relative ">
                           <span>{{$item['nombre_producto']}}</span>
                           <span class="cell-detail-description-producto">
                           {{$item['nombre_unidad_medida']}} de  {{$item['presentacion_producto']}} kg 
                           </span>
                           <i class="mdi mdi-settings configuracion-despacho-cantidad"></i>
                         </td>
-                        <td class='center'>
+                        <td class='center ocultar'>
                             <b>{{number_format($item['muestra'], 2, '.', ',')}}</b>
                         </td>
-                        <td>
+                        <td class='ocultar'>
                             <input type="text"
                              id="muestra" 
                              name="muestra"
@@ -307,13 +309,62 @@
       </div>
     </div>
     <br>
-    <div class="col-xs-12" style="text-align: right;">
+    <div class="col-xs-12" >
 
-      <form method="POST"  action="{{ url('/crear-orden-pedido-despacho/'.$opcion_id) }}" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
-          {{ csrf_field() }}
-        <input type="hidden" name="array_detalle_producto" id='array_detalle_producto' value='{{json_encode($array_detalle_producto)}}'>
-        <button type="submit" class="btn btn-space btn-primary btn-guardar-pedido">Guardar</button>
-      </form>
+      <div class="col-xs-5">
+
+        <div class="panel panel-default panel-table">
+          <div class="panel-heading"><b>Muestras</b></div>
+          <div class="panel-body">
+            <table class="table tabla-producto-muestra" style="font-size: 0.85em;">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th class='center'>Muestra</th>
+                  <th class='center'>Editar</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($array_detalle_producto_muestra as $index => $item)
+                  <tr class='fila_pedido_muestras'
+                            data_correlativo="{{$item['correlativo']}}"
+                            data_producto="{{$item['producto_id']}}">
+
+                    <td class="cell-detail relative">
+                          <span>{{$item['nombre_producto']}}</span>
+                          <span class="cell-detail-description-producto">
+                          {{$item['nombre_unidad_medida']}} de  {{$item['presentacion_producto']}} kg 
+                          </span>
+                    </td>
+                    <td class='center'>
+                        <b>{{number_format($item['muestra'], 2, '.', ',')}}</b>
+                    </td>
+                    <td class='center'>
+                        <input type="text"
+                         id="muestra" 
+                         name="muestra"
+                         value="{{number_format($item['muestra'], 2, '.', ',')}}"
+                         class="form-control input-sm dinero dineromuestra updatepricemuestradseparado"
+                        >
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="col-xs-7" style="text-align: right;">
+          <form method="POST"  action="{{ url('/crear-orden-pedido-despacho/'.$opcion_id) }}" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
+              {{ csrf_field() }}
+            <input type="hidden" name="array_detalle_producto" id='array_detalle_producto' value='{{json_encode($array_detalle_producto)}}'>
+            <input type="hidden" name="array_detalle_producto_muestra" id='array_detalle_producto_muestra' value='{{json_encode($array_detalle_producto_muestra)}}'>
+            <button type="submit" class="btn btn-space btn-primary btn-guardar-pedido">Guardar</button>
+          </form>
+      </div>
 
     </div>
 

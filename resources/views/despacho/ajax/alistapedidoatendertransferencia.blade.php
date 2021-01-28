@@ -220,10 +220,6 @@
             @endif
           @endif
 
-
-
-
-
           <td class="cell-detail">
             <span>{{$item->producto->NOM_PRODUCTO}}</span>
             <span class="cell-detail-description-producto">

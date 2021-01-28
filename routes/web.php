@@ -239,11 +239,15 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-pedido-eliminar-fila', 'PedidoDespachoController@actionAjaxPedidoEliminarFila');
 	Route::any('/ajax-modificar-cantidad-producto-fila', 'PedidoDespachoController@actionAjaxModificarCantidadProductoFila');
 	Route::any('/ajax-modificar-muestra-producto-fila', 'PedidoDespachoController@actionAjaxModificarMuestraProductoFila');
+	Route::any('/ajax-modificar-muestra-producto-fila-separado', 'PedidoDespachoController@actionAjaxModificarMuestraProductoFilaSeparado');
+
+
 	Route::any('/ajax-pedido-modificar-fecha-de-entrega', 'PedidoDespachoController@actionAjaxPedidoModificarFechaEntrega');
 	Route::any('/ajax-modal-configuracion-producto-cantidad', 'PedidoDespachoController@actionAjaxModalConfiguracionProductoCantidad');
 	Route::any('/ajax-modificar-configuracion-del-producto', 'PedidoDespachoController@actionAjaxModificarConfiguracionDelProducto');
 	Route::any('/ajax-pedido-crear-update-pedido-despacho-centro', 'PedidoDespachoController@actionAjaxPedidoCrearUpdatePedidoDespachoCentro');
 	Route::any('/ajax-pedido-crear-mobil-33-palets', 'PedidoDespachoController@actionAjaxCrearMobil33Palets');
+
 
 	Route::any('/gestion-pedido-orden-despacho/{idopcion}/{idordendespacho}', 'PedidoDespachoController@actionGestionOrdenDespacho');
 	Route::any('/ajax-modal-lista-orden-gestion-producto', 'PedidoDespachoController@actionAjaxModalListaOrdenGestionProducto');
@@ -257,6 +261,9 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modificar-cantidad-atender-producto-id', 'AtenderPedidoDespachoController@actionAjaxAjaxModificarCantidadAtenderProducto');
 	Route::any('/ajax-modal-lista-orden-atender-producto', 'AtenderPedidoDespachoController@actionAjaxModalListaOrdenAtenderProducto');
 	Route::any('/ajax-modal-agregar-producto-pedido-atender', 'AtenderPedidoDespachoController@actionAjaxModalAgregarProductosPedidoAtender');
+	Route::any('/ajax-asignar-muestras-mobil', 'AtenderPedidoDespachoController@actionAjaxAsignarMuestrasMobil');
+
+
 	Route::any('/ajax-pedido-atender-modificar-fecha-de-entrega', 'AtenderPedidoDespachoController@actionAjaxPedidoAtenderModificarFechaEntrega');
 	Route::any('/ajax-pedido-atender-modificar-origen', 'AtenderPedidoDespachoController@actionAjaxPedidoAtenderModificarOrigen');
 	Route::any('/ajax-pedido-atender-modificar-cantidad-atender', 'AtenderPedidoDespachoController@actionAjaxPedidoAtenderModificarCantidadAtender');
@@ -270,9 +277,9 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-agregar-servicio', 'AtenderPedidoDespachoController@actionAjaxAgregarServicio');
 	Route::any('/ajax-rechazar-producto', 'AtenderPedidoDespachoController@actionAjaxRechazarProducto');
 	Route::any('/ajax-orden-cen-mobil-modal', 'AtenderPedidoDespachoController@actionAjaxOrdenCenMobilModal');
-
 	Route::any('/excel-orden-despacho/{idopcion}/{idordendespacho}', 'AtenderPedidoDespachoController@actionExcelOrdenDespacho');
-
+	Route::any('/ajax-modificar-muestra-pedido-creado-fila-separado', 'AtenderPedidoDespachoController@actionAjaxModificarMuestraPedidoCreadoFilaSeparado');
+	Route::any('/ajax-actualizar-lista-muestra-mobil', 'AtenderPedidoDespachoController@actionAjaxActualizarListaMuestraMobil');
 
 
 

@@ -34,5 +34,10 @@ class ALMProducto extends Model
         return $this->hasMany('App\WEBDetalleOrdenDespacho', 'producto_id', 'id');
     }
 
+    public function unidadmedida()
+    {
+        return $this->belongsTo('App\CMPCategoria', 'COD_CATEGORIA_UNIDAD_MEDIDA', 'COD_CATEGORIA');
+    }
+
 
 }
