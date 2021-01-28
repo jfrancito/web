@@ -1197,11 +1197,15 @@ class Funcion{
 
 		$tipo_operacion = 'SEL';
 
+		$estado = 1;
         $stmt 	= 	DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DETALLE_PRODUCTO_LISTAR 
         			@IND_TIPO_OPERACION = ?,
-        			@COD_TABLA = ?');
+        			@COD_TABLA = ?,
+        			@COD_ESTADO = ?');
+
         $stmt->bindParam(1, $tipo_operacion ,PDO::PARAM_STR);                   
-        $stmt->bindParam(2, $orden_cen_id  ,PDO::PARAM_STR);                        			
+        $stmt->bindParam(2, $orden_cen_id  ,PDO::PARAM_STR); 
+        $stmt->bindParam(3, $estado  ,PDO::PARAM_STR);                       			
         $stmt->execute();
 
         return $stmt;
