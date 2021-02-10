@@ -77,7 +77,14 @@
                 Imprimir
               </a>
             </span>
-            
+            <br>
+            <span class="badge badge-defaul" style='margin-top:5px'>
+              <a href="{{ url('/imprimir-pedido-transportista/'.Hashids::encode(substr($item->id, -8))) }}" target="_blank">
+                Transportista
+              </a>
+            </span>
+
+
         </td>
         <td>{{$item->total}}</td>
 

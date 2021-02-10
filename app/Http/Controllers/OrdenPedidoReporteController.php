@@ -273,5 +273,32 @@ class OrdenPedidoReporteController extends Controller
 
 
 
+	public function actionImprimirPedidoTransportista($idpedido)
+	{
+
+
+		$titulo 									=   'Pedido';
+		$idpedido 									= 	$this->funciones->desencriptar_id('1CIX-'.$idpedido,8);
+		$pedido 									=   WEBPedido::where('id','=',$idpedido)->first();
+		$funcion 									= 	$this;
+
+
+		$pdf 										= 	PDF::loadView('pedido.pdf.imprimirpedidotransportista', 
+														[
+															'pedido' 	=> $pedido,
+															'titulo' 	=> $titulo,
+															'funcion' 	=> $funcion								
+														]);
+
+		return $pdf->stream('download.pdf');
+
+
+	}
+
+
+
+
+
+
 
 }
