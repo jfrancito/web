@@ -5,6 +5,8 @@
     <table>
 
         <tr>
+          <th class= 'center tablaho'>CENTRO</th>
+
           <th class= 'center tablaho'>CODIGO</th>             
           <th class= 'center tablaho'>FECHA</th> 
           <th class= 'center tablaho'>VENDEDOR</th>
@@ -18,6 +20,7 @@
 
       @foreach($listapedidos as $index => $item) 
           <tr>
+                <td width="15">{{$item->NOM_CENTRO}}</td>
                 <td width="15">{{$item->codigo}}</td>
                 <td width="15">{{date_format(date_create($item->fecha_venta), 'd-m-Y')}}</td>
                 <td width="25">{{$funcion->funciones->data_usuario($item->usuario_crea)->nombre}}</td>

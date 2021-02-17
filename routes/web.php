@@ -173,7 +173,7 @@ Route::group(['middleware' => ['authaw']], function () {
 
 	Route::any('/reporte-pedidos-estados/{idopcion}', 'OrdenPedidoReporteController@actionPedidoXEstado');
 	Route::any('/ajax-reporte-pedido-estado', 'OrdenPedidoReporteController@actionAjaxPedidoEstado');
-	Route::any('/pedido-estado-excel/{finicio}/{fechafin}/{estado_id}', 'OrdenPedidoReporteController@actionPedidoEstadoExcel');
+	Route::any('/pedido-estado-excel/{finicio}/{fechafin}/{estado_id}/{centro_id}', 'OrdenPedidoReporteController@actionPedidoEstadoExcel');
 	/*Route::any('/precio-producto-canal-mayorista-pdf/{fechadia}', 'ProductoReporteController@actionPrecioCanalMayoristaPDF');*/
 
 

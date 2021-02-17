@@ -30,4 +30,13 @@ class WEBDetallePedido extends Model
         return $this->belongsTo('App\CMPCategoria', 'estado_id', 'COD_CATEGORIA');
     }
 
+
+    public function scopeCentro($query,$tipo){
+
+        if(trim($tipo) != 'TODOS'){
+            $query->where('WEB.detallepedidos.centro_id', '=', $tipo);
+        }
+
+    }
+
 }

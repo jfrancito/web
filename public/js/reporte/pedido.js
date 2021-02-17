@@ -9,8 +9,18 @@ $(document).ready(function(){
         var estado_id           = $('#estado_id').select2().val();
         var finicio             = $('#finicio').val();        
         var ffin                = $('#ffin').val(); 
+        var centro_id           = $('#centro_id').select2().val();
+
+
 
         /****** VALIDACIONES ********/
+
+        if(centro_id.length<=0){
+            alerterrorajax("Seleccione un centro para el reporte");
+            return false;
+        }
+
+        
         if(estado_id.length<=0){
             alerterrorajax("Seleccione un estado para el reporte");
             return false;
@@ -26,7 +36,7 @@ $(document).ready(function(){
         } 
 
 
-        href = $(this).attr('data-href')+'/'+finicio+'/'+ffin+'/'+estado_id;
+        href = $(this).attr('data-href')+'/'+finicio+'/'+ffin+'/'+estado_id+'/'+centro_id;
         $(this).prop('href', href);
         return true;
     });
@@ -36,14 +46,26 @@ $(document).ready(function(){
 
         var _token              = $('#token').val();
         var estado_id           = $('#estado_id').select2().val();
+        var centro_id           = $('#centro_id').select2().val();
+
         var finicio             = $('#finicio').val();        
         var ffin                = $('#ffin').val(); 
 
         /****** VALIDACIONES ********/
+
+        if(centro_id.length<=0){
+            alerterrorajax("Seleccione un centro para el reporte");
+            return false;
+        }
+
+
         if(estado_id.length<=0){
             alerterrorajax("Seleccione un estado para el reporte");
             return false;
         }
+
+
+
         if(finicio == ''){
             alerterrorajax("Seleccione una fecha de inicio");
             return false;
@@ -65,6 +87,7 @@ $(document).ready(function(){
             data    :   {
                             _token          : _token,
                             estado_id       : estado_id,
+                            centro_id       : centro_id,
                             finicio         : finicio,
                             ffin            : ffin,                           
                         },

@@ -67,6 +67,23 @@
                           </div>
                       </div>
 
+                      <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label labelleft" >Centro :</label>
+                            <div class="col-sm-12 abajocaja tamanio-sm" >
+                              {!! Form::select( 'centro_id', $combo_lista_centros, array(),
+                                                [
+                                                  'class'       => 'select2 form-control control input-sm' ,
+                                                  'id'          => 'centro_id',
+                                                  'required'    => '',
+                                                  'data-aw'     => '1',
+                                                ]) !!}
+                            </div>
+                          </div>
+                      </div> 
+
+
 
                       <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
 

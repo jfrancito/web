@@ -3,6 +3,7 @@
   <table id="tablereporte" class="table table-striped table-hover table-fw-widget">
     <thead>
       <tr>
+        <th class= 'center tablaho'>CENTRO</th> 
         <th class= 'center tablaho'>CODIGO</th>             
         <th class= 'center tablaho'>FECHA</th> 
         <th class= 'center tablaho'>VENDEDOR</th>
@@ -18,7 +19,7 @@
 
       @foreach($listapedidos as $index => $item) 
             <tr>
-
+                <td>{{$item->NOM_CENTRO}}</td>
                 <td>{{$item->codigo}}</td>
                 <td>{{date_format(date_create($item->fecha_venta), 'd-m-Y')}}</td>
                 <td>{{$funcion->funciones->data_usuario($item->usuario_crea)->nombre}}</td>

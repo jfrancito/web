@@ -35,6 +35,9 @@ class OrdenPedidoReporteController extends Controller
         $combo_estados   				=   $this->funciones->combo_categoria_txt_grupo_parcialmente('ESTADO_PREORDEN');
 		$funcion 						= 	$this;
 
+		$combo_lista_centros 			= 	$this->funciones->combo_lista_centro_todos();
+
+
 		return View::make('pedido/reporte/listatomapedidoxestado',
 						 [
 						 	'idopcion' 		=> $idopcion,
@@ -42,6 +45,7 @@ class OrdenPedidoReporteController extends Controller
 						 	'fechafin' 		=> $fechafin,
 						 	'funcion' 		=> $funcion,
 						 	'combo_estados' => $combo_estados,
+						 	'combo_lista_centros' => $combo_lista_centros,
 						 ]);
 
 
@@ -56,13 +60,15 @@ class OrdenPedidoReporteController extends Controller
 		$estado_id 									=  	$request['estado_id'];
 		$finicio 									=  	$request['finicio'];	
 		$ffin 										=  	$request['ffin'];	
+		$centro_id 									=  	$request['centro_id'];
 
 		if($estado_id == 'TODO'){
 
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
-								//->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
-								->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
 			    				->where('WEB.pedidos.fecha_venta','>=', $finicio)
 			    				->where('WEB.pedidos.fecha_venta','<=', $ffin)
 			    				->where('WEB.detallepedidos.activo','=', 1)
@@ -70,7 +76,9 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
-			    								  WEB.pedidos.direccion_entrega_id'))
+			    								  WEB.pedidos.direccion_entrega_id,
+			    								  ALM.CENTRO.NOM_CENTRO'))
+			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
 
@@ -94,15 +102,19 @@ class OrdenPedidoReporteController extends Controller
 
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
+								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
 								//->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
-								->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
 								->whereIn('WEB.detallepedidos.pedido_id',$arrayidpedidos)
 			    				->where('WEB.detallepedidos.activo','=', 1)
 			    				->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
 			    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
-			    								  WEB.pedidos.direccion_entrega_id'))
+			    								  WEB.pedidos.direccion_entrega_id,
+			    								  ALM.CENTRO.NOM_CENTRO'))
+			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
 
@@ -111,8 +123,10 @@ class OrdenPedidoReporteController extends Controller
 
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
+								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
 								->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
-								->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
 			    				->where('WEB.pedidos.fecha_venta','>=', $finicio)
 			    				->where('WEB.pedidos.fecha_venta','<=', $ffin)
 			    				->where('WEB.detallepedidos.activo','=', 1)
@@ -120,7 +134,9 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
-			    								  WEB.pedidos.direccion_entrega_id'))
+			    								  WEB.pedidos.direccion_entrega_id,
+			    								  ALM.CENTRO.NOM_CENTRO'))
+			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
 
@@ -147,24 +163,28 @@ class OrdenPedidoReporteController extends Controller
 	}
 
 
-	public function actionPedidoEstadoExcel($finicio,$fechafin,$estado_id)
+	public function actionPedidoEstadoExcel($finicio,$fechafin,$estado_id,$centro_id)
 	{
 		set_time_limit(0);
 
         $fechadia                                   =   date_format(date_create(date('d-m-Y')), 'd-m-Y');
 		$titulo 									=   'Pedido x Estado';
 
-
+		$centro_id 									=  	$centro_id;
 		$estado_id 									=  	$estado_id;
 		$finicio 									=  	$finicio;	
 		$ffin 										=  	$fechafin;	
+
+
+
 
 		if($estado_id == 'TODO'){
 
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
-								//->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
-								->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
 			    				->where('WEB.pedidos.fecha_venta','>=', $finicio)
 			    				->where('WEB.pedidos.fecha_venta','<=', $ffin)
 			    				->where('WEB.detallepedidos.activo','=', 1)
@@ -172,65 +192,76 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
-			    								  WEB.pedidos.direccion_entrega_id'))
+			    								  WEB.pedidos.direccion_entrega_id,
+			    								  ALM.CENTRO.NOM_CENTRO'))
+			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
 
 		}else{
 
 
-			if($estado_id == 'PARCIALMENTEATENDIDA'){
+		if($estado_id == 'PARCIALMENTEATENDIDA'){
 
 
 
-				$arrayidpedidos   	=	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
-							    		->where('WEB.pedidos.fecha_venta','>=', $finicio)
-					    				->where('WEB.pedidos.fecha_venta','<=', $ffin)
-										->groupBy('WEB.detallepedidos.pedido_id')
-										->select('WEB.detallepedidos.pedido_id')
-										->havingRaw('max(WEB.detallepedidos.estado_id) = ?', ['EPP0000000000004'])
-										->havingRaw('min(WEB.detallepedidos.estado_id) = ?', ['EPP0000000000003'])
-										->pluck('pedido_id')
-										->toArray();
-
-
-			    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
-									->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
-									//->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
-									->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
-									->whereIn('WEB.detallepedidos.pedido_id',$arrayidpedidos)
-				    				->where('WEB.detallepedidos.activo','=', 1)
-				    				->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
-				    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
-				    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
-				    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
-				    								  WEB.pedidos.direccion_entrega_id'))
-									->orderBy('WEB.pedidos.fecha_venta', 'desc')
-									->get();
-
-			}else{
-
-
-			    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
-									->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
-									->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
-									->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
-				    				->where('WEB.pedidos.fecha_venta','>=', $finicio)
+			$arrayidpedidos   	=	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
+						    		->where('WEB.pedidos.fecha_venta','>=', $finicio)
 				    				->where('WEB.pedidos.fecha_venta','<=', $ffin)
-				    				->where('WEB.detallepedidos.activo','=', 1)
-				    				->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
-				    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
-				    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
-				    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
-				    								  WEB.pedidos.direccion_entrega_id'))
-									->orderBy('WEB.pedidos.fecha_venta', 'desc')
-									->get();
+									->groupBy('WEB.detallepedidos.pedido_id')
+									->select('WEB.detallepedidos.pedido_id')
+									->havingRaw('max(WEB.detallepedidos.estado_id) = ?', ['EPP0000000000004'])
+									->havingRaw('min(WEB.detallepedidos.estado_id) = ?', ['EPP0000000000003'])
+									->pluck('pedido_id')
+									->toArray();
 
-			
-				}
+
+		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
+								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
+								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								//->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
+								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
+								->whereIn('WEB.detallepedidos.pedido_id',$arrayidpedidos)
+			    				->where('WEB.detallepedidos.activo','=', 1)
+			    				->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
+			    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
+			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
+			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
+			    								  WEB.pedidos.direccion_entrega_id,
+			    								  ALM.CENTRO.NOM_CENTRO'))
+			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
+								->orderBy('WEB.pedidos.fecha_venta', 'desc')
+								->get();
+
+		}else{
+
+
+		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
+								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
+								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
+								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
+			    				->where('WEB.pedidos.fecha_venta','>=', $finicio)
+			    				->where('WEB.pedidos.fecha_venta','<=', $ffin)
+			    				->where('WEB.detallepedidos.activo','=', 1)
+			    				->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
+			    								  WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
+			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
+			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
+			    								  WEB.pedidos.direccion_entrega_id,
+			    								  ALM.CENTRO.NOM_CENTRO'))
+			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
+								->orderBy('WEB.pedidos.fecha_venta', 'desc')
+								->get();
+
+		
+			}
 
 
 		}
+
 
 
 		$funcion 									= 	$this;

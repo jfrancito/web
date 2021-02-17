@@ -3318,6 +3318,17 @@ class Funcion{
 	}
 
 
+	public function combo_lista_centro_todos() {
+
+		$lista_centros 				= 	ALMCentro::where('COD_ESTADO','=','1')
+										->pluck('NOM_CENTRO','COD_CENTRO')
+										->toArray();
+		$combocentros  				= 	array('' => "Seleccione centro",'TODOS' => 'TODOS') + $lista_centros;
+
+	 	return  $combocentros;					 			
+	}
+
+
 	public function combo_lista_centro_array_filtro($array_centro_id) {
 
 		$lista_centros 				= 	ALMCentro::where('COD_ESTADO','=','1')
