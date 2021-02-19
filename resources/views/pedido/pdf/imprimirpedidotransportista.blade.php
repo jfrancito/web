@@ -220,7 +220,13 @@
 		.center{
 			text-align:  center;
 		}
-
+		.firma{
+			margin-top: 60px;
+			border-top: 1px solid black;
+			width: 35%;
+			font-size: 0.75em;
+			float: right;
+		}
 	</style>
 
 
@@ -309,6 +315,19 @@
         </article>
 
     </section>
+
+
+        <article>
+
+        	<div>
+        		<p class='firma'>
+        			{{$funcion->funciones->data_cliente($pedido->cuenta_id)->NOM_EMPR}}<br>
+        			Nro Doc : {{$funcion->funciones->data_cliente($pedido->cuenta_id)->NRO_DOCUMENTO}}
+        		</p>
+        	</div>
+
+        </article>
+
 
 
 </body>
