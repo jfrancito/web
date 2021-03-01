@@ -333,7 +333,7 @@ class AtenderPedidoDespachoController extends Controller
 	                                         		 			   ->with('muestras',$muestras)
 	                                         		 			   ->with('funcion',$funcion);                                        		 
 	        });
-	    })->store('xls');;
+	    })->store('xls');
 
 	}
 

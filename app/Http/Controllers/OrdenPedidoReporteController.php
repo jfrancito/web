@@ -163,6 +163,50 @@ class OrdenPedidoReporteController extends Controller
 	}
 
 
+
+
+	public function actionPedidoEstadoExcelAutomatico()
+	{
+		set_time_limit(0);
+        $fechadia       =   date_format(date_create(date('d-m-Y')), 'd-m-Y');
+        $fecha_actual                   =   date("Y-m-d");
+        //$fecha_actual   =   '2021-01-07';
+		$titulo 		=   'Pedido-x-Estado';
+        $fecha_manana   =   date("Y-m-d",strtotime($fecha_actual."+ 1 days"));
+
+        $listapedidos   =   WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
+                            ->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
+                            ->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+                            ->where('WEB.pedidos.fecha_venta','>=', $fecha_actual)
+                            ->where('WEB.pedidos.fecha_venta','<=', $fecha_actual)
+                            ->where('WEB.detallepedidos.activo','=', 1)
+                            ->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
+                                              WEB.pedidos.cliente_id,WEB.detallepedidos.producto_id,
+                                              WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
+                                              WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
+                                              WEB.pedidos.direccion_entrega_id,
+                                              ALM.CENTRO.NOM_CENTRO'))
+                            ->orderBy('WEB.detallepedidos.centro_id', 'asc')
+                            ->orderBy('WEB.pedidos.fecha_venta', 'desc')
+                            ->get();
+
+
+
+
+		$funcion 									= 	$this;
+
+	    Excel::create($titulo.'-('.$fecha_actual.')', function($excel) use ($listapedidos,$titulo,$funcion) {
+	        $excel->sheet('Pedidos', function($sheet) use ($listapedidos,$titulo,$funcion) {
+
+	            $sheet->loadView('pedido/excel/listapedidoxestado')->with('listapedidos',$listapedidos)
+	                                         		 			   ->with('titulo',$titulo)
+	                                         		 			   ->with('funcion',$funcion);                                        		 
+	        });
+	    })->store('xls');
+
+	}
+
+
 	public function actionPedidoEstadoExcel($finicio,$fechafin,$estado_id,$centro_id)
 	{
 		set_time_limit(0);

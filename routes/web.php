@@ -29,6 +29,7 @@ Route::get('/cerrarsession', 'UserController@actionCerrarSesion');
 Route::get('/cambiarperfil', 'UserController@actionCambiarPerfil');
 Route::get('/despacho/print-pdf', [ 'as' => 'despacho.printpdf', 'uses' => 'OrdenPedidoController@RepSalida']);
 Route::any('/excel-orden-despacho-email/{idopcion}/{idordendespacho}', 'AtenderPedidoDespachoController@actionExcelOrdenDespachoEmail');
+Route::any('/pedido-estado-excel-automatico', 'OrdenPedidoReporteController@actionPedidoEstadoExcelAutomatico');
 
 
 Route::group(['middleware' => ['authaw']], function () {
@@ -174,8 +175,8 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/reporte-pedidos-estados/{idopcion}', 'OrdenPedidoReporteController@actionPedidoXEstado');
 	Route::any('/ajax-reporte-pedido-estado', 'OrdenPedidoReporteController@actionAjaxPedidoEstado');
 	Route::any('/pedido-estado-excel/{finicio}/{fechafin}/{estado_id}/{centro_id}', 'OrdenPedidoReporteController@actionPedidoEstadoExcel');
-	/*Route::any('/precio-producto-canal-mayorista-pdf/{fechadia}', 'ProductoReporteController@actionPrecioCanalMayoristaPDF');*/
 
+	/*Route::any('/precio-producto-canal-mayorista-pdf/{fechadia}', 'ProductoReporteController@actionPrecioCanalMayoristaPDF');*/
 
 
 	Route::any('/reporte-pago-detracciones/{idopcion}', 'DespachoReporteController@actionPagoDetraciones');
