@@ -171,7 +171,7 @@ class OrdenPedidoReporteController extends Controller
         $fechadia       =   date_format(date_create(date('d-m-Y')), 'd-m-Y');
 
 
-        $fecha_actual    =   date("Y-m-d");
+        $fecha_actual   =   date("Y-m-d");
         //$fecha_actual   =   '2021-01-07';
 		$titulo 		=   'Pedido-x-Estado';
         $fecha_manana   =   date("Y-m-d",strtotime($fecha_actual."+ 1 days"));
