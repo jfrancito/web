@@ -169,7 +169,9 @@ class OrdenPedidoReporteController extends Controller
 	{
 		set_time_limit(0);
         $fechadia       =   date_format(date_create(date('d-m-Y')), 'd-m-Y');
-        $fecha_actual                   =   date("Y-m-d");
+
+
+        $fecha_actual    =   date("Y-m-d");
         //$fecha_actual   =   '2021-01-07';
 		$titulo 		=   'Pedido-x-Estado';
         $fecha_manana   =   date("Y-m-d",strtotime($fecha_actual."+ 1 days"));
@@ -177,7 +179,7 @@ class OrdenPedidoReporteController extends Controller
         $listapedidos   =   WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
                             ->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
                             ->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
-                            ->where('WEB.pedidos.fecha_venta','>=', $fecha_actual)
+                            ->where('WEB.pedidos.fecha_venta','>=', $this->inicio)
                             ->where('WEB.pedidos.fecha_venta','<=', $fecha_actual)
                             ->where('WEB.detallepedidos.activo','=', 1)
                             ->select(DB::raw('WEB.pedidos.codigo,WEB.pedidos.fecha_venta,WEB.pedidos.usuario_crea,
