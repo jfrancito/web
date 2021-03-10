@@ -89,7 +89,7 @@
                                         <td>{{$item->NRO_DOC}}</td>
                                         <td>{{$item->NOM_EMPR}}</td>
                                         <td>{{$item->NOM_CENTRO}}</td>
-                                        <td>{{$item->COD_USUARIO_CREA_AUD}}</td>
+                                        <td>{{$item->NOM_TRABAJADOR}}</td>
                                         <td>{{$item->TXT_CATEGORIA_TIPO_DOC}}</td>
 
                                 </tr>

@@ -53,6 +53,7 @@ class SunatAviso extends Command
 
             $lista_documento    =   CMPDocumentoCtble::join('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'CMP.DOCUMENTO_CTBLE.COD_CENTRO')
                                     ->join('STD.EMPRESA', 'STD.EMPRESA.COD_EMPR', '=', 'CMP.DOCUMENTO_CTBLE.COD_EMPR')
+                                    ->leftJoin('SGD.USUARIO','SGD.USUARIO.COD_USUARIO','=','CMP.DOCUMENTO_CTBLE.COD_USUARIO_CREA_AUD')
                                     ->where('CMP.DOCUMENTO_CTBLE.COD_ESTADO','=',1)
                                     ->where('CMP.DOCUMENTO_CTBLE.FEC_EMISION','>=',$fecha_actual)
                                     ->where('CMP.DOCUMENTO_CTBLE.FEC_EMISION','<=',$fecha_actual)
@@ -60,7 +61,7 @@ class SunatAviso extends Command
                                     ->where('CMP.DOCUMENTO_CTBLE.COD_CATEGORIA_ESTADO_DOC_CTBLE','=','EDC0000000000001')
                                     ->whereIn('CMP.DOCUMENTO_CTBLE.COD_CATEGORIA_TIPO_DOC',['TDO0000000000001' ,'TDO0000000000003','TDO0000000000007','TDO0000000000008'])
                                     ->select('NRO_SERIE','NRO_DOC','STD.EMPRESA.NOM_EMPR','ALM.CENTRO.NOM_CENTRO','CMP.DOCUMENTO_CTBLE.COD_USUARIO_CREA_AUD',
-                                        'TXT_CATEGORIA_TIPO_DOC')
+                                        'TXT_CATEGORIA_TIPO_DOC','SGD.USUARIO.NOM_TRABAJADOR')
                                     ->get();
 
 
