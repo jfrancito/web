@@ -92,7 +92,11 @@
                   </a>                                  
                 </li>
                 @endif
-
+                  <li>
+                    <a href="{{ url('/imprimir-solicitud-transferencia/'.Hashids::encode(substr($item->id, -8))) }}" target="_blank">
+                      Ver Transferencia
+                    </a>                                  
+                </li>
               </ul>
             </div>
           </td>

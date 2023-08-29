@@ -189,7 +189,7 @@ $(document).ready(function(){
         abrircargando(); 
         $.ajax({
             type    :   "POST",
-            url     :   carpeta+"/ajax-combo-almacen-destino",
+            url     :   carpeta+"/ajax-combo-almacen-destino-pk",
             data    :   {
                             _token                  : _token,
                             destino_centro_id       : destino_centro_id,
@@ -540,6 +540,12 @@ $(document).ready(function(){
         var _token                      =   $('#token').val();
         var count_servicio              =   $('#count_servicio').val();
         var calcula_cantidad_peso       =   $('#calcula_cantidad_peso').val();
+        var ls_servicios   = ""
+        $(".listaservicios tbody tr").each(function(){
+            var cabecera_tabla_tr               =   $(this);
+            var producto_id                     =   $(cabecera_tabla_tr).find('.producto_id').html();  
+            ls_servicios = ls_servicios + "-" + producto_id;          
+        })
 
         abrircargando();
         $.ajax({
@@ -549,6 +555,8 @@ $(document).ready(function(){
                             _token                  : _token,
                             count_servicio          : count_servicio,
                             calcula_cantidad_peso   : calcula_cantidad_peso, 
+                            ls_servicios            : ls_servicios,
+                            tipo                    : "PK",   
                         },
             success: function (data) {
                 $(".ajax_lista_servicio").html(data);
@@ -953,7 +961,7 @@ function actualizar_combo_almacen_origen(_token,carpeta,almacen_combo_id){
 
     $.ajax({
             type    :   "POST",
-            url     :   carpeta+"/ajax-combo-almacen-origen",
+            url     :   carpeta+"/ajax-combo-almacen-origen-pk",
             data    :   {
                             _token                  : _token,
                             almacen_combo_id        : almacen_combo_id

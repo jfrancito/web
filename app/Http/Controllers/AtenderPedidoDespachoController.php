@@ -392,21 +392,44 @@ class AtenderPedidoDespachoController extends Controller
 
 
 	public function actionAjaxAgregarServicio(Request $request)
-	{
-		
+	{	
+	
 		$count_servicio 			=  	(int)$request['count_servicio'] + 1;
-		$calcula_cantidad_peso 		=  	$request['calcula_cantidad_peso'];
+		$calcula_cantidad_peso 		=  	$request['calcula_cantidad_peso'];	
+		$ls_servicios 				=  	$request['ls_servicios'];
+		$tipo 		 				=  	$request['tipo'];
+		$lista_de_servicios			= 	array();
+		$lista_de_servicios_temp	= 	array(
+											array("servicio"=>'PRD0000000017065'),
+											array("servicio"=>'PRD0000000003384')
+											);
 
-
-	    $lista_de_servicios			= 	array
+		if ($tipo == "PK") {	// Si viene desde picking
+			$serv = explode("-", $ls_servicios);
+			
+			foreach($lista_de_servicios_temp as $index => $item){
+				$band = 0;
+				foreach($serv as $index => $item2){
+					if($item["servicio"] == $item2){
+						array_push($lista_de_servicios, array("servicio"=>$item["servicio"]));	
+						$band = 1;
+					}
+				}
+				if ($band == 0){
+					array_push($lista_de_servicios, array("servicio"=>$item["servicio"]));	
+				}
+			};	
+		}else {
+			$lista_de_servicios			= 	array
 										  	(
 										  	array("servicio"=>'PRD0000000017065'),
 										  	array("servicio"=>'PRD0000000003384')
 										  	);
-
-	    for( $i= 1 ; $i < $count_servicio ; $i++ )
-		{
-			array_push($lista_de_servicios, array("servicio"=>'PRD0000000017065'));		
+		
+			for( $i= 1 ; $i < $count_servicio ; $i++ )
+			{
+				array_push($lista_de_servicios, array("servicio"=>'PRD0000000017065'));		
+			}
 		}
 
 

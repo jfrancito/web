@@ -27,7 +27,7 @@
         </div>
 
         <div class="panel-body">
-          <div class="scroll_text_horizontal_padding" style = "padding: 0px !important;"> 
+          <div style = "padding: 0px !important;"> 
             <div style="margin-bottom: 10px;">
                 @php
                   $total_peso = 0;

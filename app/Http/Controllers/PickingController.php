@@ -177,6 +177,7 @@ class PickingController extends Controller
 		$data_empresa 				=   $this->funciones->data_empresa(Session::get('empresas')->COD_EMPR);
 		$data_centro 				=   $this->funciones->data_centro($cod_centro);		
 		$ultimo_almacen_id 			= 	$this->funciones->ultimo_almacen_id();
+		$combo_sin_centro 			= 	$this->funciones->combo_lista_quitar_centro_array_filtro($cod_centro);
 
 
 	    $listaordenesgeneradas 		=   WEBPickingDetalle::where('picking_id','=',$idpicking)
@@ -732,6 +733,35 @@ class PickingController extends Controller
 		}  
 
 	}
+
+	public function actionAjaxComboAlmacenOrigenPk(Request $request)
+	{
+
+		$origen_centro_id 			= 	Session::get('centros')->COD_CENTRO; 
+		$almacen_combo_id 			= 	$request['almacen_combo_id'];
+        $combo_almacen_origen   	=   $this->funciones->combo_almacen($origen_centro_id,'TODOS');
+
+		return View::make('despacho/ajax/acomboalmacenorigen',
+						 [
+						 	'combo_almacen_origen' 		=> $combo_almacen_origen,
+						 	'almacen_combo_id' 			=> $almacen_combo_id,
+						 	'ajax'   		  			=> true,
+						 ]);
+	}
+
+	public function actionAjaxComboAlmacenDestinoPk(Request $request)
+	{
+
+		$destino_centro_id 			= 	Session::get('centros')->COD_CENTRO; 
+        $combo_almacen_destino   	=   $this->funciones->combo_almacen($destino_centro_id,'TRANSITO');
+
+		return View::make('despacho/ajax/acomboalmacendestino',
+						 [
+						 	'combo_almacen_destino' 	=> $combo_almacen_destino,
+						 	'ajax'   		  			=> true,
+						 ]);
+	}
+
 
 
 }

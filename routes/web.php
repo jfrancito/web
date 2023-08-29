@@ -402,6 +402,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-cambiar-estado-transferencia', 'TransferenciaController@actionAjaxCambiarEstadoTransferencia');
 	Route::any('/autorizar-transferencia/{idopcion}', 'TransferenciaController@actionListarTransferencia');
 	Route::any('/atender-transferencia/{idopcion}', 'TransferenciaController@actionListarTransferencia');
+	Route::any('/imprimir-solicitud-transferencia/{idtransferencia}', 'PickingReporteController@actionImprimirSolicitudTransferencia');
 
 	Route::any('/gestion-picking/{idopcion}', 'TransferenciaController@actionListarPicking');
 	Route::any('/ajax-listado-picking', 'TransferenciaController@actionAjaxListarPicking');
@@ -433,7 +434,9 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/reporte-detraccion-diario/{idopcion}', 'PickingReporteController@actionDetraccionDiario');
 	Route::any('/ajax-reporte-detraccion-diario', 'PickingReporteController@actionAjaxDetraccionDiario');
 	Route::any('/reporte-detraccion-diario-pdf/{fechadia}', 'PickingReporteController@actionDetraccionDiarioPDF');
-
+	Route::any('/ajax-combo-almacen-destino-pk', 'PickingController@actionAjaxComboAlmacenDestinoPk');
+	Route::any('/ajax-combo-almacen-origen-pk', 'PickingController@actionAjaxComboAlmacenOrigenPk');
+	
  	//----------------------------------------
 
 

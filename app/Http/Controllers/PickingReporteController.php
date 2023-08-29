@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
 use App\WEBPicking,App\WEBPickingDetalle,App\CMPDetraccion,App\CMPDetraccionDetalle;
+use App\WEBTransferencia;
 use View;
 use Session;
 use App\Biblioteca\Osiris;
@@ -19,6 +20,25 @@ use Maatwebsite\Excel\Facades\Excel;
   
 class PickingReporteController extends Controller
 {
+
+	public function actionImprimirSolicitudTransferencia($idtransferencia)
+	{        
+		$titulo 										=   'Solicitud de Transferencia';
+		$idtransferencia 								= 	$this->funciones->decodificarmaestraBD('WEB.transferencia', $idtransferencia);
+		$transferencia 									=   WEBTransferencia::where('id','=',$idtransferencia)->first();
+
+		$funcion 									= 	$this;
+        
+		$pdf 										= 	PDF::loadView('picking.reporte.imprimirtransferencia', 
+														[
+															'transferencia'  => $transferencia,
+															'titulo' 		 => $titulo,
+															'funcion' 		 => $funcion								
+														]);
+		return $pdf->stream('download.pdf');
+
+
+	}
 
 	public function actionImprimirPicking($idpicking)
 	{        
