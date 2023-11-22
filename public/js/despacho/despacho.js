@@ -4,6 +4,79 @@ $(document).ready(function(){
 	var carpeta = $("#carpeta").val();
 
 
+    $(".listadespacho").on('click','#imprimirporpalets', function() {
+
+        var _token              = $('#token').val();
+        var opcion_id           = $('#opcion_id').val();
+        var pedido_id           = $(this).attr('data_pedido_id');
+        abrircargando();
+
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-imprimir-pedido-despacho-xpalets",
+            data    :   {
+                            _token          : _token,
+                            pedido_id      : pedido_id,
+                            opcion_id       : opcion_id,                      
+                        },
+            success: function (data) {
+                console.log(data);
+                $('#xpalets').html(data);
+                cerrarcargando();
+                 $('.nav-tabs a[href="#xpalets"]').tab('show');
+                alertajax("Registro Exitoso");
+            },
+            error: function (data) {
+                cerrarcargando();
+                if(data.status = 500){
+                    var contenido = $(data.responseText);
+                    alerterror505ajax($(contenido).find('.trace-message').html());  
+                    console.log($(contenido).find('.trace-message').html());     
+                }
+            }
+        });
+
+
+    });
+
+    $(".listadespacho").on('click','#imprimirporcantidad', function() {
+
+        var _token              = $('#token').val();
+        var opcion_id           = $('#opcion_id').val();
+        var pedido_id           = $(this).attr('data_pedido_id');
+        abrircargando();
+
+        debugger;
+
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-imprimir-pedido-despacho-xcantidad",
+            data    :   {
+                            _token          : _token,
+                            pedido_id      : pedido_id,
+                            opcion_id       : opcion_id,                      
+                        },
+            success: function (data) {
+                console.log(data);
+                $('#xcantidad').html(data);
+                cerrarcargando(); 
+                $('.nav-tabs a[href="#xcantidad"]').tab('show');
+                alertajax("Registro Exitoso");
+            },
+            error: function (data) {
+                cerrarcargando();
+                if(data.status = 500){
+                    var contenido = $(data.responseText);
+                    alerterror505ajax($(contenido).find('.trace-message').html());  
+                    console.log($(contenido).find('.trace-message').html());     
+                }
+            }
+        });
+
+
+    });
+
+
 
     $(".despacho").on('click','.rechazarproductogestion', function() {
 
@@ -162,6 +235,98 @@ $(document).ready(function(){
 
         }
     });
+
+
+    $(".listadespacho").on('click','#impresion', function() {
+        var _token                      = $('#token').val();
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modal-impresion",
+            data    :   {
+                            _token              : _token
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.modal-detalle-imprimir-container').html(data);
+                $('#modal-detalle-imprimir').niftyModal();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
+
+    $(".listadespacho").on('click','#verimpresion', function() {
+
+        var _token                      = $('#token').val();
+        debugger;
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modal-ver-impresion",
+            data    :   {
+                            _token              : _token
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.modal-detalle-imprimir-container').html(data);
+                $('#modal-detalle-imprimir').niftyModal();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
+
+    $(".listadespacho").on('dblclick','.dobleclickpc', function(e) {
+
+        var _token                  =   $('#token').val();
+        var pedido_id               =   $(this).attr('data_pedido_id');
+        var idopcion                =   $('#idopcion').val();
+
+        data                        =   {
+                                            _token                  : _token,
+                                            pedido_id               : pedido_id,
+                                            idopcion                : idopcion,
+                                        };
+        ajax_modal(data,"/ajax-modal-detalle-pedido-imprimir",
+                  "modal-detalle-imprimir","modal-detalle-imprimir-container");
+
+    });
+
+
+    $(".listadespacho").on('click','#limpiarimpresion', function() {
+
+        var _token                      = $('#token').val();
+        debugger;
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-limpiar-impresion",
+            data    :   {
+                            _token              : _token
+                        },
+            success: function (data) {
+                cerrarcargando();
+                alertajax("Limpieza exitosa");
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+    });
+
 
 
 
@@ -432,6 +597,47 @@ $(document).ready(function(){
 
     });
 
+    $(".listadespacho").on('click','#imprimirpedidoatender', function() {
+
+        var _token              = $('#token').val();
+        var opcion_id           = $('#opcion_id').val();
+
+        //debugger;
+        data        = datapedidoimprimir();
+        if(data.length<=0){alerterrorajax('Seleccione por lo menos una fila para imprimir'); return false;}
+        datastring = JSON.stringify(data);
+
+
+        abrircargando();
+
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-imprimir-pedido-despacho",
+            data    :   {
+                            _token          : _token,
+                            datastring      : datastring,
+                            opcion_id       : opcion_id,                      
+                        },
+            success: function (data) {
+                console.log(data);
+                cerrarcargando(); 
+                alertajax("Registro Exitoso");
+            },
+            error: function (data) {
+                cerrarcargando();
+                if(data.status = 500){
+                    var contenido = $(data.responseText);
+                    alerterror505ajax($(contenido).find('.trace-message').html());  
+                    console.log($(contenido).find('.trace-message').html());     
+                }
+            }
+        });
+
+
+    });
+
+
+
 
 
     $(".listadespacho").on('click','#buscarpedidodespacho', function() {
@@ -439,6 +645,8 @@ $(document).ready(function(){
         var _token              = $('#token').val();
         var fechainicio         = $('#fechainicio').val();        
         var fechafin            = $('#fechafin').val();
+        var idopcion            = $('#idopcion').val();
+
 
         /****** VALIDACIONES ********/
 
@@ -461,7 +669,8 @@ $(document).ready(function(){
             data    :   {
                             _token          : _token,
                             fechainicio     : fechainicio,
-                            fechafin        : fechafin                            
+                            fechafin        : fechafin,
+                            idopcion        : idopcion                            
                         },
             success: function (data) {
                 cerrarcargando();
@@ -1180,6 +1389,29 @@ function dataenviar(){
     });
     return data;
 }
+
+function datapedidoimprimir(){
+    var data = [];
+
+    $("#tableprecios tbody tr").each(function(){
+
+        check           = $(this).find('.input_asignar_im');
+        pedido_id       = $(this).attr('data_pedido_id');
+
+        //debugger;
+        if($(check).is(':checked')){
+            debugger;
+            data.push({
+                pedido_id     : pedido_id
+            });
+        }               
+
+    });
+    return data;
+}
+
+
+
 
 
 function dataproductopedidos(){

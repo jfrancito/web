@@ -875,8 +875,10 @@ class Funcion{
 			->where('RC.IND_COMISION', '=', 1)
 			->where('RC.COD_ESTADO', '=', 1)
 			->where('C_RV.COD_ESTADO', '=', 1)
+
+			->orderBy('C_JV.NOM_CATEGORIA', 'asc')
 			->orderBy('C_RV.NRO_ORDEN', 'ASC')
-			->orderBy('C_JV.NOM_CATEGORIA', 'DESC')
+
 			->orderBy('C_RV.NOM_CATEGORIA', 'ASC')
 			->orderBy('C_SA.NOM_CATEGORIA', 'ASC')
 			->orderBy('C_SI.NOM_CATEGORIA', 'ASC')

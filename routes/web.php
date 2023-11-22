@@ -43,8 +43,6 @@ Route::get('/consultarcpe', 'LeerxmlController@actionConsultarCpe');
 Route::group(['middleware' => ['authaw']], function () {
 
 
-	
-
 	Route::get('/bienvenido', 'UserController@actionBienvenido');
 
 	Route::any('/gestion-de-usuarios/{idopcion}', 'UserController@actionListarUsuarios');
@@ -300,6 +298,17 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-lista-orden-atender-producto', 'AtenderPedidoDespachoController@actionAjaxModalListaOrdenAtenderProducto');
 	Route::any('/ajax-modal-agregar-producto-pedido-atender', 'AtenderPedidoDespachoController@actionAjaxModalAgregarProductosPedidoAtender');
 	Route::any('/ajax-asignar-muestras-mobil', 'AtenderPedidoDespachoController@actionAjaxAsignarMuestrasMobil');
+	Route::any('/ajax-imprimir-pedido-despacho', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespacho');
+	Route::any('/ajax-modal-ver-impresion', 'AtenderPedidoDespachoController@actionModalImprimirPedidoDespacho');
+	Route::any('/ajax-limpiar-impresion', 'AtenderPedidoDespachoController@actionLimpiarImpresion');
+	Route::any('/ajax-modal-impresion', 'AtenderPedidoDespachoController@actionImpresion');
+	Route::any('/ajax-modal-detalle-pedido-imprimir', 'AtenderPedidoDespachoController@actionModalDetalleImprimir');
+	Route::any('/ajax-imprimir-pedido-despacho-xcantidad', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespachoxCantidad');
+	Route::any('/ajax-imprimir-pedido-despacho-xpalets', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespachoxPalets');
+
+
+
+
 
 
 	Route::any('/ajax-pedido-atender-modificar-fecha-de-entrega', 'AtenderPedidoDespachoController@actionAjaxPedidoAtenderModificarFechaEntrega');

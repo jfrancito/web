@@ -1,3 +1,7 @@
+.seleccionar{
+  cursor: pointer;
+}
+
 .main-chart-color2{
     background-color : #34a853 !important;
 }
@@ -294,6 +298,8 @@
 
 /********* SCROLL MODAL ***************/
 .scroll_text_horizontal{
+  height:300px;
+  
   width:1271px;
   overflow-x:auto;
   padding:0px 15px;
@@ -314,6 +320,61 @@
 .scroll_text_horizontal::-webkit-scrollbar-thumb:hover {  
   background-color: #000;
 } 
+
+
+
+/*******por cantidad ******/
+
+/********* SCROLL MODAL ***************/
+.scroll_text_horizontal_canti{
+  height:300px;
+  width:800px;
+  overflow-x:auto;
+  padding:0px 15px;
+}
+
+.scroll_text_horizontal_canti::-webkit-scrollbar {  
+  width: 8px;
+  height: 8px; 
+}  
+.scroll_text_horizontal_canti::-webkit-scrollbar-track {  
+  background-color: #E7E7E7;
+}  
+.scroll_text_horizontal_canti::-webkit-scrollbar-thumb {  
+  background-color: rgba(223, 86, 86, 0.69);
+  border: 1px solid rgba(92, 92, 92, 0.5);
+  border-radius: 10px;
+}  
+.scroll_text_horizontal_canti::-webkit-scrollbar-thumb:hover {  
+  background-color: #000;
+} 
+
+
+/********* SCROLL MODAL ***************/
+.scroll_text_horizontal_pallets{
+  height:300px;
+  width:1050px;
+  overflow-x:auto;
+  padding:0px 15px;
+}
+
+.scroll_text_horizontal_pallets::-webkit-scrollbar {  
+  width: 8px;
+  height: 8px; 
+}  
+.scroll_text_horizontal_pallets::-webkit-scrollbar-track {  
+  background-color: #E7E7E7;
+}  
+.scroll_text_horizontal_pallets::-webkit-scrollbar-thumb {  
+  background-color: rgba(223, 86, 86, 0.69);
+  border: 1px solid rgba(92, 92, 92, 0.5);
+  border-radius: 10px;
+}  
+.scroll_text_horizontal_pallets::-webkit-scrollbar-thumb:hover {  
+  background-color: #000;
+} 
+
+
 
 
 .scroll_text{

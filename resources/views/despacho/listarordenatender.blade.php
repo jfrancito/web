@@ -16,13 +16,19 @@
                 <div class="panel-heading">Lista de pedidos para atender
                   <div class="tools tooltiptop">
 
-                      <a href="#" class="tooltipcss opciones" id='buscarpedidoatender'>
-                        <span class="icon mdi mdi-search"></span>
-                      </a>
-
-                      <input type="hidden" name="opcion_id" id= 'opcion_id' value = '{{$idopcion}}'>
-
+                    <div class="dropdown">
+                      <span class="icon toggle-loading mdi mdi-search guardarcambios"  id= 'buscarpedidoatender' style='color:#34a853;' title="Guardar cambios"></span>
+<!--                       <span class="icon mdi mdi-more-vert dropdown-toggle" id="menudespacho" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></span> -->
+<!--                       <ul class="dropdown-menu" aria-labelledby="menudespacho" style="margin: 7px -169px 0px;">
+                        <li><a href="#"  id='imprimirpedidoatender'>Agregar Pedido Imprimir <span></span></a></li>
+                        <li><a href="#" id='verimpresion'>Ver Impresion</a></li>
+                        <li><a href="#" id='impresion'>Impresion</a></li>
+                        <li><a href="#" id='limpiarimpresion'>Limpiar Impresion</a></li>
+                      </ul> -->
+                    </div>  
+                    <input type="hidden" name="opcion_id" id= 'opcion_id' value = '{{$idopcion}}'>
                   </div>
+
                   <span class="panel-subtitle">Lista de todos los pedidos para atender que se realizarón  </span>
                 </div>
                 <div class="panel-body">
@@ -89,6 +95,8 @@
             </div>
           </div>
     </div>
+    @include('despacho.modal.mdetalleimprimir')
+
   </div>
 
 @stop
@@ -99,9 +107,14 @@
   <script src="{{ asset('public/lib/datatables/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/plugins/buttons/js/dataTables.buttons.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/lib/datatables/js/dataTables.responsive.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/lib/datatables/js/responsive.bootstrap.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/lib/datatables/js/dataTables.rowsGroup.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/jszipoo.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/pdfmake.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/vfs_fonts.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/buttons.html5.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/buttons.flash.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/buttons.print.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/buttons.colVis.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/buttons.bootstrap.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/app-tables-datatables.js?v='.$version) }}" type="text/javascript"></script>
 
 

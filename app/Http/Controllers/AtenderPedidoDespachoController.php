@@ -18,11 +18,534 @@ use Mail;
 use PDF;
 use App\WEBOrdenDespacho,App\WEBDetalleOrdenDespacho,App\CMPOrden,App\WEBListaCliente,App\ALMProducto,App\CMPCategoria;
 use App\STDEmpresa,App\ALMCentro,App\ALMAlmacen;
-    
+use App\WEBDespachoImprimir;
+use App\CMPDetalleProducto;
+use App\ALMProductiEquiv;
+use App\WEBDespachoImprimirCantidad;
+
 
 
 class AtenderPedidoDespachoController extends Controller
 {
+
+
+	public function actionAjaxImprimirPedidoDespachoxPalets(Request $request)
+	{
+
+        $pedido_id 							= 	$request['pedido_id'];
+        $correlativo						=	0;
+        $nroordecen							=	'';
+		$ordendespacho 						=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+    	$correlativo						=	0;
+        $despachoc 							=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+        	//eliminar si existe
+        WEBDespachoImprimir::where('activo',1)->delete();
+        $array_detalle_palets = array();
+		foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
+			$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+
+        	$ean13 					=	trim($equivalente->COD_EAN);
+          	$ean14 					=	trim($equivalente->EAN14);
+          	$sku 					=	trim($equivalente->COD_SKU);
+
+          	if(($ean13=='' or $ean14 =='' or $sku =='') and $equivalente->ind_ean31 != 1){
+	            $array_nuevo_asiento = array();
+	            $array_nuevo_asiento = array(
+	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+	                "ean13" => $ean13,
+	                "ean14" => $ean14,
+	                "sku" 	=> $sku
+	            );
+	            array_push($array_detalle_palets, $array_nuevo_asiento);
+          	}
+
+
+          	if(($ean13=='' or $sku =='') and $equivalente->ind_ean31 == 1){
+	            $array_nuevo_asiento = array();
+	            $array_nuevo_asiento = array(
+	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+	                "ean13" => $ean13,
+	                "ean14" => $ean14,
+	                "sku" 	=> $sku
+	            );
+	            array_push($array_detalle_palets, $array_nuevo_asiento);
+          	}
+
+
+
+
+		}
+
+		if(count($array_detalle_palets)<=0){
+	        $count = 0;
+			foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
+
+				$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+	        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+
+	        	$ean13 					=	trim($equivalente->COD_EAN);
+	          	$ean14 					=	trim($equivalente->EAN14);
+	          	$sku 					=	trim($equivalente->COD_SKU);
+
+
+	        		if($index == 0){
+	        			$nroordecen		=	$detitem->nro_orden_cen;
+	        		}else{
+	        			if($nroordecen!=$detitem->nro_orden_cen){
+							$correlativo =	0;
+							$nroordecen		=	$detitem->nro_orden_cen; 			
+	        			}
+	        		}
+
+	        		$equivalente 							=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+	        													->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+
+	        		$producto 								=	ALMProducto::where('COD_PRODUCTO','=',$detitem->producto_id)->first();
+	        		$detalleproducto 						=	CMPDetalleProducto::where('COD_TABLA','=',$detitem->orden_id)
+	        													->where('COD_PRODUCTO','=',$detitem->producto_id)
+	        													->first();
+	        		$countpalets							=	$detitem->palets;
+	        		
+					for ($i = 1; $i <= $countpalets; $i++) {
+
+						$correlativo							=	$correlativo +1; 
+						$clpn 									= 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
+
+					    $lpn 									=	'5000000'.str_replace( ",", '', $detitem->nro_orden_cen).$clpn;
+
+			        	$despacho 								=	new WEBDespachoImprimir;
+			        	$despacho->id		 					=	$detitem->id;
+			        	$despacho->codigo		 				=	$despachoc->codigo;
+			        	$despacho->item		 					=	$count;
+			        	$despacho->nro_orden_cen		 		=	str_replace( ",", '', $detitem->nro_orden_cen);
+			        	$despacho->fecha_pedido		 			=	$detitem->fecha_pedido;
+			        	$despacho->fecha_entrega		 		=	$detitem->fecha_entrega;
+			        	$despacho->muestra		 				=	$detitem->muestra;
+
+			        	$despacho->cantidad		 				=	$detitem->cantidad;
+			        	$despacho->cantidad_atender		 		=	$detitem->cantidad_atender;
+			        	$despacho->centro_atender_id		 	=	$detitem->centro_atender_id;
+			        	$despacho->centro_atender_txt		 	=	$detitem->centro_atender_txt;
+			        	$despacho->empresa_atender_id		 	=	$detitem->empresa_atender_id;
+
+			         	$despacho->empresa_atender_txt		 	=	$detitem->empresa_atender_txt;
+			        	$despacho->usuario_responsable_id		=	$detitem->usuario_responsable_id;
+			        	$despacho->usuario_responsable_txt		=	$detitem->usuario_responsable_txt;
+			        	$despacho->estado_id		 			=	$detitem->estado_id;
+			        	$despacho->estado_gruia_id		 		=	$detitem->estado_gruia_id;
+
+			         	$despacho->documento_guia_id		 	=	$detitem->documento_guia_id;
+			        	$despacho->kilos		 				=	$detitem->kilos;
+			        	$despacho->cantidad_sacos		 		=	$detitem->cantidad_sacos;
+			        	$despacho->palets		 				=	$detitem->palets;
+			        	$despacho->kilos_atender		 		=	$detitem->kilos_atender;
+			        	
+			         	$despacho->cantidad_sacos_atender		=	$detitem->cantidad_sacos_atender;
+			        	$despacho->palets_atender		 		=	$detitem->palets_atender;
+			        	$despacho->fecha_carga		 			=	$detitem->fecha_carga;
+			        	$despacho->fecha_recepcion		 		=	$detitem->fecha_recepcion;
+			        	$despacho->presentacion_producto		=	$detitem->presentacion_producto;
+			        	
+			         	$despacho->grupo		 				=	$detitem->grupo;
+			        	$despacho->grupo_orden		 			=	$detitem->grupo_orden;
+			        	$despacho->grupo_movil		 			=	$detitem->grupo_movil;
+			        	$despacho->grupo_orden_movil		 	=	$detitem->grupo_orden_movil;
+			        	$despacho->nro_serie		 			=	$detitem->nro_serie;
+			        	
+			         	$despacho->nro_documento		 		=	$detitem->nro_documento;
+			        	$despacho->grupo_guia		 			=	$detitem->grupo_guia;
+			        	$despacho->grupo_orden_guia		 		=	$detitem->grupo_orden_guia;
+			        	$despacho->correlativo		 			=	$detitem->correlativo;
+			        	$despacho->tipo_grupo_oc		 		=	$detitem->tipo_grupo_oc;
+			        	
+			        	$despacho->usuario_crea		 			=	$detitem->usuario_crea;
+			        	$despacho->unidad_medida_id		 		=	$detitem->unidad_medida_id;
+			        	$despacho->modulo		 				=	$detitem->modulo;
+			        	
+			         	$despacho->usuario_mod		 			=	$detitem->usuario_mod;
+			        	$despacho->activo		 				=	1;
+			        	$despacho->ordendespacho_id		 		=	$detitem->ordendespacho_id;
+			        	$despacho->cliente_id		 			=	$detitem->cliente_id;
+			        	$despacho->orden_id		 				=	$detitem->orden_id;
+			        	
+			         	$despacho->orden_transferencia_id		=	$detitem->orden_transferencia_id;
+			        	$despacho->producto_id		 			=	$detitem->producto_id;
+			        	$despacho->producto_nombre		 		=	$detitem->producto->NOM_PRODUCTO;
+
+			        	$despacho->empresa_id		 			=	$detitem->empresa_id;
+			        	$despacho->centro_id		 			=	$detitem->centro_id;
+
+			        	$despacho->empaquetexpallet		 		=	$producto->CAN_SACO_PALET;
+			         	$despacho->skuxpallet		 			=	$producto->CAN_BOLSA_SACO;
+			        	$despacho->blsscxpallet		 			=	$producto->CAN_SACO_PALET * $producto->CAN_BOLSA_SACO;
+			        	$despacho->sku		 					=	trim($equivalente->COD_SKU);
+			        	$despacho->costosku		 				=	$detalleproducto->CAN_PRECIO_UNIT;
+			        	$despacho->ean13		 				=	trim($equivalente->COD_EAN);
+			         	$despacho->ean14		 				=	trim($equivalente->EAN14);
+			        	$despacho->lpn		 					=	$lpn;
+		         		$despacho->ind_ean13		 			=	$equivalente->ind_ean31;
+
+			        	$despacho->save();
+
+	        			$count = $count+1;
+
+					}
+	        }
+		}
+
+		$tipooperacion				=		'PALLETS';
+        $stmt2 						= 		DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC WEB.DESPACHO_BARCODE 
+											@tipooperacion = ?');
+        $stmt2->bindParam(1, $tipooperacion ,PDO::PARAM_STR);                   
+        $stmt2->execute();	
+
+
+        $listaxpalest		=	WEBDespachoImprimir::orderby('item','asc')->get();
+		return View::make('despacho/ajax/listaxpalets',
+						 [
+						 	'listaxpalest' 			=> $listaxpalest,
+						 	'array_detalle_palets' => $array_detalle_palets,
+						 ]);
+
+
+	}
+
+
+	public function actionAjaxImprimirPedidoDespachoxCantidad(Request $request)
+	{
+
+        $pedido_id 							= 	$request['pedido_id'];
+        $correlativo						=	0;
+        $nroordecen							=	'';
+		$ordendespacho 						=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+
+    	//eliminar si existe
+    	WEBDespachoImprimirCantidad::where('activo','1')->delete();
+        $array_detalle_cantidad = array();
+		foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
+			$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+          	$ean14 					=	$equivalente->EAN14;
+          	$ean13 					=	$equivalente->COD_EAN;
+
+          	if($ean14 == '' and $equivalente->ind_ean31 != 1){
+	            $array_nuevo_asiento = array();
+	            $array_nuevo_asiento = array(
+	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+	                "ean14" => $ean14,
+	                "ean13" => $ean13,
+	            );
+	            array_push($array_detalle_cantidad, $array_nuevo_asiento);
+          	}
+
+          	if($ean13 == '' and $equivalente->ind_ean31 == 1){
+	            $array_nuevo_asiento = array();
+	            $array_nuevo_asiento = array(
+	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+	                "ean14" => $ean14,
+	                "ean13" => $ean13,
+	            );
+	            array_push($array_detalle_cantidad, $array_nuevo_asiento);
+          	}
+
+
+		}
+
+
+
+    	$correlativo		= 0;
+        $count 				= 0;
+
+		if(count($array_detalle_cantidad)<=0){
+
+			foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
+
+				$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+	        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+	          	$ean14 					=	$equivalente->EAN14;
+	    		$countpalets			=	$detitem->cantidad_sacos;
+
+          		if($equivalente->ind_ean31 == 1){
+          			$ean14 					=	$equivalente->COD_EAN;
+          		}
+	    		
+				for ($i = 1; $i <= $countpalets; $i++) {
+
+		        	$despacho 								=	new WEBDespachoImprimirCantidad;
+		        	$despacho->id		 					=	$detitem->id_detalle;
+		        	$despacho->item		 					=	$count;
+		        	$despacho->nro_orden_cen		 		=	str_replace ( ",", '', $detitem->nro_orden_cen);
+		        	$despacho->producto_id		 			=	$detitem->producto_id;
+		        	$despacho->producto_nombre		 		=	$detitem->producto->NOM_PRODUCTO;
+		         	$despacho->ean14		 				=	$ean14;
+		         	$despacho->ind_ean13		 			=	$equivalente->ind_ean31;
+		         	$despacho->activo		 				=	'1';
+		        	$despacho->save();
+	        		$count = $count+1;
+				}
+
+	    	}
+		}
+
+		$tipooperacion				=		'SACOS';
+        $stmt2 						= 		DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC WEB.DESPACHO_BARCODE 
+											@tipooperacion = ?');
+        $stmt2->bindParam(1, $tipooperacion ,PDO::PARAM_STR);                   
+        $stmt2->execute();	
+
+        $listaxcantidad		=	WEBDespachoImprimirCantidad::orderby('item','asc')->get();
+		return View::make('despacho/ajax/listaxcantidad',
+						 [
+						 	'listaxcantidad' 			=> $listaxcantidad,
+						 	'array_detalle_cantidad' 	=> $array_detalle_cantidad,
+						 ]);
+
+      
+	}
+
+
+
+
+
+	public function actionModalDetalleImprimir(Request $request)
+	{
+
+		$pedido_id 			=	$request['pedido_id'];
+		$ordendespacho 		=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+		$detalledespacho 	=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$pedido_id)->first();
+		$funcion 			= 	$this;
+		$array_centro_id 	=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros = 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+		//agregar valores 
+        $correlativo							=	0;
+    	foreach($ordendespacho->viewdetalleordendespacho as $index => $item){
+
+
+    		if($index == 0){
+    			$nroordecen		=	$item->nro_orden_cen;
+    		}else{
+    			if($nroordecen!=$item->nro_orden_cen){
+					$correlativo =	0;  
+					$nroordecen		=	$item->nro_orden_cen;			
+    			}
+    		}
+    		$segmento_palets = '';
+    		$primervalor = '';
+    		$ultimovalor = '';
+    		$countpalets =	$item->palets;	
+			for ($i = 1; $i <= $countpalets; $i++) {
+				$correlativo = $correlativo +1; 
+				if($i == 1){
+					$primervalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
+				}
+				if($i == $countpalets){
+					$ultimovalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT);
+				}
+			}
+			
+			if($primervalor == $ultimovalor){
+				$segmento_palets = $primervalor;
+			}else{
+				$segmento_palets = $primervalor.' - '.$ultimovalor;
+			}
+
+			$detdespacho = WEBDetalleOrdenDespacho::where('id','=',$item->id_detalle)->first();
+			$detdespacho->segmento_palets = $segmento_palets;
+			$detdespacho->save();
+    		//dd($detdespacho);
+    	}
+
+        $listaxcantidad			=	WEBDespachoImprimir::orderby('item','asc')->get();
+        $listaxpalest			=	WEBDespachoImprimir::orderby('item','asc')->get();
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+        $array_detalle_palets 	= 	array();
+        $array_detalle_cantidad = 	array();
+
+		return View::make('despacho/modal/ajax/mdetallepedido',
+						 [
+						 	'ordendespacho' 			=> $ordendespacho,
+						 	'detalledespacho' 			=> $detalledespacho,
+						 	'funcion' 					=> $funcion,
+						 	'array_centro_id' 			=> $array_centro_id,
+						 	'combo_lista_centros' 		=> $combo_lista_centros,
+						 	'listaxcantidad' 			=> $listaxcantidad,
+						 	'listaxpalest' 				=> $listaxpalest,
+						 	'array_detalle_palets' 		=> $array_detalle_palets,
+						 	'array_detalle_cantidad' 	=> $array_detalle_cantidad,
+						 	'ajax' 						=> true,
+						 ]);
+
+
+	}
+
+
+
+
+	public function actionLimpiarImpresion(Request $request)
+	{
+
+		 WEBDespachoImprimir::where('activo',1)->delete();
+
+	}
+
+	public function actionModalImprimirPedidoDespacho(Request $request)
+	{
+
+		$imprimir 			=	WEBDespachoImprimir::first();
+
+		$codigo 			=	'';
+
+		if(count($imprimir)>0){
+			$codigo 			=	$imprimir->codigo;
+		}
+
+		$listaimprimir 		=	WEBDespachoImprimir::join('ALM.PRODUCTO','ALM.PRODUCTO.COD_PRODUCTO','=','WEB.despachoimprimir.producto_id')
+								->join('STD.EMPRESA','STD.EMPRESA.COD_EMPR','=','WEB.despachoimprimir.cliente_id')
+								->orderby('WEB.despachoimprimir.nro_orden_cen','asc')
+								->get();
+
+
+		return View::make('despacho/modal/ajax/mdetalleimprimir',
+						 [
+						 	'imprimir' 					=> $imprimir,
+						 	'listaimprimir' 			=> $listaimprimir,
+						 	'codigo' 					=> $codigo,
+						 	'ajax' 						=> true,
+						 ]);
+
+
+	}
+
+
+
+	public function actionAjaxImprimirPedidoDespacho(Request $request)
+	{
+
+        $detallepedido 							= 	json_decode($request['datastring'], false);
+        $correlativo							=	0;
+        $nroordecen								=	'';
+
+
+        foreach ($detallepedido as $index => $item) {
+
+      		$detelledespacho 						=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$item->pedido_id)
+      													->where('modulo','<>','muestras')
+      													->orderBy('nro_orden_cen','asc')
+      													->get();
+        	$despachoc 								=	WEBOrdenDespacho::where('id','=',$item->pedido_id)->first();
+        	$correlativo							=	0;
+        	//eliminar si existe
+        	WEBDespachoImprimir::where('codigo',$despachoc->codigo)->delete();
+
+        	foreach ($detelledespacho as $index => $detitem) {
+
+        		if($index == 0){
+        			$nroordecen		=	$detitem->nro_orden_cen;
+        		}else{
+        			if($nroordecen!=$detitem->nro_orden_cen){
+						$correlativo =	0;  			
+        			}
+        		}
+
+        		$equivalente 							=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+        													->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+
+        		$producto 								=	ALMProducto::where('COD_PRODUCTO','=',$detitem->producto_id)->first();
+        		$detalleproducto 						=	CMPDetalleProducto::where('COD_TABLA','=',$detitem->orden_id)
+        													->where('COD_PRODUCTO','=',$detitem->producto_id)
+        													->first();
+        		$countpalets							=	$detitem->palets;
+        		
+				for ($i = 1; $i <= $countpalets; $i++) {
+
+					$correlativo							=	$correlativo +1; 
+					$clpn 									= 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
+
+				    $lpn 									=	'5000000'.$detitem->nro_orden_cen.$clpn;
+
+		        	$despacho 								=	new WEBDespachoImprimir;
+		        	$despacho->id		 					=	$detitem->id;
+		        	$despacho->codigo		 				=	$despachoc->codigo;
+
+		        	$despacho->nro_orden_cen		 		=	$detitem->nro_orden_cen;
+		        	$despacho->fecha_pedido		 			=	$detitem->fecha_pedido;
+		        	$despacho->fecha_entrega		 		=	$detitem->fecha_entrega;
+		        	$despacho->muestra		 				=	$detitem->muestra;
+
+		        	$despacho->cantidad		 				=	$detitem->cantidad;
+		        	$despacho->cantidad_atender		 		=	$detitem->cantidad_atender;
+		        	$despacho->centro_atender_id		 	=	$detitem->centro_atender_id;
+		        	$despacho->centro_atender_txt		 	=	$detitem->centro_atender_txt;
+		        	$despacho->empresa_atender_id		 	=	$detitem->empresa_atender_id;
+
+		         	$despacho->empresa_atender_txt		 	=	$detitem->empresa_atender_txt;
+		        	$despacho->usuario_responsable_id		=	$detitem->usuario_responsable_id;
+		        	$despacho->usuario_responsable_txt		=	$detitem->usuario_responsable_txt;
+		        	$despacho->estado_id		 			=	$detitem->estado_id;
+		        	$despacho->estado_gruia_id		 		=	$detitem->estado_gruia_id;
+
+		         	$despacho->documento_guia_id		 	=	$detitem->documento_guia_id;
+		        	$despacho->kilos		 				=	$detitem->kilos;
+		        	$despacho->cantidad_sacos		 		=	$detitem->cantidad_sacos;
+		        	$despacho->palets		 				=	$detitem->palets;
+		        	$despacho->kilos_atender		 		=	$detitem->kilos_atender;
+		        	
+		         	$despacho->cantidad_sacos_atender		=	$detitem->cantidad_sacos_atender;
+		        	$despacho->palets_atender		 		=	$detitem->palets_atender;
+		        	$despacho->fecha_carga		 			=	$detitem->fecha_carga;
+		        	$despacho->fecha_recepcion		 		=	$detitem->fecha_recepcion;
+		        	$despacho->presentacion_producto		=	$detitem->presentacion_producto;
+		        	
+		         	$despacho->grupo		 				=	$detitem->grupo;
+		        	$despacho->grupo_orden		 			=	$detitem->grupo_orden;
+		        	$despacho->grupo_movil		 			=	$detitem->grupo_movil;
+		        	$despacho->grupo_orden_movil		 	=	$detitem->grupo_orden_movil;
+		        	$despacho->nro_serie		 			=	$detitem->nro_serie;
+		        	
+		         	$despacho->nro_documento		 		=	$detitem->nro_documento;
+		        	$despacho->grupo_guia		 			=	$detitem->grupo_guia;
+		        	$despacho->grupo_orden_guia		 		=	$detitem->grupo_orden_guia;
+		        	$despacho->correlativo		 			=	$detitem->correlativo;
+		        	$despacho->tipo_grupo_oc		 		=	$detitem->tipo_grupo_oc;
+		        	
+		        	$despacho->usuario_crea		 			=	$detitem->usuario_crea;
+		        	$despacho->unidad_medida_id		 		=	$detitem->unidad_medida_id;
+		        	$despacho->modulo		 				=	$detitem->modulo;
+		        	
+		         	$despacho->usuario_mod		 			=	$detitem->usuario_mod;
+		        	$despacho->activo		 				=	$detitem->activo;
+		        	$despacho->ordendespacho_id		 		=	$detitem->ordendespacho_id;
+		        	$despacho->cliente_id		 			=	$detitem->cliente_id;
+		        	$despacho->orden_id		 				=	$detitem->orden_id;
+		        	
+		         	$despacho->orden_transferencia_id		=	$detitem->orden_transferencia_id;
+		        	$despacho->producto_id		 			=	$detitem->producto_id;
+		        	$despacho->empresa_id		 			=	$detitem->empresa_id;
+		        	$despacho->centro_id		 			=	$detitem->centro_id;
+
+		        	$despacho->empaquetexpallet		 		=	$producto->CAN_SACO_PALET;
+		         	$despacho->skuxpallet		 			=	$producto->CAN_BOLSA_SACO;
+		        	$despacho->blsscxpallet		 			=	$producto->CAN_SACO_PALET * $producto->CAN_BOLSA_SACO;
+		        	$despacho->sku		 					=	'falta';
+		        	$despacho->costosku		 				=	$detalleproducto->CAN_PRECIO_UNIT;
+		        	$despacho->ean13		 				=	$equivalente->COD_EAN;
+		         	$despacho->ean14		 				=	'falta';
+		        	$despacho->lpn		 					=	$lpn;
+		        	$despacho->save();
+
+				}
+
+
+        	}
+      
+        }
+
+
+	}
+
+
+
 	public function actionAjaxAsignarMuestrasMobil(Request $request)
 	{
 
@@ -1521,7 +2044,7 @@ class AtenderPedidoDespachoController extends Controller
 		$sw_empresa_centro 				= 	$this->funciones->lista_pedidos_por_empresa_por_centro();
 
 	    $listaordenatender 				=   WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
-	    									->EmpresaCentro($sw_empresa_centro)
+	    									//->EmpresaCentro($sw_empresa_centro)
 	    									->where('fecha_orden','>=', $fechainicio)
 	    									->where('fecha_orden','<=', $fechafin)
 	    									->orderBy('fecha_crea', 'desc')
@@ -1539,5 +2062,12 @@ class AtenderPedidoDespachoController extends Controller
 						 	'fechafin' 								=> $fechafin,
 						 ]);
 	}
+
+
+
+
+
+
+
 
 }

@@ -60,7 +60,6 @@ class PedidoDespachoController extends Controller
 														->groupBy('grupo_orden_movil')
 														->first();
 
-
 				if(count($count_grupo_movil)>0){
 
 					WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho_id)
@@ -774,16 +773,11 @@ class PedidoDespachoController extends Controller
 		
 	}
 
-
-
-
-
 	public function actionGestionOrdenDespacho($idopcion,$idordendespacho)
 	{
 
 		$idordendespacho_en 		= 	$idordendespacho;
 		$idordendespacho 			= 	$this->funciones->decodificarmaestra($idordendespacho);
-
 	    $ordendespacho 				=   WEBOrdenDespacho::where('id','=',$idordendespacho)->first();
 		$funcion 					= 	$this;
 
@@ -800,11 +794,6 @@ class PedidoDespachoController extends Controller
 						 ]);
 
 	}
-
-
-
-
-
 
 	public function actionAjaxPedidoCrearUpdatePedidoDespachoCentro(Request $request)
 	{
@@ -2081,11 +2070,15 @@ class PedidoDespachoController extends Controller
 		$fechainicio 					=  	$this->fecha_menos_quince;
 		$fechafin 						=  	$this->fin;
 
+
+
 	    $listaordendespacho 			=   WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
 	    									->where('fecha_orden','>=', $fechainicio)
 	    									->where('fecha_orden','<=', $fechafin)
 	    									->orderBy('fecha_crea', 'desc')
 	    									->get();
+
+	    //dd($listaordendespacho);
 
 
 		$funcion 						= 	$this;
@@ -2113,7 +2106,9 @@ class PedidoDespachoController extends Controller
 
 		$fechainicio 					=  	$request['fechainicio'];
 		$fechafin 						=  	$request['fechafin'];
-		
+		$idopcion 						=  	$request['idopcion'];
+
+
 	    $listaordendespacho 			=   WEBOrdenDespacho::join('CMP.CATEGORIA','CMP.CATEGORIA.COD_CATEGORIA','=','WEB.ordendespachos.estado_id')
 	    									->where('fecha_orden','>=', $fechainicio)
 	    									->where('fecha_orden','<=', $fechafin)
@@ -2126,6 +2121,7 @@ class PedidoDespachoController extends Controller
 						 [
 						 	'listaordendespacho' 					=> $listaordendespacho,
 						 	'funcion' 								=> $funcion,
+						 	'idopcion' 								=> $idopcion,
 						 	'ajax' 									=> true,
 						 ]);
 

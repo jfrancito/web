@@ -26,8 +26,8 @@ class WEBOrdenDespacho extends Model
         ->orderBy('grupo_movil', 'asc')
         //->orderBy('grupo', 'asc')
         //->orderBy('id', 'asc')
-        ->orderBy('grupo_guia', 'asc');
-        //->orderBy('id', 'asc');
+        ->orderBy('grupo_guia', 'asc')
+        ->orderBy('id', 'asc');
     }
 
 

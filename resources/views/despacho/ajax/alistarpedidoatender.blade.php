@@ -2,6 +2,7 @@
 <table id="tableprecios" class="table table-striped table-hover table-fw-widget">
   <thead>
     <tr>
+<!--       <th>Sel</th> -->
       <th>Empresa Solicitante</th>
       <th>Centro Solicitante</th>
       <th>Usuario Solicitante</th>
@@ -13,8 +14,30 @@
   </thead>
   <tbody>
 
-    @foreach($listaordenatender as $item)
-      <tr>
+    @foreach($listaordenatender as $index=>$item)
+      <tr data_pedido_id = '{{$item->id}}' class='dobleclickpc seleccionar'>
+
+<!--         <td>
+
+            <div class="be-radio">
+              <input type="radio" checked="" name="rad2" id="rad{{$index}}">
+              <label for="rad{{$index}}">Option 1</label>
+            </div>
+
+
+            <div class="text-center be-checkbox be-checkbox-sm has-primary">
+              <input  type="checkbox"
+                class="{{$index}} input_asignar_im"
+                data_pedido_id = '{{$item->id}}'
+                id="{{$index}}" >
+
+              <label  for="{{$index}}"
+                    data-atr = "ver"
+                    class = "checkbox checkbox_asignar"                    
+                    name="{{$index}}"
+              ></label>
+            </div>
+        </td> -->
 
         <td class="cell-detail"> 
           <span>{{$item->empresa->NOM_EMPR}}</span>
@@ -53,24 +76,19 @@
           <div class="btn-group btn-hspace">
             <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">Acción <span class="icon-dropdown mdi mdi-chevron-down"></span></button>
             <ul role="menu" class="dropdown-menu pull-right">
-              <li>
+<!--               <li>
                 <a href="{{ url('/atender-orden-despacho/'.$idopcion.'/'.Hashids::encode(substr($item->id, -8))) }}">
                   Atender Pedido
                 </a>  
-              </li>
-
+              </li> -->
               <li>
                 <a href="{{ url('/excel-orden-despacho/'.$idopcion.'/'.Hashids::encode(substr($item->id, -8))) }}">
                   Descargar Pedido Excel
                 </a>  
               </li>
-
-
             </ul>
           </div>
         </td>
-
-        
       </tr>                    
     @endforeach
 
