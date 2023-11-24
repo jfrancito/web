@@ -49,7 +49,7 @@ class AtenderPedidoDespachoController extends Controller
           	$ean14 					=	trim($equivalente->EAN14);
           	$sku 					=	trim($equivalente->COD_SKU);
 
-          	if(($ean13=='' or $ean14 =='' or $sku =='') and $equivalente->ind_ean31 != 1){
+          	if(($ean13=='' or $ean14 =='' or $sku =='') and $equivalente->ESGRANEL != 1){
 	            $array_nuevo_asiento = array();
 	            $array_nuevo_asiento = array(
 	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
@@ -61,7 +61,7 @@ class AtenderPedidoDespachoController extends Controller
           	}
 
 
-          	if(($ean13=='' or $sku =='') and $equivalente->ind_ean31 == 1){
+          	if(($ean13=='' or $sku =='') and $equivalente->ESGRANEL == 1){
 	            $array_nuevo_asiento = array();
 	            $array_nuevo_asiento = array(
 	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
@@ -184,7 +184,7 @@ class AtenderPedidoDespachoController extends Controller
 			        	$despacho->ean13		 				=	trim($equivalente->COD_EAN);
 			         	$despacho->ean14		 				=	trim($equivalente->EAN14);
 			        	$despacho->lpn		 					=	$lpn;
-		         		$despacho->ind_ean13		 			=	$equivalente->ind_ean31;
+		         		$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
 
 			        	$despacho->save();
 
@@ -229,7 +229,7 @@ class AtenderPedidoDespachoController extends Controller
           	$ean14 					=	$equivalente->EAN14;
           	$ean13 					=	$equivalente->COD_EAN;
 
-          	if($ean14 == '' and $equivalente->ind_ean31 != 1){
+          	if($ean14 == '' and $equivalente->ESGRANEL != 1){
 	            $array_nuevo_asiento = array();
 	            $array_nuevo_asiento = array(
 	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
@@ -239,7 +239,7 @@ class AtenderPedidoDespachoController extends Controller
 	            array_push($array_detalle_cantidad, $array_nuevo_asiento);
           	}
 
-          	if($ean13 == '' and $equivalente->ind_ean31 == 1){
+          	if($ean13 == '' and $equivalente->ESGRANEL == 1){
 	            $array_nuevo_asiento = array();
 	            $array_nuevo_asiento = array(
 	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
@@ -266,7 +266,7 @@ class AtenderPedidoDespachoController extends Controller
 	          	$ean14 					=	$equivalente->EAN14;
 	    		$countpalets			=	$detitem->cantidad_sacos;
 
-          		if($equivalente->ind_ean31 == 1){
+          		if($equivalente->ESGRANEL == 1){
           			$ean14 					=	$equivalente->COD_EAN;
           		}
 	    		
@@ -279,7 +279,7 @@ class AtenderPedidoDespachoController extends Controller
 		        	$despacho->producto_id		 			=	$detitem->producto_id;
 		        	$despacho->producto_nombre		 		=	$detitem->producto->NOM_PRODUCTO;
 		         	$despacho->ean14		 				=	$ean14;
-		         	$despacho->ind_ean13		 			=	$equivalente->ind_ean31;
+		         	$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
 		         	$despacho->activo		 				=	'1';
 		        	$despacho->save();
 	        		$count = $count+1;

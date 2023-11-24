@@ -1217,7 +1217,7 @@ class Funcion{
 
 		$clasecon = 'CON';
 		$tipo_contrato = 'carteradg';
-        $stmt 						= 		DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC RPS.CMP_SALDO_CUENTA_DOCUMENTO_COMERCIAL 
+        $stmt 						= 		DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC RPS.CMP_SALDO_CUENTA_DOCUMENTO_COMERCIAL_NUEVO 
 											@FEC_CORTE = ?,
 											@CLIENTE = ?,
 											@CLASECON = ?,
@@ -1238,7 +1238,7 @@ class Funcion{
 
 		$clasecon = 'CON';
 
-        $stmt 						= 		DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC RPS.CMP_SALDO_CUENTA_DOCUMENTO_COMERCIAL 
+        $stmt 						= 		DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC RPS.CMP_SALDO_CUENTA_DOCUMENTO_COMERCIAL_NUEVO 
 											@FEC_CORTE = ?,
 											@CLIENTE = ?,
 											@CLASECON = ?,
