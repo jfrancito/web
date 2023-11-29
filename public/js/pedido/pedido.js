@@ -1190,6 +1190,7 @@ $(document).ready(function(){
         var data_npr            =   $(this).attr('data_npr');
         var data_upr            =   $(this).attr('data_upr');
 
+        debugger;
 
         if($("#obsequio").is(':checked')){
             obsequio = 1;
@@ -1197,8 +1198,13 @@ $(document).ready(function(){
             if(ind_producto_obsequio =='' || ind_producto_obsequio === null){ alertdangermobil("Seleccione relacion obsequio"); return false;}
             //precio = '0.0000';
             producto_idsel  = seleccionar_producto(ind_producto_obsequio);
+            precio_sel  = seleccionar_precio_producto(ind_producto_obsequio);
+
             if(producto_idsel != data_ipr){ alertdangermobil("El producto seleccionado es diferente"); return false;}
             txt_producto_obsequio    =   ind_producto_obsequio;
+            precio                      =   precio_sel.replace(",", "");
+
+
         }else{
             obsequio = 0;
             contador_ind_producto_obsequio(txt_producto_obsequio);
@@ -1829,6 +1835,7 @@ function seleccionar_producto(data_ipobsequio){
         var data_ipo     = $(this).attr('data_ipo');
         var data_ipr     = $(this).attr('data_ipr');
 
+
         if(data_ipobsequio==data_ipo){
             idproducto     = data_ipr;
         }
@@ -1836,6 +1843,29 @@ function seleccionar_producto(data_ipobsequio){
     
     return idproducto;
 }
+
+function seleccionar_precio_producto(data_ipobsequio){
+
+    var precio = '';
+
+    $(".detalleproducto .productoseleccion").each(function(){
+        var subtotal     = 0;
+        var data_ppr_for = $(this).attr('data_prpr');
+        var data_ipr_for = $(this).attr('data_ctpr');
+        var data_obq     = $(this).attr('data_obq');
+        var data_ipo     = $(this).attr('data_ipo');
+        var data_ipr     = $(this).attr('data_ipr');
+
+        if(data_ipobsequio==data_ipo){
+            precio     = data_ppr_for;
+        }
+    });
+    debugger;
+    return precio;
+}
+
+
+
 
 
 function calcular_total(){
