@@ -43,6 +43,14 @@ class WEBListaCliente extends Model
         }
     }
 
+    public function scopeContrato($query,$contrato){
+
+        if(trim($contrato) != 'TODO'){
+            $query->where('COD_CONTRATO', '=', $contrato);
+        }
+
+    }
+
 
     public function scopeSubCanal($query,$subcanal){
         if(trim($subcanal) != ''){

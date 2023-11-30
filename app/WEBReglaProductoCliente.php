@@ -20,5 +20,13 @@ class WEBReglaProductoCliente extends Model
     }
 
 
+    public function scopeCuenta($query,$cuenta){
+
+        if(trim($cuenta) != 'TODO'){
+            $query->where('WEB.reglaproductoclientes.contrato_id', '=', $cuenta);
+        }
+
+    }
+
 
 }

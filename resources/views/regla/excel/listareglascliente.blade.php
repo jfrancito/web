@@ -22,7 +22,7 @@
             <th class= 'center tablamar'>PRECIO PRODUCTO</th>              
             <th class= 'center warning'>NOTA DE CREDITO</th> 
         </tr>
-
+        @php $contador    =   1; @endphp
         @foreach($listacliente as $index_c => $item_c) 
             @foreach($listadeproductos as $index => $item) 
 
@@ -66,13 +66,15 @@
 
                         </td>
                     </tr>
-                @else 
+                    @php $contador    =   $contador + 1; @endphp
+
+<!--                 @else 
                     <tr>
                         <td>{{$item_c->NOM_EMPR}}</td>
                         <td>{{$item->NOM_PRODUCTO}}</td>
                         <td></td>
                         <td></td>
-                    </tr>
+                    </tr> -->
                 @endif
 
             @endforeach

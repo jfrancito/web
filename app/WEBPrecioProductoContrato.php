@@ -23,4 +23,12 @@ class WEBPrecioProductoContrato extends Model
         return $this->hasMany('App\WEBPrecioProductoContratoHistorial', 'precioproductocontrato_id', 'id');
     }
 
+    public function scopeContrato($query,$cuenta){
+
+        if(trim($cuenta) != 'TODO'){
+            $query->where('contrato_id', '=', $cuenta);
+        }
+
+    }
+
 }

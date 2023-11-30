@@ -16,45 +16,54 @@
       </tr>
     </thead>
     <tbody>
+      @php $contador    =   1; @endphp
+
 	  	@foreach($listacliente as $index_c => $item_c)
             @foreach($listadeproductos as $index => $item) 
-		        <tr>
-		        	  <td class='negrita'>{{$index + 1}}</td>
-		            <td>{{$item_c->NOM_EMPR}}</td>
-                <td>{{$item->NOM_PRODUCTO}}</td>
 
-                <!-- REGLAS DE LOS CLIENTES-->
-                @php
-                  $lista_reglas_cliente    =   $funcion->funciones->lista_reglas_cliente($item_c->COD_CONTRATO,$item->producto_id);
-                @endphp
+            @php
+              $lista_reglas_cliente    =   $funcion->funciones->lista_reglas_cliente($item_c->COD_CONTRATO,$item->producto_id);
+            @endphp
 
-                <td class='negrita'>
-                  @foreach($lista_reglas_cliente as $index => $item)
+            @if(count($lista_reglas_cliente)>0)
+  		        <tr>
+  		        	  <td class='negrita'>{{$contador}}</td>
+  		            <td>{{$item_c->NOM_EMPR}}</td>
+                  <td>{{$item->NOM_PRODUCTO}}</td>
 
-                    @if ($item->tiporegla == 'POV') 
-                        @if($item->tipodescuento == 'POR') 
-                          %
-                        @else 
-                          S/.
-                        @endif
-                        {{number_format($item->descuento, 4, '.', ',')}} |
-                    @endif 
-                  @endforeach
-                </td>
+                  <!-- REGLAS DE LOS CLIENTES-->
 
-                <td class='negrita'>
-                  @foreach($lista_reglas_cliente as $index => $item)
-                    @if ($item->tiporegla == 'PNC')
-                        @if($item->tipodescuento == 'POR') 
-                          %
-                        @else 
-                          S/.
-                        @endif
-                        {{number_format($item->descuento, 4, '.', ',')}} |
-                    @endif
-                  @endforeach
-                </td>
-		        </tr>
+
+                  <td class='negrita'>
+                    @foreach($lista_reglas_cliente as $index => $item)
+
+                      @if ($item->tiporegla == 'POV') 
+                          @if($item->tipodescuento == 'POR') 
+                            %
+                          @else 
+                            S/.
+                          @endif
+                          {{number_format($item->descuento, 4, '.', ',')}} |
+                      @endif 
+                    @endforeach
+                  </td>
+
+                  <td class='negrita'>
+                    @foreach($lista_reglas_cliente as $index => $item)
+                      @if ($item->tiporegla == 'PNC')
+                          @if($item->tipodescuento == 'POR') 
+                            %
+                          @else 
+                            S/.
+                          @endif
+                          {{number_format($item->descuento, 4, '.', ',')}} |
+                      @endif
+                    @endforeach
+                  </td>
+  		        </tr>
+              @php $contador    =   $contador + 1; @endphp
+            @endif
+
             @endforeach       
 	  	@endforeach
     </tbody>

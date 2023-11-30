@@ -4101,9 +4101,12 @@ class Funcion{
 									->where('WEB.reglas.tiporegla','<>','PRD')
 									//->where('WEB.reglas.empresa_id','=',Session::get('empresas')->COD_EMPR)
 									->where('WEB.reglas.centro_id','=',Session::get('centros')->COD_CENTRO)
-									->where('WEB.reglaproductoclientes.contrato_id','=',$cuenta_id)
+									->Cuenta($cuenta_id)
+									//->where('WEB.reglaproductoclientes.contrato_id','=',$cuenta_id)
 									->where('WEB.reglaproductoclientes.activo','=','1')
 									->pluck('WEB.reglaproductoclientes.producto_id')->toArray();
+
+		//dd($array_productos_id);
 
 
 		$lista_producto_regla 	= 	WEBPrecioProducto::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
@@ -4112,7 +4115,7 @@ class Funcion{
 									->whereIn('producto_id',$array_productos_id)
 	    					 		->orderBy('NOM_PRODUCTO', 'asc')->get();
 
-
+		//dd($lista_producto_regla);
 
 	 	return   $lista_producto_regla;				 			
 	}
@@ -4121,14 +4124,18 @@ class Funcion{
 
 	public function lista_productos_precio_favotitos($cuenta_id) {
 
+
+
 		$lista_producto_precio 	= 	WEBPrecioProductoContrato::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
 							    	->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
 					    			->where('centro_id','=',Session::get('centros')->COD_CENTRO)
 									->where('contrato_id','=',$cuenta_id)
+									//->Contrato($cuenta_id)
 									->where('activo','=','1')
 									->where('ind_contrato','=',1)
 									->orderBy('NOM_PRODUCTO', 'asc')
 									->get();
+
 
 	 	return   $lista_producto_precio;				 			
 	}
@@ -4528,7 +4535,7 @@ class Funcion{
 									->pluck('NOM_EMPR','COD_CONTRATO')
 									->toArray();
 
-		$combolistaclientes  	= 	array('' => "Seleccione cliente") + $listaclientes;
+		$combolistaclientes  	= 	array('' => "Seleccione cliente",'TODO' => "TODO") + $listaclientes;
 		return $combolistaclientes;		 			
 	}
 
