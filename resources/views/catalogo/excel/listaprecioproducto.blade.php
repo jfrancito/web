@@ -89,6 +89,10 @@ h1{
         </tr>
 
         @foreach($listacliente as $index_c => $item_c) 
+            @php
+              $listadeproductos    =   $funcion->funciones->lista_productos_precio_favotitos($item_c->COD_CONTRATO);
+            @endphp
+        
             @foreach($listadeproductos as $index => $item) 
 
                 <!-- PRECIOS CON DEPARTAMENTOS-->
@@ -124,7 +128,7 @@ h1{
                 <tr>
                     <td width="50" class='{{$color}}'> {{$item_c->NOM_EMPR}}</td>
                     <td width="50" class='{{$color}}'>{{$item->NOM_PRODUCTO}}</td>
-                    <td width="20" class='{{$color}}'>{{date_format(date_create($item_pr->fecha_crea), 'd-m-Y H:i:s')}}</td>
+                    <td width="20" class='negrita {{$color}}'>{{date_format(date_create($item_pr->fecha_crea), 'd-m-Y H:i:s')}}</td>
                     <td width="20" class='negrita {{$color}}'>{{$funcion->funciones->departamento($item_pr->departamento_id)->NOM_CATEGORIA}}</td> 
                     <td width="20" class='right negrita {{$color}}'> S/. {{number_format($item_pr->descuento, 2, '.', ',')}}</td>
                     <td width="20" class='right negrita {{$color}}'> 

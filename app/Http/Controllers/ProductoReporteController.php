@@ -323,9 +323,27 @@ class ProductoReporteController extends Controller
 	    	$listadeproductos 				= 	$this->funciones->lista_productos_precio();			
 		}
 		// lista de clientes
-		$listacliente 					= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
-											->orderBy('NOM_EMPR', 'asc')
-											->get();
+
+		if($cuenta_id=='TODO'){
+
+			$array_contratos_id 	= 	WEBReglaProductoCliente::where('WEB.reglaproductoclientes.activo','=','1')
+										->groupBy('WEB.reglaproductoclientes.contrato_id')
+										->pluck('WEB.reglaproductoclientes.contrato_id')
+										->toArray();
+
+			$listacliente 			= 	WEBListaCliente::whereIn('COD_CONTRATO',$array_contratos_id)
+										->where('COD_EMPR', '=' , Session::get('empresas')->COD_EMPR)
+										->orderBy('NOM_EMPR', 'asc')
+										->get();
+
+		}else{
+
+			$listacliente 			= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
+										->orderBy('NOM_EMPR', 'asc')
+										->get();
+
+		}
+
 
 		$funcion 						= 	$this;
 
@@ -367,10 +385,31 @@ class ProductoReporteController extends Controller
 
 		$funcion 				= 	$this;	
 
+
+		if($cuenta_id=='TODO'){
+
+			$array_contratos_id 	= 	WEBReglaProductoCliente::where('WEB.reglaproductoclientes.activo','=','1')
+										->groupBy('WEB.reglaproductoclientes.contrato_id')
+										->pluck('WEB.reglaproductoclientes.contrato_id')
+										->toArray();
+
+			$listacliente 			= 	WEBListaCliente::whereIn('COD_CONTRATO',$array_contratos_id)
+										->where('COD_EMPR', '=' , Session::get('empresas')->COD_EMPR)
+										->orderBy('NOM_EMPR', 'asc')
+										->get();
+
+		}else{
+
+			$listacliente 			= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
+										->orderBy('NOM_EMPR', 'asc')
+										->get();
+
+		}
+
 		// lista de clientes
-		$listacliente 					= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
-											->orderBy('NOM_EMPR', 'asc')
-											->get();
+		// $listacliente 					= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
+		// 									->orderBy('NOM_EMPR', 'asc')
+		// 									->get();
 
 		$empresa 				= 	Session::get('empresas')->NOM_EMPR;
 		$centro 				= 	Session::get('centros')->NOM_CENTRO;								

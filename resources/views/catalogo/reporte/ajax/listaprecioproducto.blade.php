@@ -1,6 +1,6 @@
 <div class='row reporte'>
   
-  <table id="tablereporte" class="table table-striped table-hover table-fw-widget">
+  <table id="tablereporte" class="table table-striped table-hover table-fw-widget" style="font-size: 12px;">
     <thead>
       <tr>
         <th class= 'center tabladp' colspan='3'>DATOS</th>        
@@ -22,6 +22,11 @@
     </thead>
     <tbody>
 	  	@foreach($listacliente as $index_c => $item_c)
+
+            @php
+              $listadeproductos    =   $funcion->funciones->lista_productos_precio_favotitos($item_c->COD_CONTRATO);
+            @endphp
+
             @foreach($listadeproductos as $index => $item) 
 		        <tr>
 		        	  <td class='negrita'>{{$index + 1}}</td>

@@ -4127,15 +4127,41 @@ class Funcion{
 
 
 
-		$lista_producto_precio 	= 	WEBPrecioProductoContrato::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
-							    	->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
-					    			->where('centro_id','=',Session::get('centros')->COD_CENTRO)
-									->where('contrato_id','=',$cuenta_id)
-									//->Contrato($cuenta_id)
-									->where('activo','=','1')
-									->where('ind_contrato','=',1)
-									->orderBy('NOM_PRODUCTO', 'asc')
-									->get();
+
+		if($cuenta_id=='TODO'){
+
+			$array_contratos_id 	= 	WEBReglaProductoCliente::where('WEB.reglaproductoclientes.activo','=','1')
+										->groupBy('WEB.reglaproductoclientes.contrato_id')
+										->pluck('WEB.reglaproductoclientes.contrato_id')
+										->toArray();
+
+			$lista_producto_precio 	= 	WEBPrecioProductoContrato::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
+								    	->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
+						    			->where('centro_id','=',Session::get('centros')->COD_CENTRO)
+						    			->whereIn('contrato_id',$array_contratos_id)
+										//->where('contrato_id','=',$cuenta_id)
+										//->Contrato($cuenta_id)
+										->where('activo','=','1')
+										->where('ind_contrato','=',1)
+										->orderBy('NOM_PRODUCTO', 'asc')
+										->get();
+		}else{
+
+			$lista_producto_precio 	= 	WEBPrecioProductoContrato::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
+								    	->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
+						    			->where('centro_id','=',Session::get('centros')->COD_CENTRO)
+										->where('contrato_id','=',$cuenta_id)
+										//->Contrato($cuenta_id)
+										->where('activo','=','1')
+										->where('ind_contrato','=',1)
+										->orderBy('NOM_PRODUCTO', 'asc')
+										->get();
+		}
+
+
+
+
+
 
 
 	 	return   $lista_producto_precio;				 			
@@ -4150,7 +4176,9 @@ class Funcion{
 
 	public function combo_tipo_precio_productos() {
 
-		$combotipoprecio_producto  	= 	array('1' => "Contratos" ,'0' => "Todos");
+		// $combotipoprecio_producto  	= 	array('1' => "Contratos" ,'0' => "Todos");
+		$combotipoprecio_producto  	= 	array('1' => "Contratos");
+
 		return $combotipoprecio_producto;		 			
 	}
 
@@ -4518,7 +4546,7 @@ class Funcion{
 
 	public function calculo_fecha_regular($cliente,$producto) {
 
-		
+
 
 		$precioregular =      	WEBPrecioProductoContrato::where('contrato_id','=',$cliente->COD_CONTRATO)
 								->where('producto_id','=',$producto->producto_id)
