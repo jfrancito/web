@@ -26,7 +26,7 @@
             @endphp
 
             @if(count($lista_reglas_cliente)>0)
-  		        <tr>
+  		        <tr data-producto = '{{$item->NOM_PRODUCTO}}'>
   		        	  <td class='negrita'>{{$contador}}</td>
   		            <td>{{$item_c->NOM_EMPR}}</td>
                   <td>{{$item->NOM_PRODUCTO}}</td>

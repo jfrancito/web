@@ -316,23 +316,16 @@ class ProductoReporteController extends Controller
 		$tipoprecio_id 					=  	$request['tipoprecio_id'];		
 
 		if($tipoprecio_id=='1'){
-
 	    	// lista productos
 	    	$listadeproductos 				= 	$this->funciones->lista_productos_precio_favotitos($cuenta_id);	
-
-
 		}else{
 	    	// lista productos
 	    	$listadeproductos 				= 	$this->funciones->lista_productos_precio();			
 		}
-
 		// lista de clientes
 		$listacliente 					= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
 											->orderBy('NOM_EMPR', 'asc')
 											->get();
-
-
-
 
 		$funcion 						= 	$this;
 

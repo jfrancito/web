@@ -81,6 +81,7 @@ h1{
         <tr>
             <th class= 'tabladp'>CLIENTE</th>
             <th class= 'tabladp'>PRODUCTO</th>
+            <th class= 'center'>FECHA</th>  
             <th class= 'center tablaho'>DEPARTAMENTO</th>              
             <th class= 'center tablaho'>PRECIO REGULAR</th> 
             <th class= 'center tablaho'>DESCUENTO</th>
@@ -104,6 +105,9 @@ h1{
                 <tr>
                     <td width="50" class='{{$color}}'> {{$item_c->NOM_EMPR}}</td>
                     <td width="50" class='{{$color}}'>{{$item->NOM_PRODUCTO}}</td>
+                    <td width="20" class='negrita'>
+                        {{ date_format(date_create($funcion->funciones->calculo_fecha_regular($item_c,$item)), 'd-m-Y H:i:s')}}
+                    </td>
                     <td width="20" class='negrita {{$color}}'>OTROS</td>
                     <td width="20" class='negrita {{$color}}'>
                         S/. {{$funcion->funciones->calculo_precio_regular($item_c,$item)}}
@@ -120,6 +124,7 @@ h1{
                 <tr>
                     <td width="50" class='{{$color}}'> {{$item_c->NOM_EMPR}}</td>
                     <td width="50" class='{{$color}}'>{{$item->NOM_PRODUCTO}}</td>
+                    <td width="20" class='{{$color}}'>{{date_format(date_create($item_pr->fecha_crea), 'd-m-Y H:i:s')}}</td>
                     <td width="20" class='negrita {{$color}}'>{{$funcion->funciones->departamento($item_pr->departamento_id)->NOM_CATEGORIA}}</td> 
                     <td width="20" class='right negrita {{$color}}'> S/. {{number_format($item_pr->descuento, 2, '.', ',')}}</td>
                     <td width="20" class='right negrita {{$color}}'> 

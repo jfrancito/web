@@ -4,13 +4,15 @@
     <thead>
       <tr>
         <th class= 'center tabladp' colspan='3'>DATOS</th>        
-        <th class= 'center tablaho' colspan='4'>PRECIO</th>        
+        <th class= 'center tablaho' colspan='5'>PRECIO</th>        
       </tr>
 
       <tr>
         <th class= 'tabladp'>ID</th>        
         <th class= 'tabladp'>CLIENTE</th>
         <th class= 'tabladp'>PRODUCTO</th>
+        <th class= 'center'>FECHA</th> 
+
         <th class= 'center tablaho'>DEPARTAMENTO</th>              
         <th class= 'center tablaho'>PRECIO REGULAR</th> 
         <th class= 'center tablaho'>DESCUENTO</th>
@@ -31,6 +33,14 @@
                   $lista_precio_regular_departamento    =   $funcion->funciones->lista_precio_regular_departamento($item_c->COD_CONTRATO,$item->producto_id);
                 @endphp
                 
+                <td class='negrita'>
+                    {{ date_format(date_create($funcion->funciones->calculo_fecha_regular($item_c,$item)), 'd-m-Y')}}
+                    @foreach($lista_precio_regular_departamento as $index_pr => $item_pr) 
+                    <br>
+                    {{date_format(date_create($item_pr->fecha_crea), 'd-m-Y')}}
+                    @endforeach
+                </td>
+
                 <td class='negrita'>
                   OTROS
                   <br>

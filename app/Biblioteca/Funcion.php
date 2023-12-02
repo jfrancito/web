@@ -4113,6 +4113,7 @@ class Funcion{
 					    			->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
 					    			->where('centro_id','=',Session::get('centros')->COD_CENTRO)
 									->whereIn('producto_id',$array_productos_id)
+									//->where('COD_PRODUCTO','=','PRD0000000000747')
 	    					 		->orderBy('NOM_PRODUCTO', 'asc')->get();
 
 		//dd($lista_producto_regla);
@@ -4511,6 +4512,26 @@ class Funcion{
 		}
 
 		return $producto->precio;
+	 			
+	}
+
+
+	public function calculo_fecha_regular($cliente,$producto) {
+
+		
+
+		$precioregular =      	WEBPrecioProductoContrato::where('contrato_id','=',$cliente->COD_CONTRATO)
+								->where('producto_id','=',$producto->producto_id)
+								->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
+								->where('centro_id','=',Session::get('centros')->COD_CENTRO)
+								->first();
+
+
+		if(count($precioregular)){
+			return $precioregular->fecha_crea;
+		}
+
+		return $producto->fecha_crea;
 	 			
 	}
 

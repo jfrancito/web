@@ -68,7 +68,7 @@ class ReglaReporteController extends Controller
 											->groupBy('WEB.LISTACLIENTE.NOM_EMPR')
 											->get();
 
-		//dd($listacliente);
+		//dd($listadeproductos);
 
 		$funcion 						= 	$this;
 
