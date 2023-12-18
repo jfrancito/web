@@ -1,7 +1,6 @@
-<!--@DPZ0002 div class="scroll_text_horizontal_padding" style = "padding: 0px !important;">--> 
 <div style = "padding: 0px !important;"> 
-  <!--@DPZ0002-->
-  <div style="margin-bottom: 10px;" >
+
+ <div style="margin-bottom: 10px;" >
     <table class="table table-pedidos-despachos" style='font-size: 0.88em;' id="tablepedidodespacho" >
     <thead>
       <tr>

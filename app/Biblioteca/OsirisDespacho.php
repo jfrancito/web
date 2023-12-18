@@ -11,15 +11,15 @@ USE App\CMPOrden,App\WEBPickingDetalle;
 
 class OsirisDespacho{
 
-	public $msjerror;
-	public $orden_id;
-	public $lote;
-	public function __construct()
-	{
-	    $this->msjerror 	= '';
-	    $this->orden_id 	= '';
-	    $this->lote 		= '';
-	}
+        public $msjerror;
+        public $orden_id;
+        public $lote;
+        public function __construct()
+        {
+            $this->msjerror     = '';
+            $this->orden_id     = '';
+            $this->lote                 = '';
+        }
 
 
         /************** GUARDAR ORDEN DE PEDIDO ****************/
@@ -878,7 +878,7 @@ class OsirisDespacho{
         //@DPZ1
         /************** GUARDAR ORDEN DE SALIDA POR VENTA ****************/        
         public function guardar_salida_venta($codOrdenVenta,$h_glosa,$data_empresa_propietario,$data_empresa_servicio,
-                                             $h_array_productos_ordensalida,$data_tipo_cambio){
+                                             $h_array_productos_ordensalida,$array_servicio_ordensalida_h,$data_tipo_cambio){
                 
                 $accion                                         =       'I';
                 $vacio                                          =       '';
@@ -1108,9 +1108,9 @@ class OsirisDespacho{
                 $stmt->bindParam(7, $vacio  ,PDO::PARAM_STR);                                   //@TXT_DETALLE_PRODUCTO='',
                 $stmt->bindParam(8, $CAN_PRODUCTO  ,PDO::PARAM_STR);                            //@CAN_PRODUCTO=1.0000,
                 $stmt->bindParam(9, $valor_cero  ,PDO::PARAM_STR);                              //@CAN_PRODUCTO_ENVIADO=0,
-                $stmt->bindParam(10, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PESO=50.0000,
+                $stmt->bindParam(10, $CAN_PESO  ,PDO::PARAM_STR);                               //@CAN_PESO=50.0000,
 
-                $stmt->bindParam(11, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_PRODUCTO=50.0000,
+                $stmt->bindParam(11, $CAN_PESO_PRODUCTO ,PDO::PARAM_STR);                       //@CAN_PESO_PRODUCTO=50.0000,
                 $stmt->bindParam(12, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PESO_ENVIADO=0,
                 $stmt->bindParam(13, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_INGRESO=0, 
                 $stmt->bindParam(14, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_SALIDA=0, 
@@ -1191,6 +1191,132 @@ class OsirisDespacho{
                 $this->actualizarPickingDetalle($row,$CAN_PRODUCTO,$codorden[0]);
                 $this->actualizarOrdenVentaDetalle($row,$CAN_PRODUCTO,$codOrdenVenta);
         }     
+
+        //servicios
+
+        $IND_MATERIAL_SERVICIO                          =       'S';
+        foreach($array_servicio_ordensalida_h as $key => $row) {
+
+
+                $COD_PRODUCTO                           =       $row['producto_id'];
+                $producto                               =       ALMProducto::where('COD_PRODUCTO','=',$row['producto_id'])->first();
+                $COD_LOTE                               =       '0000000000000000';
+                $NRO_LINEA                              =       (string)($key+1);
+                $TXT_NOMBRE_PRODUCTO                    =       $row['nombre_producto'];
+                $CAN_PRODUCTO                           =       (string)$row['catidad_servicio'];
+                $CAN_TASA_IGV                           =       '0.1800';
+                $CAN_PRECIO_UNIT_IGV                    =       (string)$row['precio_servicio'];
+                $CAN_PRECIO_UNIT                        =       (string)$row['costo'];
+                $CAN_VALOR_VTA                          =       (string)$row['subtotal'];
+                $CAN_VALOR_VENTA_IGV                    =       (string)$row['total_servicio'];
+                $IND_IGV                                =       (string)$row['ind_igv'];
+                $COD_EMPR_SERV                          =       (string)$row['empresa_servicio'];
+                $empresa_servicio                       =       STDEmpresa::where('COD_EMPR','=',$COD_EMPR_SERV)->first();
+                $TXT_EMPR_SERV                          =       $empresa_servicio->NOM_EMPR;
+                $NRO_CONTRATO_SERV                      =       (string)$row['cuenta_servicio'];
+                $COD_ESTADO                             =       '1';
+                $COD_USUARIO_REGISTRO                   =       Session::get('usuario')->name;
+                $COD_TIPO_ESTADO                        =       'IACHTE0000000017';
+                $TXT_TIPO_ESTADO                        =       'GENERADO';
+                $COD_TIPO_DOCUMENTO                     =       (string)$row['tipo_documento_id'];
+                $TXT_SERIE_DOCUMENTO                    =       '0000';
+                $TXT_NUMERO_DOCUMENTO                   =       '0000000000';
+                $COD_CATEGORIA_TIPO_SERV_ORDEN          =       'TSO0000000000003';
+                $IND_GASTO_COSTO                        =       'C';
+                $FEC_FECHA_SERV                         =       $fecha_venta;               
+                $NRO_CONTRATO_CULTIVO_SERV              =       'CCU0000000000001';
+                
+
+                $stmt = DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DETALLE_PRODUCTO_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?');
+                $stmt->bindParam(1, $accion ,PDO::PARAM_STR);                                   //@IND_TIPO_OPERACION='I',
+                $stmt->bindParam(2, $codorden[0]  ,PDO::PARAM_STR);                             //@COD_TABLA='IILMVR0000002923',
+                $stmt->bindParam(3, $COD_PRODUCTO ,PDO::PARAM_STR);                             //@COD_PRODUCTO='PRD0000000016186',
+                $stmt->bindParam(4, $COD_LOTE ,PDO::PARAM_STR);                                 //@COD_LOTE='0000000000000000', 
+                $stmt->bindParam(5, $NRO_LINEA ,PDO::PARAM_STR);                                //@NRO_LINEA=1, 
+                $stmt->bindParam(6, $TXT_NOMBRE_PRODUCTO  ,PDO::PARAM_STR);                     //@TXT_NOMBRE_PRODUCTO='ARROCILLO DE ARROZ AÑEJO X 50 KG',
+                $stmt->bindParam(7, $vacio  ,PDO::PARAM_STR);                                   //@TXT_DETALLE_PRODUCTO='',
+                $stmt->bindParam(8, $CAN_PRODUCTO  ,PDO::PARAM_STR);                            //@CAN_PRODUCTO=1.0000,
+                $stmt->bindParam(9, $valor_cero  ,PDO::PARAM_STR);                              //@CAN_PRODUCTO_ENVIADO=0,
+                $stmt->bindParam(10, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PESO=50.0000,
+
+                $stmt->bindParam(11, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_PRODUCTO=50.0000,
+                $stmt->bindParam(12, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PESO_ENVIADO=0,
+                $stmt->bindParam(13, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_INGRESO=0, 
+                $stmt->bindParam(14, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_SALIDA=0, 
+                $stmt->bindParam(15, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PESO_BRUTO=0, 
+                $stmt->bindParam(16, $valor_cero  ,PDO::PARAM_STR);                             //@CAM_PESO_TARA=0,
+                $stmt->bindParam(17, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PESO_NETO=0,
+                $stmt->bindParam(18, $CAN_TASA_IGV  ,PDO::PARAM_STR);                           //@CAN_TASA_IGV=0.1800,
+                $stmt->bindParam(19, $CAN_PRECIO_UNIT_IGV  ,PDO::PARAM_STR);                    //@CAN_PRECIO_UNIT_IGV=2.0000,
+                $stmt->bindParam(20, $CAN_PRECIO_UNIT  ,PDO::PARAM_STR);                        //@CAN_PRECIO_UNIT=2.0000,
+
+                $stmt->bindParam(21, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PRECIO_ORIGEN=0,
+                $stmt->bindParam(22, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PRECIO_COSTO=2.0000,
+                $stmt->bindParam(23, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PRECIO_BRUTO=0, 
+                $stmt->bindParam(24, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PRECIO_KILOS=0,
+                $stmt->bindParam(25, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PRECIO_SACOS=0, 
+                $stmt->bindParam(26, $CAN_VALOR_VTA  ,PDO::PARAM_STR);                          //@CAN_VALOR_VTA=2.0000, 
+                $stmt->bindParam(27, $CAN_VALOR_VENTA_IGV  ,PDO::PARAM_STR);                    //@CAN_VALOR_VENTA_IGV=2.0000,
+                $stmt->bindParam(28, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_KILOS=0,
+                $stmt->bindParam(29, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_SACOS=0,
+                $stmt->bindParam(30, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PENDIENTE=1.0000,
+
+                $stmt->bindParam(31, $valor_cero ,PDO::PARAM_STR);                              //@CAN_PORCENTAJE_DESCUENTO=0,
+                $stmt->bindParam(32, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_DESCUENTO=0,
+                $stmt->bindParam(33, $valor_cero ,PDO::PARAM_STR);                              //@CAN_ADELANTO=0, 
+                $stmt->bindParam(34, $vacio ,PDO::PARAM_STR);                                   //@TXT_DESCRIPCION='', 
+                $stmt->bindParam(35, $IND_MATERIAL_SERVICIO ,PDO::PARAM_STR);                   //@IND_MATERIAL_SERVICIO='M' 
+                $stmt->bindParam(36, $IND_IGV  ,PDO::PARAM_STR);                                //@IND_IGV=0, 
+                $stmt->bindParam(37, $vacio  ,PDO::PARAM_STR);                                  //@COD_ALMACEN='',
+                $stmt->bindParam(38, $vacio  ,PDO::PARAM_STR);                                  //@TXT_ALMACEN='',
+                $stmt->bindParam(39, $vacio  ,PDO::PARAM_STR);                                  //@COD_OPERACION='',
+                $stmt->bindParam(40, $vacio  ,PDO::PARAM_STR);                                  //@COD_OPERACION_AUX='',
+
+                $stmt->bindParam(41, $COD_EMPR_SERV ,PDO::PARAM_STR);                           //@COD_EMPR_SERV='',
+                $stmt->bindParam(42, $TXT_EMPR_SERV  ,PDO::PARAM_STR);                          //@TXT_EMPR_SERV='',
+                $stmt->bindParam(43, $NRO_CONTRATO_SERV ,PDO::PARAM_STR);                       //@NRO_CONTRATO_SERV='', 
+                $stmt->bindParam(44, $NRO_CONTRATO_CULTIVO_SERV,PDO::PARAM_STR);                //@NRO_CONTRATO_CULTIVO_SERV='', 
+                $stmt->bindParam(45, $vacio ,PDO::PARAM_STR);                                   //@NRO_HABILITACION_SERV='', 
+                $stmt->bindParam(46, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PRECIO_EMPR_SERV=0, 
+                $stmt->bindParam(47, $vacio  ,PDO::PARAM_STR);                                  //@NRO_CONTRATO_GRUPO='',
+                $stmt->bindParam(48, $vacio  ,PDO::PARAM_STR);                                  //@NRO_CONTRATO_CULTIVO_GRUPO='',
+                $stmt->bindParam(49, $vacio  ,PDO::PARAM_STR);                                  //@NRO_HABILITACION_GRUPO='',
+                $stmt->bindParam(50, $vacio  ,PDO::PARAM_STR);                                  //@COD_CATEGORIA_TIPO_PAGO='',
+
+                $stmt->bindParam(51, $vacio ,PDO::PARAM_STR);                                   //@COD_USUARIO_INGRESO='',
+                $stmt->bindParam(52, $vacio  ,PDO::PARAM_STR);                                  //@COD_USUARIO_SALIDA='',
+                $stmt->bindParam(53, $vacio ,PDO::PARAM_STR);                                   //@TXT_GLOSA_PESO_IN='', 
+                $stmt->bindParam(54, $vacio ,PDO::PARAM_STR);                                   //@TXT_GLOSA_PESO_OUT='', 
+                $stmt->bindParam(55, $vacio ,PDO::PARAM_STR);                                   //@COD_CONCEPTO_CENTRO_COSTO='IICHCC0000000002', 
+                $stmt->bindParam(56, $vacio  ,PDO::PARAM_STR);                                  //@TXT_CONCEPTO_CENTRO_COSTO='ACOPIO', 
+                $stmt->bindParam(57, $vacio  ,PDO::PARAM_STR);                                  //@TXT_REFERENCIA='',
+                $stmt->bindParam(58, $vacio  ,PDO::PARAM_STR);                                  //@TXT_TIPO_REFERENCIA='',
+                $stmt->bindParam(59, $vacio  ,PDO::PARAM_STR);                                  //@IND_COSTO_ARBITRARIO='',
+                $stmt->bindParam(60, $COD_ESTADO  ,PDO::PARAM_STR);                             //@COD_ESTADO=1,
+
+                $stmt->bindParam(61, $COD_USUARIO_REGISTRO ,PDO::PARAM_STR);                    //@COD_USUARIO_REGISTRO='PHORNALL',
+                $stmt->bindParam(62, $COD_TIPO_ESTADO  ,PDO::PARAM_STR);                        //@COD_TIPO_ESTADO='',
+                $stmt->bindParam(63, $TXT_TIPO_ESTADO ,PDO::PARAM_STR);                         //@TXT_TIPO_ESTADO='', 
+                $stmt->bindParam(64, $vacio ,PDO::PARAM_STR);                                   //@TXT_GLOSA_ASIENTO='', 
+                $stmt->bindParam(65, $vacio ,PDO::PARAM_STR);                                   //@TXT_CUENTA_CONTABLE='', 
+                $stmt->bindParam(66, $vacio  ,PDO::PARAM_STR);                                  //@COD_ASIENTO_PROVISION='',
+                $stmt->bindParam(67, $vacio  ,PDO::PARAM_STR);                                  //@COD_ASIENTO_EXTORNO='',
+                $stmt->bindParam(68, $vacio  ,PDO::PARAM_STR);                                  //@COD_ASIENTO_CANJE='',
+                $stmt->bindParam(69, $COD_TIPO_DOCUMENTO  ,PDO::PARAM_STR);                     //@COD_TIPO_DOCUMENTO='',
+                $stmt->bindParam(70, $vacio  ,PDO::PARAM_STR);                                  //@COD_DOCUMENTO_CTBLE='',
+
+                $stmt->bindParam(71, $TXT_SERIE_DOCUMENTO ,PDO::PARAM_STR);                     //@TXT_SERIE_DOCUMENTO='',
+                $stmt->bindParam(72, $TXT_NUMERO_DOCUMENTO  ,PDO::PARAM_STR);                   //@TXT_NUMERO_DOCUMENTO='',
+                $stmt->bindParam(73, $vacio ,PDO::PARAM_STR);                                   //@COD_GASTO_FUNCION='', 
+                $stmt->bindParam(74, $vacio ,PDO::PARAM_STR);                                   //@COD_CENTRO_COSTO='', 
+                $stmt->bindParam(75, $vacio ,PDO::PARAM_STR);                                   //@COD_ORDEN_COMPRA='', 
+                $stmt->bindParam(76, $FEC_FECHA_SERV  ,PDO::PARAM_STR);                         //@FEC_FECHA_SERV='1901-01-01', 
+                $stmt->bindParam(77, $COD_CATEGORIA_TIPO_SERV_ORDEN  ,PDO::PARAM_STR);          //@COD_CATEGORIA_TIPO_SERV_ORDEN='',
+                $stmt->bindParam(78, $IND_GASTO_COSTO  ,PDO::PARAM_STR);                        //@IND_GASTO_COSTO=' ',
+                $stmt->bindParam(79, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_PORCENTAJE_PERCEPCION=0,
+                $stmt->bindParam(80, $valor_cero  ,PDO::PARAM_STR);                             //@CAN_VALOR_PERCEPCION=0
+                $stmt->execute();
+        }
 
         return $codorden[0];     
         } 

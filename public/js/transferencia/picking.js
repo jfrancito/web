@@ -91,8 +91,7 @@ $(document).ready(function(){
                 var almacen_nombre                  =   $(cabecera_tabla_tr).find('#almacen_id option:selected').text();
                 var array_lote_id                   =   $(cabecera_tabla_tr).find('#lote_id').val();
                 var costo                           =   $(cabecera_tabla_tr).find('.costo').html();            
-                var cantidad_atender                =   $(cabecera_tabla_tr).find('.updatepriceatender').val();
-                debugger;
+                var cantidad_atender                =   $(cabecera_tabla_tr).find('.updatepriceatender').val();                
                 var stock_neto                      =   parseFloat(stock_neto.replace(",", ""));
                 var costo                           =   parseFloat(costo.replace(",", ""));
                 var cantidad_atender                =   parseFloat(cantidad_atender.replace(",", ""));
@@ -189,6 +188,7 @@ $(document).ready(function(){
         abrircargando(); 
         $.ajax({
             type    :   "POST",
+            //@DPZ0002
             url     :   carpeta+"/ajax-combo-almacen-destino-pk",
             data    :   {
                             _token                  : _token,
@@ -360,6 +360,88 @@ $(document).ready(function(){
         if(h_array_productos_ordensalida.length<=2){alerterrorajax('No existe ningun material en la lista'); return false;}
         
         if(sw==1){alerterrorajax(msj); return false;}
+        
+        //servicio 
+        var data_servicio_salida = [];
+        var sw   = 0;
+        var msj  = '';
+
+        $(".listaserviciosv tbody tr").each(function(){
+
+            var cabecera_tabla_tr               =   $(this);
+            var nombre_estado                   =   $(cabecera_tabla_tr).find('.nombre_estado').html();
+            var producto_id                     =   $(cabecera_tabla_tr).find('.producto_id').html();
+            var nombre_producto                 =   $(cabecera_tabla_tr).find('.nombre_porducto_id').html();
+            var costo                           =   $(cabecera_tabla_tr).find('.costo').html();
+
+            var catidad_servicio                =   $(cabecera_tabla_tr).find('.update_price_cantidad_servicio').val();
+            var precio_servicio                 =   $(cabecera_tabla_tr).find('.update_price_precio_servicio').val();
+            catidad_servicio                    =   parseFloat(catidad_servicio.replace(",", ""));
+            precio_servicio                     =   parseFloat(precio_servicio.replace(",", ""));
+            var input                           =   $(cabecera_tabla_tr).find('.input_asignar_ser');
+
+            if($(input).is(':checked')){
+                ind_igv   = 1;
+            }else{
+                ind_igv   = 0;
+            }
+
+            var subtotal                        =   $(cabecera_tabla_tr).find('.subtotal').html();
+            var igv                             =   $(cabecera_tabla_tr).find('.igv').html();
+
+            var total_servicio                  =   $(cabecera_tabla_tr).find('.update_price_total_servicio').val();
+            total_servicio                      =   parseFloat(total_servicio.replace(",", ""));
+
+            var empresa_servicio                =   $(cabecera_tabla_tr).find('.empresa_servicio_select').val();
+            var cuenta_servicio                 =   $(cabecera_tabla_tr).find('#cuenta_servicio').val();
+            var contrato_cuenta                 =   $(cabecera_tabla_tr).find('.contrato_cuenta').html();
+            var tipo_documento_id               =   $(cabecera_tabla_tr).find('.tipo_documento_id').html();
+
+
+            if(catidad_servicio<=0){
+                msj = 'Servicio ('+nombre_producto+') ingrese cantidad';
+                sw=1;
+            }
+            if(precio_servicio<=0){
+                msj = 'Servicio ('+nombre_producto+') ingrese precio';
+                sw=1;
+            }
+            if(total_servicio <=0){
+                msj = 'Servicio ('+nombre_producto+') ingrese total';
+                sw=1;
+            }
+
+            if(empresa_servicio == 'VACIO'){
+                msj = 'Servicio ('+nombre_producto+') seleccione empresa servicio';
+                sw=1;
+            }
+
+            if(cuenta_servicio == ''  || cuenta_servicio === null){
+                msj = 'Servicio ('+nombre_producto+') seleccione cuenta';
+                sw=1;
+            }
+
+            data_servicio_salida.push({
+                nombre_estado                   : nombre_estado,
+                producto_id                     : producto_id,
+                nombre_producto                 : nombre_producto,
+                costo                           : costo,
+                catidad_servicio                : catidad_servicio,
+                precio_servicio                 : precio_servicio,
+                ind_igv                         : ind_igv,
+                subtotal                        : subtotal,
+                igv                             : igv,
+                total_servicio                  : total_servicio,
+                empresa_servicio                : empresa_servicio,
+                cuenta_servicio                 : cuenta_servicio,
+                contrato_cuenta                 : contrato_cuenta,
+                tipo_documento_id               : tipo_documento_id
+            });
+           
+        });
+        if(sw==1){alerterrorajax(msj); return false;}
+        debugger;
+        $('#array_servicio_ordensalida_h').val(JSON.stringify(data_servicio_salida)); 
 
         abrircargando();
         return true;
@@ -540,6 +622,7 @@ $(document).ready(function(){
         var _token                      =   $('#token').val();
         var count_servicio              =   $('#count_servicio').val();
         var calcula_cantidad_peso       =   $('#calcula_cantidad_peso').val();
+        //@DPZ0002
         var ls_servicios   = ""
         $(".listaservicios tbody tr").each(function(){
             var cabecera_tabla_tr               =   $(this);
@@ -555,8 +638,9 @@ $(document).ready(function(){
                             _token                  : _token,
                             count_servicio          : count_servicio,
                             calcula_cantidad_peso   : calcula_cantidad_peso, 
+                            //@DPZ0002
                             ls_servicios            : ls_servicios,
-                            tipo                    : "PK",   
+                            tipo                    : "PK",                              
                         },
             success: function (data) {
                 $(".ajax_lista_servicio").html(data);
@@ -568,7 +652,41 @@ $(document).ready(function(){
         });
     });
 
-    
+    $(".despacho").on('click','.agregar_serviciov', function() {
+
+        var _token                      =   $('#token').val();
+        var count_servicio              =   $('#count_servicio').val();
+        var calcula_cantidad_peso       =   $('#calcula_cantidad_peso').val();
+        //@DPZ0002
+        var ls_servicios   = ""
+        $(".listaserviciosv tbody tr").each(function(){
+            var cabecera_tabla_tr               =   $(this);
+            var producto_id                     =   $(cabecera_tabla_tr).find('.producto_id').html();  
+            ls_servicios = ls_servicios + "-" + producto_id;          
+        })
+
+        abrircargando();
+        $.ajax({
+            type    :   "POST",
+            url     :   carpeta+"/ajax-agregar-servicio",
+            data    :   {
+                            _token                  : _token,
+                            count_servicio          : count_servicio,
+                            calcula_cantidad_peso   : calcula_cantidad_peso, 
+                            //@DPZ0002
+                            ls_servicios            : ls_servicios,
+                            tipo                    : "PK",                              
+                        },
+            success: function (data) {
+                $(".ajax_lista_serviciov").html(data);
+                cerrarcargando();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+    });
+
     $(".despacho").on('click','.pordensalida', function() {
 
         event.preventDefault();
@@ -604,8 +722,7 @@ $(document).ready(function(){
                 var almacen_nombre                  =   $(cabecera_tabla_tr).find('#almacen_id option:selected').text();
                 var array_lote_id                   =   $(cabecera_tabla_tr).find('#lote_id').val();
                 var costo                           =   $(cabecera_tabla_tr).find('.costo').html();            
-                var cantidad_atender                =   $(cabecera_tabla_tr).find('.updatepriceatender').val();
-                debugger;
+                var cantidad_atender                =   $(cabecera_tabla_tr).find('.updatepriceatender').val();                
                 var stock_neto                      =   parseFloat(stock_neto.replace(",", ""));
                 var costo                           =   parseFloat(costo.replace(",", ""));
                 var cantidad_atender                =   parseFloat(cantidad_atender.replace(",", ""));
@@ -958,9 +1075,10 @@ function actualizarDatosVentaSalida(orden_venta,cliente,fecha_orden){
 
 function actualizar_combo_almacen_origen(_token,carpeta,almacen_combo_id){
 
-
+   
     $.ajax({
             type    :   "POST",
+            //@DPZ0002
             url     :   carpeta+"/ajax-combo-almacen-origen-pk",
             data    :   {
                             _token                  : _token,

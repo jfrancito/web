@@ -134,12 +134,13 @@
                         <label class="col-sm-12 control-label labelleft" >Centro : </label>
                         <div class="col-sm-12 abajocaja" >
                           
-                              {!! Form::select( 'destino_centro', $combo_sin_centro, array($centrodestino),
+                              {!! Form::select( 'destino_centro', $combo_centro, array($centro_registro_trans->centro_id),
                                                 [
                                                   'class'       => 'select2 form-control control input-sm centro_select' ,
                                                   'id'          => 'destino_centro',
-                                                  'data-aw'     => '2'
+                                                  'data-aw'     => '2',
                                                 ]) !!}
+
                         </div>
                       </div>
                     </div>
@@ -193,7 +194,7 @@
 
 
             <div class="scroll_text_horizontal ajax_lista_servicio" style = "padding: 0px !important;">
-              @include('picking.tab.tablas.listaserviciospt')
+              @include('despacho.tab.tablas.listaservicios')
             </div>
           </div>
         </div>
