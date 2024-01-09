@@ -4,6 +4,15 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/jqvmap/jqvmap.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }}" />
+    <style type="text/css">
+        
+        #chart {
+          max-width: 650px;
+          margin: 35px auto;
+        }
+
+    </style>
+
 @stop
 
 @section('section')
@@ -13,7 +22,7 @@
         <div class="row">
             <div class="col-xs-12 col-md-6 col-lg-4">
                 <div class="widget widget-tile">
-                  <div id="spark1" class="chart sparkline"></div>
+                  <div id="spark1" class="sparkline"></div>
                   <div class="data-info">
                     <div class="desc">Pedidos</div>
                     <div class="value">
@@ -34,6 +43,9 @@
                 </div>
             </div>
         </div>
+
+
+
     </div>
   </div>
 
@@ -52,6 +64,8 @@
     <script src="{{ asset('public/lib/jqvmap/jquery.vmap.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('public/lib/jqvmap/maps/jquery.vmap.world.js') }}" type="text/javascript"></script>
     <script src="{{ asset('public/js/app-dashboard.js') }}" type="text/javascript"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 
     <script type="text/javascript">

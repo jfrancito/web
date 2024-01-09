@@ -57,7 +57,7 @@
   <script src="{{ asset('public/lib/scroll/js/jquery-scrollpanel-0.7.0.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/scroll/js/scroll.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/general/general.js?v='.$version) }}" type="text/javascript"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   @yield('script')
  
 </body>

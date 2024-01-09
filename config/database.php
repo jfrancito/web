@@ -109,6 +109,19 @@ return [
             'prefix' => '',
         ],
 
+
+        'sqlsrv_a' => [
+            'driver' => 'sqlsrv',
+            'host' => 'OLYMPUS\INVICTUS',
+            'database' => 'REPORTES',
+            'username' => 'sa',
+            'password' => 'Sistem@s1ndu19',
+            'charset' => 'utf8',
+            'prefix' => '',
+        ],
+
+
+
     ],
 
     /*
