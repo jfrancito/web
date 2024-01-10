@@ -47,14 +47,15 @@
                   <div class="col-xs-12">
                     <div class='listaanaitica listajax reporteajax'>
 
+
+                      <div style="border:1px solid black;width:500px;overflow:auto"> 
                           <div id="chart">
                           </div>
-
                           <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
                           <div id="meses" class='ocultar'>{{$meses}}</div>
                           <div id="ventas" class='ocultar'>{{$ventas}}</div>
                           <div id="tnc" class='ocultar'>{{$tnc}}</div>
-
+                      </div>
 
                     </div>
                   </div>
@@ -92,7 +93,7 @@
 
       App.init();
       App.formElements();
-
+      $('.scroll_text_horizontal_analitica').scrollLeft(500);
 
     });
   </script>

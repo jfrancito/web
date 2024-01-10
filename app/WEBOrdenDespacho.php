@@ -23,6 +23,7 @@ class WEBOrdenDespacho extends Model
     public function viewdetalleordendespacho()
     {
         return $this->hasMany('App\WEBViewDetalleOrdenDespacho', 'ordendespacho_id', 'id')->where('activo','=', 1)
+        //->where('ind_segmento','=', 1)
         ->orderBy('grupo_movil', 'asc')
         //->orderBy('grupo', 'asc')
         //->orderBy('id', 'asc')

@@ -306,9 +306,13 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-ver-impresion', 'AtenderPedidoDespachoController@actionModalImprimirPedidoDespacho');
 	Route::any('/ajax-limpiar-impresion', 'AtenderPedidoDespachoController@actionLimpiarImpresion');
 	Route::any('/ajax-modal-impresion', 'AtenderPedidoDespachoController@actionImpresion');
-	Route::any('/ajax-modal-detalle-pedido-imprimir', 'AtenderPedidoDespachoController@actionModalDetalleImprimir');
+
 	Route::any('/ajax-imprimir-pedido-despacho-xcantidad', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespachoxCantidad');
 	Route::any('/ajax-imprimir-pedido-despacho-xpalets', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespachoxPalets');
+	
+	Route::any('/ajax-modal-detalle-pedido-imprimir', 'AtenderPedidoDespachoController@actionModalDetalleImprimir');
+	Route::any('/ajax-quitar-agregar-pedido-producto', 'AtenderPedidoDespachoController@actionAjaxQuitarAgregarPedidoProducto');
+
 
 
 

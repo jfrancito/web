@@ -38,12 +38,12 @@
            
             @foreach(Session::get('listamenu') as $grupo)
 
-                <li  class="dropdown active"  ><a href="#" @click="menu='{{$grupo->id}}'" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><i class="icon mdi {{$grupo->icono}}"></i><span>&nbsp;{{$grupo->nombre}}</span></a>
+                <li  class="dropdown active"  ><a href="#" @click="menu='{{$grupo->id}}'" style="font-size: 12px;" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><i class="icon mdi {{$grupo->icono}}"></i><span>&nbsp;{{$grupo->nombre}}</span></a>
                   <ul role="menu" class="dropdown-menu">
                     @foreach($grupo->opcion as $opcion)
                       @if(in_array($opcion->id, Session::get('listaopciones')))
                         <li>
-                          <a href="{{ url('/'.$opcion->pagina.'/'.Hashids::encode(substr($opcion->id, -8))) }}">{{$opcion->nombre}}</a>
+                          <a href="{{ url('/'.$opcion->pagina.'/'.Hashids::encode(substr($opcion->id, -8))) }}" style="font-size: 12px;">{{$opcion->nombre}}</a>
                         </li>
                       @endif
                     @endforeach

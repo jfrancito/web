@@ -81,7 +81,7 @@ return [
         'sqlsrv_b' => [
             'driver' => 'sqlsrv',
             'host' => '10.1.9.43',
-            'database' => 'pOSBE2019',
+            'database' => 'pOSBE2024',
             'username' => 'sa',
             'password' => 'ia.ziz.+1+6',
             'charset' => 'utf8',
@@ -91,13 +91,13 @@ return [
         'sqlsrv_r' => [
             'driver' => 'sqlsrv',
             'host' => '10.1.7.200',
-            'database' => 'pOSRJ2019',
+            'database' => 'pOSRJ2024',
             'username' => 'sa',
             'password' => 'ia.ziz.+1+6',
             'charset' => 'utf8',
             'prefix' => '',
-        ],        
-
+        ], 
+        
 
         'sqlsrv_h' => [
             'driver' => 'sqlsrv',
@@ -112,7 +112,7 @@ return [
 
         'sqlsrv_a' => [
             'driver' => 'sqlsrv',
-            'host' => 'OLYMPUS\INVICTUS',
+            'host' => '10.1.0.200\INVICTUS',
             'database' => 'REPORTES',
             'username' => 'sa',
             'password' => 'Sistem@s1ndu19',

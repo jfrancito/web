@@ -1316,7 +1316,102 @@ $(document).ready(function(){
             });
         }
     });
+
+    $(".listadespacho").on('click','.checkbox_asignar', function() {
+
+        var input               = $(this).siblings('.input_asignar');
+        var accion              = $(this).attr('data-atr');
+        var name                = $(this).attr('name');
+        var data_detalle_id     = $(this).attr('data_detalle_id');
+        var data_despacho_id    = $(this).attr('data_despacho_id');
+
+        debugger;
+        var _token              = $('#token').val();
+
+
+        var check   = -1;
+        var estado  = -1;
+        if($(input).is(':checked')){
+
+            check   = 0;
+            estado  = false;
+
+        }else{
+
+            check   = 1;
+            estado  = true;
+
+        }
+        validarrelleno_imprimir(accion,name,estado,check);
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-quitar-agregar-pedido-producto",
+            data    :   {
+                            _token          : _token,
+                            check           : check,
+                            data_detalle_id : data_detalle_id,
+                            data_despacho_id : data_despacho_id,
+                            
+                            estado          : estado
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.ajax_pedido_qr').html(data);
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+
+
+    });
+
+
+
+
 });
+
+function validarrelleno_imprimir(accion,name,estado,check,token){
+
+
+    if (accion=='todas_asignar') {
+
+        $(".listatabla tr").each(function(){
+                debugger;
+            nombre = $(this).find('.input_asignar').attr('id');
+            if(nombre != 'todo_asignar'){
+                $(this).find('.input_asignar').prop("checked", estado);
+            }
+        });
+    }else{
+
+        sw = 0;
+        if(estado){
+            $(".listatabla tr").each(function(){
+                nombre = $(this).find('.input_asignar').attr('id');
+
+                console.log($(this).find('.input_asignar').length);
+
+                if(nombre != 'todo_asignar' && $(this).find('.input_asignar').length > 0){
+                    if(!($(this).find('.input_asignar').is(':checked'))){
+                        sw = sw + 1;
+                    }
+                }
+            });
+            if(sw==1){
+                $("#todo_asignar").prop("checked", estado);
+            }
+        }else{
+            $("#todo_asignar").prop("checked", estado);
+        }           
+    }
+}
+
+
 
 function validarrelleno(accion,name,estado,check,token){
 

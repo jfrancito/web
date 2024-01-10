@@ -322,6 +322,35 @@
 } 
 
 
+#chart{
+  width: 500px;
+}
+
+
+/********* SCROLL MODAL ***************/
+.scroll_text_horizontal_analitica{
+  width:1000px;
+  overflow-x:auto;
+  padding:0px 15px;
+}
+
+.scroll_text_horizontal_analitica::-webkit-scrollbar {  
+  width: 8px;
+  height: 8px; 
+}  
+.scroll_text_horizontal_analitica::-webkit-scrollbar-track {  
+  background-color: #E7E7E7;
+}  
+.scroll_text_horizontal_analitica::-webkit-scrollbar-thumb {  
+  background-color: rgba(223, 86, 86, 0.69);
+  border: 1px solid rgba(92, 92, 92, 0.5);
+  border-radius: 10px;
+}  
+.scroll_text_horizontal_analitica::-webkit-scrollbar-thumb:hover {  
+  background-color: #000;
+} 
+
+
 
 /*******por cantidad ******/
 

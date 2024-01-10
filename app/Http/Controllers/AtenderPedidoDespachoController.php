@@ -24,10 +24,193 @@ use App\ALMProductiEquiv;
 use App\WEBDespachoImprimirCantidad;
 
 
-
 class AtenderPedidoDespachoController extends Controller
 {
 
+	public function actionAjaxQuitarAgregarPedidoProducto(Request $request)
+	{
+
+		$check 					=	$request['check'];
+		$data_detalle_id 		=	$request['data_detalle_id'];
+		$despacho_id 			=	$request['data_despacho_id'];
+		$estado 				=	$request['estado'];
+
+		$detalledespacho_sel 	=	WEBDetalleOrdenDespacho::where('id','=',$data_detalle_id)->first();
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$despacho_id)->first();
+
+		//dd($ordendespacho);
+
+		if($data_detalle_id =='todo'){
+
+			WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
+			->where('tipo_grupo_oc','<>','muestras')
+			->where('activo','=','1')
+			->update(['ind_segmento' => $check]);
+
+		}else{
+
+
+			$detalledespacho 				=	WEBDetalleOrdenDespacho::where('id','=',$data_detalle_id)->first();
+			$detalledespacho->ind_segmento 	= 	$check;
+			$detalledespacho->save();
+		}
+
+		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
+		->update(['segmento_palets' => '']);
+
+
+		$ind_todo 						=	1;
+		$detalletodo 					=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
+											->where('ind_segmento','=','0')
+											->get();
+		if(count($detalletodo)>0){
+			$ind_todo 					=	0;
+		}
+
+		//agregar valores 
+        $correlativo			=	0;
+    	foreach($ordendespacho->viewdetalleordendespacho as $index => $item){
+
+    		//$nroordecen = '';
+
+    		if($item->ind_segmento==1){
+    			$nroordecen		=	$item->nro_orden_cen;
+	    		if($index == 0){
+	    			$nroordecen		=	$item->nro_orden_cen;
+	    		}else{
+	    			if($nroordecen!=$item->nro_orden_cen){
+						$correlativo =	0;  
+						$nroordecen		=	$item->nro_orden_cen;			
+	    			}
+	    		}
+	    		$segmento_palets = '';
+	    		$primervalor = '';
+	    		$ultimovalor = '';
+	    		$countpalets =	$item->palets;	
+				for ($i = 1; $i <= $countpalets; $i++) {
+					$correlativo = $correlativo +1; 
+					if($i == 1){
+						$primervalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
+					}
+					if($i == $countpalets){
+						$ultimovalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT);
+					}
+				}
+				
+				if($primervalor == $ultimovalor){
+					$segmento_palets = $primervalor;
+				}else{
+					$segmento_palets = $primervalor.' - '.$ultimovalor;
+				}
+
+				$detdespacho = WEBDetalleOrdenDespacho::where('id','=',$item->id_detalle)->first();
+				$detdespacho->segmento_palets = $segmento_palets;
+				$detdespacho->save();
+	    		//dd($detdespacho);
+    		}
+
+
+
+
+
+    	}
+
+        $listaxcantidad			=	WEBDespachoImprimir::orderby('item','asc')->get();
+        $listaxpalest			=	WEBDespachoImprimir::orderby('item','asc')->get();
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$despacho_id)->first();
+        $array_detalle_palets 	= 	array();
+        $array_detalle_cantidad = 	array();
+
+		$funcion 				= 	$this;
+
+		return View::make('despacho/ajax/alistadetallepedido',
+						 [
+						 	'ordendespacho' 			=> $ordendespacho,
+						 	'funcion' 					=> $funcion,
+						 	'listaxcantidad' 			=> $listaxcantidad,
+						 	'listaxpalest' 				=> $listaxpalest,
+						 	'array_detalle_palets' 		=> $array_detalle_palets,
+						 	'array_detalle_cantidad' 	=> $array_detalle_cantidad,
+						 	'ind_todo' 					=> $ind_todo,
+						 	'ajax' 						=> true,
+						 ]);
+	}
+	public function actionModalDetalleImprimir(Request $request)
+	{
+
+		$pedido_id 				=	$request['pedido_id'];
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+		$detalledespacho 		=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$pedido_id)->first();
+		$funcion 				= 	$this;
+		$array_centro_id 		=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
+		$combo_lista_centros 	= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
+
+		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$pedido_id)
+		->update(['ind_segmento' => '1']);
+		$ind_todo 				=	1;
+
+		//agregar valores 
+        $correlativo			=	0;
+    	foreach($ordendespacho->viewdetalleordendespacho as $index => $item){
+
+
+
+    		if($index == 0){
+    			$nroordecen		=	$item->nro_orden_cen;
+    		}else{
+    			if($nroordecen!=$item->nro_orden_cen){
+					$correlativo =	0;  
+					$nroordecen		=	$item->nro_orden_cen;			
+    			}
+    		}
+    		$segmento_palets = '';
+    		$primervalor = '';
+    		$ultimovalor = '';
+    		$countpalets =	$item->palets;	
+			for ($i = 1; $i <= $countpalets; $i++) {
+				$correlativo = $correlativo +1; 
+				if($i == 1){
+					$primervalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
+				}
+				if($i == $countpalets){
+					$ultimovalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT);
+				}
+			}
+			
+			if($primervalor == $ultimovalor){
+				$segmento_palets = $primervalor;
+			}else{
+				$segmento_palets = $primervalor.' - '.$ultimovalor;
+			}
+
+			$detdespacho = WEBDetalleOrdenDespacho::where('id','=',$item->id_detalle)->first();
+			$detdespacho->segmento_palets = $segmento_palets;
+			$detdespacho->save();
+    		//dd($detdespacho);
+    	}
+
+        $listaxcantidad			=	WEBDespachoImprimir::orderby('item','asc')->get();
+        $listaxpalest			=	WEBDespachoImprimir::orderby('item','asc')->get();
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+        $array_detalle_palets 	= 	array();
+        $array_detalle_cantidad = 	array();
+
+		return View::make('despacho/modal/ajax/mdetallepedido',
+						 [
+						 	'ordendespacho' 			=> $ordendespacho,
+						 	'detalledespacho' 			=> $detalledespacho,
+						 	'funcion' 					=> $funcion,
+						 	'array_centro_id' 			=> $array_centro_id,
+						 	'combo_lista_centros' 		=> $combo_lista_centros,
+						 	'listaxcantidad' 			=> $listaxcantidad,
+						 	'listaxpalest' 				=> $listaxpalest,
+						 	'array_detalle_palets' 		=> $array_detalle_palets,
+						 	'array_detalle_cantidad' 	=> $array_detalle_cantidad,
+						 	'ind_todo' 					=> $ind_todo,
+
+						 	'ajax' 						=> true,
+						 ]);
+	}
 
 	public function actionAjaxImprimirPedidoDespachoxPalets(Request $request)
 	{
@@ -42,44 +225,9 @@ class AtenderPedidoDespachoController extends Controller
         WEBDespachoImprimir::where('activo',1)->delete();
         $array_detalle_palets = array();
 		foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
-			$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
-        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
-
-        	$ean13 					=	trim($equivalente->COD_EAN);
-          	$ean14 					=	trim($equivalente->EAN14);
-          	$sku 					=	trim($equivalente->COD_SKU);
-
-          	if(($ean13=='' or $ean14 =='' or $sku =='') and $equivalente->ESGRANEL != 1){
-	            $array_nuevo_asiento = array();
-	            $array_nuevo_asiento = array(
-	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
-	                "ean13" => $ean13,
-	                "ean14" => $ean14,
-	                "sku" 	=> $sku
-	            );
-	            array_push($array_detalle_palets, $array_nuevo_asiento);
-          	}
 
 
-          	if(($ean13=='' or $sku =='') and $equivalente->ESGRANEL == 1){
-	            $array_nuevo_asiento = array();
-	            $array_nuevo_asiento = array(
-	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
-	                "ean13" => $ean13,
-	                "ean14" => $ean14,
-	                "sku" 	=> $sku
-	            );
-	            array_push($array_detalle_palets, $array_nuevo_asiento);
-          	}
-
-
-
-
-		}
-
-		if(count($array_detalle_palets)<=0){
-	        $count = 0;
-			foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
+			if($detitem->ind_segmento == 1){
 
 				$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
 	        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
@@ -88,6 +236,45 @@ class AtenderPedidoDespachoController extends Controller
 	          	$ean14 					=	trim($equivalente->EAN14);
 	          	$sku 					=	trim($equivalente->COD_SKU);
 
+	          	if(($ean13=='' or $ean14 =='' or $sku =='') and $equivalente->ESGRANEL != 1){
+		            $array_nuevo_asiento = array();
+		            $array_nuevo_asiento = array(
+		                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+		                "ean13" => $ean13,
+		                "ean14" => $ean14,
+		                "sku" 	=> $sku
+		            );
+		            array_push($array_detalle_palets, $array_nuevo_asiento);
+	          	}
+
+
+	          	if(($ean13=='' or $sku =='') and $equivalente->ESGRANEL == 1){
+		            $array_nuevo_asiento = array();
+		            $array_nuevo_asiento = array(
+		                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+		                "ean13" => $ean13,
+		                "ean14" => $ean14,
+		                "sku" 	=> $sku
+		            );
+		            array_push($array_detalle_palets, $array_nuevo_asiento);
+	          	}
+
+			}
+
+		}
+
+		if(count($array_detalle_palets)<=0){
+	        $count = 0;
+			foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
+
+				if($detitem->ind_segmento == 1){
+
+					$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+		        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+
+		        	$ean13 					=	trim($equivalente->COD_EAN);
+		          	$ean14 					=	trim($equivalente->EAN14);
+		          	$sku 					=	trim($equivalente->COD_SKU);
 
 	        		if($index == 0){
 	        			$nroordecen		=	$detitem->nro_orden_cen;
@@ -191,6 +378,9 @@ class AtenderPedidoDespachoController extends Controller
 	        			$count = $count+1;
 
 					}
+
+				}
+
 	        }
 		}
 
@@ -224,32 +414,34 @@ class AtenderPedidoDespachoController extends Controller
     	WEBDespachoImprimirCantidad::where('activo','1')->delete();
         $array_detalle_cantidad = array();
 		foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
-			$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
-        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
-          	$ean14 					=	$equivalente->EAN14;
-          	$ean13 					=	$equivalente->COD_EAN;
 
-          	if($ean14 == '' and $equivalente->ESGRANEL != 1){
-	            $array_nuevo_asiento = array();
-	            $array_nuevo_asiento = array(
-	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
-	                "ean14" => $ean14,
-	                "ean13" => $ean13,
-	            );
-	            array_push($array_detalle_cantidad, $array_nuevo_asiento);
-          	}
+			if($detitem->ind_segmento == 1){
 
-          	if($ean13 == '' and $equivalente->ESGRANEL == 1){
-	            $array_nuevo_asiento = array();
-	            $array_nuevo_asiento = array(
-	                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
-	                "ean14" => $ean14,
-	                "ean13" => $ean13,
-	            );
-	            array_push($array_detalle_cantidad, $array_nuevo_asiento);
-          	}
+				$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+	        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+	          	$ean14 					=	$equivalente->EAN14;
+	          	$ean13 					=	$equivalente->COD_EAN;
 
+	          	if($ean14 == '' and $equivalente->ESGRANEL != 1){
+		            $array_nuevo_asiento = array();
+		            $array_nuevo_asiento = array(
+		                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+		                "ean14" => $ean14,
+		                "ean13" => $ean13,
+		            );
+		            array_push($array_detalle_cantidad, $array_nuevo_asiento);
+	          	}
 
+	          	if($ean13 == '' and $equivalente->ESGRANEL == 1){
+		            $array_nuevo_asiento = array();
+		            $array_nuevo_asiento = array(
+		                "nombre_producto" => $detitem->producto->NOM_PRODUCTO,
+		                "ean14" => $ean14,
+		                "ean13" => $ean13,
+		            );
+		            array_push($array_detalle_cantidad, $array_nuevo_asiento);
+	          	}
+			}
 		}
 
 
@@ -261,29 +453,36 @@ class AtenderPedidoDespachoController extends Controller
 
 			foreach($ordendespacho->viewdetalleordendespacho as $index => $detitem){
 
-				$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
-	        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
-	          	$ean14 					=	$equivalente->EAN14;
-	    		$countpalets			=	$detitem->cantidad_sacos;
+				if($detitem->ind_segmento == 1){
 
-          		if($equivalente->ESGRANEL == 1){
-          			$ean14 					=	$equivalente->COD_EAN;
-          		}
-	    		
-				for ($i = 1; $i <= $countpalets; $i++) {
+					$equivalente 			=	ALMProductiEquiv::where('COD_PRODUCTO','=',$detitem->producto_id)
+		        								->where('COD_EMPR_CLIENTE','=',$detitem->cliente_id)->first();
+		          	$ean14 					=	$equivalente->EAN14;
+		    		$countpalets			=	$detitem->cantidad_sacos;
 
-		        	$despacho 								=	new WEBDespachoImprimirCantidad;
-		        	$despacho->id		 					=	$detitem->id_detalle;
-		        	$despacho->item		 					=	$count;
-		        	$despacho->nro_orden_cen		 		=	str_replace ( ",", '', $detitem->nro_orden_cen);
-		        	$despacho->producto_id		 			=	$detitem->producto_id;
-		        	$despacho->producto_nombre		 		=	$detitem->producto->NOM_PRODUCTO;
-		         	$despacho->ean14		 				=	$ean14;
-		         	$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
-		         	$despacho->activo		 				=	'1';
-		        	$despacho->save();
-	        		$count = $count+1;
+	          		if($equivalente->ESGRANEL == 1){
+	          			$ean14 					=	$equivalente->COD_EAN;
+	          		}
+					for ($i = 1; $i <= $countpalets; $i++) {
+
+			        	$despacho 								=	new WEBDespachoImprimirCantidad;
+			        	$despacho->id		 					=	$detitem->id_detalle;
+			        	$despacho->item		 					=	$count;
+			        	$despacho->nro_orden_cen		 		=	str_replace ( ",", '', $detitem->nro_orden_cen);
+			        	$despacho->producto_id		 			=	$detitem->producto_id;
+			        	$despacho->producto_nombre		 		=	$detitem->producto->NOM_PRODUCTO;
+			         	$despacho->ean14		 				=	$ean14;
+			         	$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
+			         	$despacho->activo		 				=	'1';
+			        	$despacho->save();
+		        		$count = $count+1;
+					}
+
 				}
+
+
+
+
 
 	    	}
 		}
@@ -308,76 +507,7 @@ class AtenderPedidoDespachoController extends Controller
 
 
 
-	public function actionModalDetalleImprimir(Request $request)
-	{
 
-		$pedido_id 			=	$request['pedido_id'];
-		$ordendespacho 		=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
-		$detalledespacho 	=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$pedido_id)->first();
-		$funcion 			= 	$this;
-		$array_centro_id 	=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
-		$combo_lista_centros = 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
-		//agregar valores 
-        $correlativo							=	0;
-    	foreach($ordendespacho->viewdetalleordendespacho as $index => $item){
-
-
-    		if($index == 0){
-    			$nroordecen		=	$item->nro_orden_cen;
-    		}else{
-    			if($nroordecen!=$item->nro_orden_cen){
-					$correlativo =	0;  
-					$nroordecen		=	$item->nro_orden_cen;			
-    			}
-    		}
-    		$segmento_palets = '';
-    		$primervalor = '';
-    		$ultimovalor = '';
-    		$countpalets =	$item->palets;	
-			for ($i = 1; $i <= $countpalets; $i++) {
-				$correlativo = $correlativo +1; 
-				if($i == 1){
-					$primervalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
-				}
-				if($i == $countpalets){
-					$ultimovalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT);
-				}
-			}
-			
-			if($primervalor == $ultimovalor){
-				$segmento_palets = $primervalor;
-			}else{
-				$segmento_palets = $primervalor.' - '.$ultimovalor;
-			}
-
-			$detdespacho = WEBDetalleOrdenDespacho::where('id','=',$item->id_detalle)->first();
-			$detdespacho->segmento_palets = $segmento_palets;
-			$detdespacho->save();
-    		//dd($detdespacho);
-    	}
-
-        $listaxcantidad			=	WEBDespachoImprimir::orderby('item','asc')->get();
-        $listaxpalest			=	WEBDespachoImprimir::orderby('item','asc')->get();
-		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
-        $array_detalle_palets 	= 	array();
-        $array_detalle_cantidad = 	array();
-
-		return View::make('despacho/modal/ajax/mdetallepedido',
-						 [
-						 	'ordendespacho' 			=> $ordendespacho,
-						 	'detalledespacho' 			=> $detalledespacho,
-						 	'funcion' 					=> $funcion,
-						 	'array_centro_id' 			=> $array_centro_id,
-						 	'combo_lista_centros' 		=> $combo_lista_centros,
-						 	'listaxcantidad' 			=> $listaxcantidad,
-						 	'listaxpalest' 				=> $listaxpalest,
-						 	'array_detalle_palets' 		=> $array_detalle_palets,
-						 	'array_detalle_cantidad' 	=> $array_detalle_cantidad,
-						 	'ajax' 						=> true,
-						 ]);
-
-
-	}
 
 
 
