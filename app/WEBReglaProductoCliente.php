@@ -29,4 +29,13 @@ class WEBReglaProductoCliente extends Model
     }
 
 
+    public function scopeProducto($query,$producto){
+
+        if(trim($producto) != 'TODO'){
+            $query->where('WEB.reglaproductoclientes.producto_id', '=', $producto);
+        }
+
+    }
+
+
 }

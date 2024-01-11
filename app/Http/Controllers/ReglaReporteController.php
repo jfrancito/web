@@ -71,13 +71,15 @@ class ReglaReporteController extends Controller
 		//dd($listadeproductos);
 
 		$funcion 						= 	$this;
+		$listadereglas 					= 	$this->funciones->lista_reglas_cliente_total_groupby($cuenta_id,'TODO');	
 
 
 		return View::make('regla/reporte/ajax/listareglascliente',
 						 [
 							'listadeproductos'   	=> $listadeproductos,
 							'listacliente'   		=> $listacliente,
-						 	'funcion' 				=> $funcion,						 				 							 							 						 					 
+						 	'funcion' 				=> $funcion,
+						 	'listadereglas' 		=> $listadereglas,						 				 							 							 						 					 
 						 ]);
 
 	}
@@ -110,11 +112,6 @@ class ReglaReporteController extends Controller
 
 		$funcion 				= 	$this;	
 
-		// // lista de clientes
-		// $listacliente 					= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)
-		// 									->orderBy('NOM_EMPR', 'asc')
-		// 									->get();
-
 
 		// lista de clientes
 		$listacliente 					= 	WEBListaCliente::join('WEB.reglaproductoclientes', 'WEB.reglaproductoclientes.contrato_id', '=', 'WEB.LISTACLIENTE.COD_CONTRATO')
@@ -127,20 +124,21 @@ class ReglaReporteController extends Controller
 											->get();
 
 
-		$empresa 				= 	Session::get('empresas')->NOM_EMPR;
-		$centro 				= 	Session::get('centros')->NOM_CENTRO;								
+		$empresa 						= 	Session::get('empresas')->NOM_EMPR;
+		$centro 						= 	Session::get('centros')->NOM_CENTRO;
+		$listadereglas 					= 	$this->funciones->lista_reglas_cliente_total_groupby($cuenta_id,'TODO');	
 
+	    Excel::create($titulo.' ('.$nombretipoprecio.')', function($excel) use ($listadeproductos,$titulo,$listacliente,$funcion,$empresa,$centro,$listadereglas) {
 
-	    Excel::create($titulo.' ('.$nombretipoprecio.')', function($excel) use ($listadeproductos,$titulo,$listacliente,$funcion,$empresa,$centro) {
-
-	        $excel->sheet('Reglas por cliente', function($sheet) use ($listadeproductos,$titulo,$listacliente,$funcion,$empresa,$centro) {
+	        $excel->sheet('Reglas por cliente', function($sheet) use ($listadeproductos,$titulo,$listacliente,$funcion,$empresa,$centro,$listadereglas) {
 
 	            $sheet->loadView('regla/excel/listareglascliente')->with('listadeproductos',$listadeproductos)
 	                                         		 ->with('titulo',$titulo)
 	                                         		 ->with('listacliente',$listacliente)
 	                                         		 ->with('empresa',$empresa)
 	                                         		 ->with('centro',$centro)	                                         		 
-	                                         		 ->with('funcion',$funcion);	                                         		 
+	                                         		 ->with('funcion',$funcion)
+	                                         		 ->with('listadereglas',$listadereglas);	                                         		 
 	        });
 	    })->export('xls');
 

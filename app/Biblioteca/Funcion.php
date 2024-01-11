@@ -4070,6 +4070,43 @@ class Funcion{
 	}
 
 
+	public function lista_reglas_cliente_total($contrato_id,$producto_id,$regla_id) {
+		$montotal 						=	0;
+		$reglas 						= 	WEBReglaProductoCliente::join('WEB.reglas', 'WEB.reglas.id', '=', 'WEB.reglaproductoclientes.regla_id')
+												->where('WEB.reglaproductoclientes.activo','=','1')
+												->where('WEB.reglas.activo','=','1')
+												->where('WEB.reglas.estado','=','PU')
+												->where('WEB.reglas.tiporegla','=','PNC')
+												->Cuenta($contrato_id)
+												->Producto($producto_id)
+												->where('WEB.reglas.id','=',$regla_id)
+												->first();
+		if(count($reglas)>0){
+			$montotal 					=	$reglas->descuento;
+		}
+	 	return   $montotal;				 			
+	}
+
+	public function lista_reglas_cliente_total_groupby($contrato_id,$producto_id) {
+
+		$lista_reglas_cliente 			= 	WEBReglaProductoCliente::join('WEB.reglas', 'WEB.reglas.id', '=', 'WEB.reglaproductoclientes.regla_id')
+												->where('WEB.reglaproductoclientes.activo','=','1')
+												->where('WEB.reglas.activo','=','1')
+												->where('WEB.reglas.estado','=','PU')
+												->where('WEB.reglas.tiporegla','=','PNC')
+												->where('WEB.reglas.centro_id','=',Session::get('centros')->COD_CENTRO)
+												->Cuenta($contrato_id)
+												->Producto($producto_id)
+												->select('WEB.reglas.id','WEB.reglas.nombre')
+												->groupBy('WEB.reglas.id')
+												->groupBy('WEB.reglas.nombre')
+												->get();
+
+	 	return   $lista_reglas_cliente;				 			
+	}
+
+
+
 
 
 	public function lista_precio_regular_departamento($contrato_id,$producto_id) {
