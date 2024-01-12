@@ -1,6 +1,7 @@
 
 
 <input type="hidden" name="correlativo" id='correlativo' value='{{$correlativo}}'>
+<input type="hidden" name="palets_peso" id='palets_peso' value='{{$palets_peso}}'>
 
 <div class="main-content container-fluid" style = "padding: 0px;">
   <div class="row">
@@ -17,9 +18,10 @@
             <div class="row be-datatable-header">
               <div class="col-sm-6">
                   <div class="dataTables_length" id="table1_length">
-                  <label>Cantidad Palets : <input type="text" class="form-control input-sm importe" 
-                    placeholder="" aria-controls="table1" value='{{$palets}}' id="palets"></label>
-                  
+                    <!-- @DPZ3 -->          
+                    <label>Cantidad Palets ({{ number_format($palets_peso,2,'.',',') }} Kg.): 
+                    <input type="text" class="form-control input-sm importe" 
+                          placeholder="" aria-controls="table1" value='{{$palets}}' id="palets" onkeyup="EventoCantidadPalets(event, this)" /></label>                   
                   </div>
                 </div>
                 <div class="col-sm-6"></div>
@@ -27,6 +29,8 @@
         </div>
 
         <div class="panel-body">
+          
+          <!--@DPZ0002 div class="scroll_text_horizontal_padding" style = "padding: 0px !important;">--> 
           <div style = "padding: 0px !important;"> 
             <div style="margin-bottom: 10px;">
                 @php
@@ -131,6 +135,10 @@
 
                 <tfooter>
                   <tr>
+                    <!-- @DPZ3 -->
+                    @php
+                      $total_peso =  $total_peso + ($palets_peso * $palets);
+                    @endphp
                     <th colspan="6"></th>
                     <th style='text-align: right'> Total Peso Kg.:</th>
                     <th class='total_peso_t'>{{ number_format($total_peso,4,'.',',') }}</th>

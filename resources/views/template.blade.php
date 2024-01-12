@@ -24,6 +24,7 @@
 
 
   @yield('style')
+  <link rel="stylesheet" type="text/css" href="{{ asset('public/css/jquery-confirm.min.css') }} "/>
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/style.css?v='.$version) }} " />
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/oryza.css?v='.$version) }} " />
 
@@ -57,6 +58,7 @@
   <script src="{{ asset('public/lib/scroll/js/jquery-scrollpanel-0.7.0.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/scroll/js/scroll.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/general/general.js?v='.$version) }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/general/jquery-confirm.min.js?v='.$version) }}" type="text/javascript"></script>
 
   @yield('script')
  

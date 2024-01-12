@@ -342,6 +342,7 @@ class TransferenciaController extends Controller
 									->get();
 
 			$cod_centro 		=   Session::get('centros')->COD_CENTRO;
+			//@DPZ0002
 			$combo_centros 		= 	$this->funciones->combo_lista_quitar_centro_array_filtro($cod_centro);
 
 			return View::make('transferencia/registrotransferencia',
@@ -737,6 +738,7 @@ class TransferenciaController extends Controller
 	    $codcentro 						= Session::get('centros')->COD_CENTRO;
 		$nomcentro 						= Session::get('centros')->NOM_CENTRO;
 		$palets							= 0;
+		$palets_peso					= 0;
 
 		if($_POST)
 		{
@@ -850,7 +852,8 @@ class TransferenciaController extends Controller
 		}else{
              
              //adicionar clientes
-			$picking          =	new WEBPicking();
+			$picking          		=	new WEBPicking();
+			$palets_peso 		  	=  $this->ObtenerPesoPalets();
 
 			if($idpicking<>'x'){
 				/*$response			= 	$this->validar_transferencia_estado($idtrans,'GENERADO','EPP0000000000002');
@@ -876,10 +879,12 @@ class TransferenciaController extends Controller
 								'hoy'					=> $this->fin,
 								'correlativo'			=> $correlativo,
 							 	'combo_lista_centros' 	=> $combo_lista_centros,
+								'palets_peso'			=> $palets_peso,
 							 ]);
 		}
 	}
 
+	
 	public function actionAjaxValidarCantidadesAtenderPicking(Request $request) {		  
 
 		$mensaje				=   '';
@@ -1018,11 +1023,12 @@ class TransferenciaController extends Controller
 					    					->whereIn('estado_id', ['EPP0000000000003','EPP0000000000006'])
 											->where('web.transferencia.empresa_id','=',$empresa_id)
 											//->where('web.transferencia.centro_id','=',$centro_id)
+											//@DPZ0002
 											->where('web.transferencia.centro_origen_id','=',$centroorigen_id)
 											->select('web.transferencia.*','web.trans_destino.destino','CMP.CATEGORIA.NOM_CATEGORIA as estado_nom')
 				    						->orderBy('fecha_pedido', 'desc')
 				    						->get();
-		
+
 		$listaventas					= 	CMPOrden::where('cod_estado','=',1)			
 											->where('FEC_ENTREGA','>=', $fecha_inicio)
 					    					->where('FEC_ENTREGA','<=', $fecha_fin)
@@ -1033,7 +1039,7 @@ class TransferenciaController extends Controller
 											->get();
 
 		//$listaventas 					= $this->OrdenesVentaPendienteAtenderPicking($fecha_inicio,$fecha_fin,$empresa_id,$centro_id);
-		//dd($listaventas[0]->detalleproducto[0]);
+		//dd($listaventas);
 
 		$combotipogrupo					= 	array('oc_grupo' => "Grupo",'oc_individual' => "Individual"); 	
 
@@ -1080,7 +1086,9 @@ class TransferenciaController extends Controller
 		$palets 						= 	$request['palets'];	
 		$correlativo 					= 	$request['correlativo'];	
 		$opcion_id 						= 	$request['opcion_id'];	
-	
+		$palets 						= 	$request['palets'];	
+		$palets_peso 					= 	$request['palets_peso'];	
+
 		$transferencia_id 				= 	"00000000000000";
 		$transferenciadetalle_id 		= 	"00000000000000";
 		$tipo_operacion					= 	"TRANSFERENCIA";
@@ -1101,6 +1109,7 @@ class TransferenciaController extends Controller
 			$paquete 					= 	$cantidad_atender;
 		} 
 		$peso_total						=   $cantidad_atender*$producto->CAN_PESO_MATERIAL; 
+		$correlativo					=   $correlativo+1;
 
 		$array_nuevo_producto			= 	$this->funciones->llenar_array_productos_temp($correlativo,$transferencia_id,
 							$transferenciadetalle_id,$tipo_operacion,$fecha_entrega,$hora_entrega,$vacio,$vacio,
@@ -1122,6 +1131,8 @@ class TransferenciaController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'ajax'   		  						=> true,
+							'palets_peso' 							=> $palets_peso,
+							'palets' 								=> $palets
 						 ]);
 	}
 
@@ -1143,7 +1154,7 @@ class TransferenciaController extends Controller
 		$opcion_id 							= 	$request['opcion_id'];
 		$idpicking							= 	$request['idpicking'];
 		$correlativo 						= 	(int)$request['correlativo'];
-		$palets 							=	0;
+		$palets 							=	(int)$request['palets'];
 
 		$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto'],true);
 		$array_detalle_producto 			=	array();
@@ -1277,7 +1288,8 @@ class TransferenciaController extends Controller
 		}
 
 		$funcion 	= 	$this;
-
+		$palets_peso 		  =  $this->ObtenerPesoPalets();
+		
 		return View::make('transferencia/ajax/alistapickingpedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -1287,33 +1299,29 @@ class TransferenciaController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'ajax'   		  						=> true,
+							 'palets_peso' 							=> $palets_peso,
 						 ]);
 
 	}
 
+	public function ObtenerPesoPalets() {
+		return  ALMProducto::where('COD_PRODUCTO','=',"PRD0000000007926")->first()->CAN_PESO_MATERIAL;
+	}
+		
 
 	public function actionAjaxPickingEliminarFila(Request $request)
 	{
 
 		$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto'],true);
 		$array_detalle_producto 			=	array();
-		/*$grupo 							= 	(int)$request['grupo'];
-		$numero_mobil 						= 	(int)$request['numero_mobil'];*/
 	    $codcentro 							= 	Session::get('centros')->COD_CENTRO;
-
 		$correlativo 						= 	(int)$request['correlativo'];
 		$fila 								= 	$request['fila'];
 		$idpicking							= 	$request['idpicking'];
 		$opcion_id 							= 	$request['opcion_id'];
+		$palets 							= 	$request['palets'];	
+		$palets_peso 						= 	$request['palets_peso'];	
 
-		/*$disminuir 							= 	0;
-		$grupo_oc							= 	"";
-		$orden_cen							= 	"";
-		$disminuir_gm 						= 	0;
-		$grupo_movil						= 	"";
-		$grupo_orden_movil					= 	0;*/
-
-		//dd($fila );
 		//eliminar la fila del array
 		foreach ($array_detalle_producto_request as $key => $item) {
             if((int)$item['correlativo'] == $fila) {
@@ -1326,11 +1334,9 @@ class TransferenciaController extends Controller
 			array_push($array_detalle_producto,$item);
 		}
 
-
 		$funcion 					= 	$this;
 		
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_quitar_centro_array_filtro($codcentro);
-
 
 		return View::make('transferencia/ajax/alistapickingpedido',
 						 [
@@ -1340,6 +1346,8 @@ class TransferenciaController extends Controller
 						 	'correlativo'							=> $correlativo,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							'palets'   		  						=> $palets,
+							'palets_peso'							=> $palets_peso,
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1375,7 +1383,8 @@ class TransferenciaController extends Controller
 		$funcion 					= 	$this;			
 		
 		$titulo_boton 				= '';
-
+		$palets_peso 		  		=  $this->ObtenerPesoPalets();
+		 
 		if ($m_accion == 'DELETE'){ $titulo_boton = 'Eliminar Picking';}
 		else if($m_accion == 'VIEW'){ $titulo_boton = 'X';}
 
@@ -1388,6 +1397,7 @@ class TransferenciaController extends Controller
 							 'idopcion'					=> $idopcion,
 							 'm_accion'					=> $m_accion,
 							 'titulo_boton'				=> $titulo_boton,
+							 'palets_peso' 				=> $palets_peso
 						 ]);
 	}
 

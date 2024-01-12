@@ -211,7 +211,25 @@
 					<td class='titulo'>Total : </td>
 					<td class='titulo'>{{number_format($total,2,'.','')}}</td>
                 </tr>
-			
+				@php 
+					$total_palets   =   $picking->palets * $palets_peso; 			
+				@endphp
+				<tr>
+                    <td ></td>
+                    <td ></td>
+                    <td class='descripcion'>PALETS</td>
+                    <td class='titulo'>Cantidad : {{number_format($picking->palets,2,'.','')}}</td>
+					<td class='titulo'>Peso : {{number_format($palets_peso,2,'.','')}}</td>
+					<td class='titulo'>{{number_format($total_palets,2,'.','')}}</td>
+                </tr>
+				<tr>
+                    <td ></td>
+                    <td ></td>
+                    <td ></td>
+                    <td ></td>
+					<td class='titulo'>PESO TOTAL : </td>
+					<td class='titulo'>{{number_format($total + $total_palets,2,'.','')}}</td>
+                </tr>
 		  </table>
         </article>
 

@@ -621,7 +621,13 @@ class PickingController extends Controller
 				if($arrMidagri){ $PrecioMidagri = $arrMidagri[0]; }
 				$can_tot_item 	= $obj->cantidad + $obj->cantidad_excedente;
 				
-				$detraccion 	= $PrecioMidagri * ($can_tot_item * $obj->producto_peso / 50) * ($PorcenMidagri / 100);
+				$PesoProducto 	= $obj->producto_peso;
+				if ($PesoProducto == 49) {
+					$PesoProducto = 50;
+				}
+
+				$detraccion 	= $PrecioMidagri * ($can_tot_item * $PesoProducto / 50) * ($PorcenMidagri / 100);
+
 
 				array_push($data_productos, array(
 					'tipo_operacion' 		=> $obj->tipo_operacion,

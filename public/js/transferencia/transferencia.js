@@ -139,6 +139,7 @@ $(document).ready(function(){
 
         var horaentrega1                 =   $('#horaentrega').val();
         
+
         // validacion dirección
         if(almacen_select ==''){ alertdangermobil("Seleccione un almacén destino."); return false;}
         if(centro_origen_select ==''){ alertdangermobil("Seleccione un almacén destino."); return false;}
@@ -227,18 +228,41 @@ $(document).ready(function(){
         var obs                       =   $('#iobs').val();
         var idtrans                   =   $('#iidtransferencia').val();
         var pesototal                 =   parseFloat($('.total-pedido').html());        
-        
+    
         agregar_obs_hidden(idtrans,obs,pesototal);
 
         // validacion productos        
         data = agregar_producto_hidden();
         if(data.length<=0){alertdangermobil("Seleccione por lo menos un producto"); return false;}
+       
+        var tot_peso = fn_calcular_total();
+
+        if (tot_peso < 27000 ){
+
+            $.confirm({
+                title: 'El peso mínimo es de 27 Tn ¿Desea Continuar?',
+                content: 'Registrar',
+                buttons: {
+                    confirmar: function () {
+                        EnviarDatosRegistrar(data);
+                    },
+                    cancelar: function () {
+                        $.alert('Se canceló el registro.');
+                    }
+                }
+            });
+
+        }else{
+           EnviarDatosRegistrar(data);
+        }
+    });
+
+    function EnviarDatosRegistrar(data){
         var datastring = JSON.stringify(data);
         $('#productos').val(datastring);
-
+        $( "#formpedido" ).submit();
         abrircargando();
-        return true;
-    });
+    }
 
     $(".listapedidoosiris").on('click','.btn-detalle-pedido-mobil', function(e) {
 
@@ -442,7 +466,8 @@ $(document).ready(function(){
         //var tabestado               = $('#tabestado').val();*/
         var opcion_id               = $('#opcion').val();
         var idpicking               = $('#idpicking').val();
-       
+        // @DPZ3 
+        var palets                  = $('#palets').val();
 
         var mensaje1                = validarProductoRepetidoAgregarPicking(array_detalle_producto)
         if(mensaje1 != ''){alerterrorajax(mensaje1); return false;}
@@ -466,6 +491,8 @@ $(document).ready(function(){
                             opcion_id               : opcion_id,
                             correlativo             : correlativo,
                             idpicking               : idpicking,
+                             // @DPZ3 
+                            palets                  :  palets
                         },    
             success: function (data) {
                 cerrarcargando();
@@ -515,6 +542,9 @@ $(document).ready(function(){
         var idpicking               = $('#idpicking').val();
         var dataArr                 = JSON.parse(array_detalle_producto);   
         var txt_error               = "";
+        // @DPZ3
+        var palets                  = $('#palets').val();
+        var palets_peso             = $('#palets_peso').val();
 
         if(dataArr.length==0){alerterrorajax("Primero debe agregar solicitud de trasferencia o venta.");return false;}
         if(producto_id==''){alerterrorajax("Seleccione un producto");return false;}
@@ -541,6 +571,9 @@ $(document).ready(function(){
                             correlativo             : correlativo,
                             opcion_id               : opcion_id,
                             idpicking               : idpicking,
+                            // @DPZ3
+                            palets                  : palets,
+                            palets_peso             : palets_peso
                           },
             success: function (data) {
                 cerrarcargando();
@@ -614,6 +647,9 @@ $(document).ready(function(){
         var fila                    = $(this).parents('.fila_pedido').attr('data_correlativo');
         var idpicking               = $('#idpicking').val();
         var opcion_id               = $('#opcion').val();
+        // @DPZ3
+        var palets                  = $('#palets').val();
+        var palets_peso             = $('#palets_peso').val();
         
 
         $.ajax({
@@ -629,6 +665,9 @@ $(document).ready(function(){
                             fila                        : fila,
                             idpicking                   : idpicking,
                             opcion_id                   : opcion_id,
+                            // @DPZ3
+                            palets                      : palets,
+                            palets_peso                 : palets_peso
                         },
             success: function (data) {
                 alertajax("Eliminación exitosa");
@@ -720,6 +759,8 @@ $(document).ready(function(){
 
 }); 
 
+
+
 function validarestadopicking(estado_id, m_accion){
     var txtmensaje = '';
     
@@ -793,12 +834,32 @@ function validarCantidadesAgregarPicking(){
     var total = cant*peso;
 
     document.getElementById('pesototal').value=total;
-
+    
     if(sfam == "SFM0000000000104"){ // Embolsado
         document.getElementById('paquete').value=cant/empa;        
     }else{
         document.getElementById('paquete').value=cant;        
     }
+}
+
+// @DPZ3
+function EventoCantidadPalets(e,obj){
+    debugger;
+    var cant        = $(obj).val().replace(",", "");
+    var palets_pes  = $('#palets_peso').val();
+    var total_pes   = 0 ; // $('.total_peso_t').html();
+    var array_detalle_producto  = $('#array_detalle_producto').val();    
+    var dataArr = JSON.parse(array_detalle_producto);   
+    
+    if (dataArr.length > 0){
+        dataArr.forEach((item) => {
+            total_pes = total_pes + item.peso_total;
+        });
+    }    
+
+    total_pes = total_pes + (Number(palets_pes) * Number(cant));
+
+    $('.total_peso_t').html(parseFloat(total_pes).toFixed(4));  
 }
 
 function validarestadopedido(accion,estado_id, m_accion){
@@ -859,7 +920,8 @@ function agregar_obs_hidden(idtrans,obs,pesototal){
     $('#peso_total').val(pesototal);
 }
 
-function calcular_total(){
+//@DPZ3
+function fn_calcular_total(){
     var total = 0.00;
     $(".detalleproducto .productoseleccion").each(function(){
         var subtotal     = 0;    
@@ -871,11 +933,16 @@ function calcular_total(){
     
         total = total + subtotal;
     });
-  
-    //var usFormat = total.toLocaleString('en-US');
+    return total;
+}
+
+//@DPZ3
+function calcular_total(){
+    var total = fn_calcular_total()
+
     var tot = total.toFixed(4);
-    var usFormat = tot.toLocaleString('en');
-    
+    var usFormat = tot.toLocaleString('en');   
+
     $('.total').html(tot);
 }
 

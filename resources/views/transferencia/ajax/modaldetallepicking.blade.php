@@ -3,7 +3,8 @@
   <h3 class="modal-title"><strong>Código ({{$picking->codigo}}) </strong></h3>
   <h5 class="modal-title"> Fecha Picking : {{$picking->fecha_picking}}</h5>
   <h5 class="modal-title"> Centro Origen : {{$picking->centro_origen}}</h5>
-  <h5 class="modal-title"> Cantidad Palets : {{number_format($picking->palets,4,'.',',')}}</h5>
+  <!-- @DPZ3 -->
+  <h5 class="modal-title"> Cantidad Palets : {{number_format($picking->palets,4,'.',',')}} <span>(Peso: {{$palets_peso}} Kg.)</span></h5>
   <h5 class="modal-title"> Estado 		 : {{$picking->estado_nom}}</h5>
   <input type="hidden" name="id_picking_modal" id="id_picking_modal" value="{{$picking->id}}">
   <input type="hidden" name="pk_estado_id" id="pk_estado_id" value="{{$picking->estado_id}}">  
@@ -83,6 +84,10 @@
 	   
 		<tfooter>
 			<tr>
+				<!-- @DPZ3 -->
+				@php
+                    $total_peso =  $total_peso + ($palets_peso * $picking->palets);
+                @endphp
 				<th colspan="5"></th>
 				<th style='text-align: right'> Total Kg.:</th>
 				<th class='total_peso_t'>{{ number_format($total_peso,4,'.',',') }}</th>

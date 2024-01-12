@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
 use App\WEBPicking,App\WEBPickingDetalle,App\CMPDetraccion,App\CMPDetraccionDetalle;
 use App\WEBTransferencia;
+use App\ALMProducto;
 use View;
 use Session;
 use App\Biblioteca\Osiris;
@@ -52,12 +53,15 @@ class PickingReporteController extends Controller
 
 		$funcion 									= 	$this;
         
+		$palets_peso 		  =  $this->ObtenerPesoPalets();
+        
 		$pdf 										= 	PDF::loadView('picking.reporte.imprimirpicking', 
 														[
 															'picking' 		 => $picking,
 															'pickingdetalle' => $pickingdetalle,
 															'titulo' 		 => $titulo,
-															'funcion' 		 => $funcion								
+															'funcion' 		 => $funcion,	
+															'palets_peso'	 => $palets_peso							
 														]);
 		return $pdf->stream('download.pdf');
 
@@ -90,6 +94,10 @@ class PickingReporteController extends Controller
 															'funcion' 		 => $funcion								
 														]);
 		return $pdf->stream('download.pdf');
+	}
+
+ 	public function ObtenerPesoPalets() {
+		return  ALMProducto::where('COD_PRODUCTO','=',"PRD0000000007926")->first()->CAN_PESO_MATERIAL;
 	}
 
 	public function actionDetraccionDiario($idopcion)
