@@ -375,6 +375,83 @@ class AtenderPedidoDespachoController extends Controller
 
 			        	$despacho->save();
 
+
+	        			$count = $count+1;
+
+			        	$despacho 								=	new WEBDespachoImprimir;
+			        	$despacho->id		 					=	$detitem->id;
+			        	$despacho->codigo		 				=	$despachoc->codigo;
+			        	$despacho->item		 					=	$count;
+			        	$despacho->nro_orden_cen		 		=	str_replace( ",", '', $detitem->nro_orden_cen);
+			        	$despacho->fecha_pedido		 			=	$detitem->fecha_pedido;
+			        	$despacho->fecha_entrega		 		=	$detitem->fecha_entrega;
+			        	$despacho->muestra		 				=	$detitem->muestra;
+
+			        	$despacho->cantidad		 				=	$detitem->cantidad;
+			        	$despacho->cantidad_atender		 		=	$detitem->cantidad_atender;
+			        	$despacho->centro_atender_id		 	=	$detitem->centro_atender_id;
+			        	$despacho->centro_atender_txt		 	=	$detitem->centro_atender_txt;
+			        	$despacho->empresa_atender_id		 	=	$detitem->empresa_atender_id;
+
+			         	$despacho->empresa_atender_txt		 	=	$detitem->empresa_atender_txt;
+			        	$despacho->usuario_responsable_id		=	$detitem->usuario_responsable_id;
+			        	$despacho->usuario_responsable_txt		=	$detitem->usuario_responsable_txt;
+			        	$despacho->estado_id		 			=	$detitem->estado_id;
+			        	$despacho->estado_gruia_id		 		=	$detitem->estado_gruia_id;
+
+			         	$despacho->documento_guia_id		 	=	$detitem->documento_guia_id;
+			        	$despacho->kilos		 				=	$detitem->kilos;
+			        	$despacho->cantidad_sacos		 		=	$detitem->cantidad_sacos;
+			        	$despacho->palets		 				=	$detitem->palets;
+			        	$despacho->kilos_atender		 		=	$detitem->kilos_atender;
+			        	
+			         	$despacho->cantidad_sacos_atender		=	$detitem->cantidad_sacos_atender;
+			        	$despacho->palets_atender		 		=	$detitem->palets_atender;
+			        	$despacho->fecha_carga		 			=	$detitem->fecha_carga;
+			        	$despacho->fecha_recepcion		 		=	$detitem->fecha_recepcion;
+			        	$despacho->presentacion_producto		=	$detitem->presentacion_producto;
+			        	
+			         	$despacho->grupo		 				=	$detitem->grupo;
+			        	$despacho->grupo_orden		 			=	$detitem->grupo_orden;
+			        	$despacho->grupo_movil		 			=	$detitem->grupo_movil;
+			        	$despacho->grupo_orden_movil		 	=	$detitem->grupo_orden_movil;
+			        	$despacho->nro_serie		 			=	$detitem->nro_serie;
+			        	
+			         	$despacho->nro_documento		 		=	$detitem->nro_documento;
+			        	$despacho->grupo_guia		 			=	$detitem->grupo_guia;
+			        	$despacho->grupo_orden_guia		 		=	$detitem->grupo_orden_guia;
+			        	$despacho->correlativo		 			=	$detitem->correlativo;
+			        	$despacho->tipo_grupo_oc		 		=	$detitem->tipo_grupo_oc;
+			        	
+			        	$despacho->usuario_crea		 			=	$detitem->usuario_crea;
+			        	$despacho->unidad_medida_id		 		=	$detitem->unidad_medida_id;
+			        	$despacho->modulo		 				=	$detitem->modulo;
+			        	
+			         	$despacho->usuario_mod		 			=	$detitem->usuario_mod;
+			        	$despacho->activo		 				=	1;
+			        	$despacho->ordendespacho_id		 		=	$detitem->ordendespacho_id;
+			        	$despacho->cliente_id		 			=	$detitem->cliente_id;
+			        	$despacho->orden_id		 				=	$detitem->orden_id;
+			        	
+			         	$despacho->orden_transferencia_id		=	$detitem->orden_transferencia_id;
+			        	$despacho->producto_id		 			=	$detitem->producto_id;
+			        	$despacho->producto_nombre		 		=	$detitem->producto->NOM_PRODUCTO;
+
+			        	$despacho->empresa_id		 			=	$detitem->empresa_id;
+			        	$despacho->centro_id		 			=	$detitem->centro_id;
+
+			        	$despacho->empaquetexpallet		 		=	$producto->CAN_SACO_PALET;
+			         	$despacho->skuxpallet		 			=	$producto->CAN_BOLSA_SACO;
+			        	$despacho->blsscxpallet		 			=	$producto->CAN_SACO_PALET * $producto->CAN_BOLSA_SACO;
+			        	$despacho->sku		 					=	trim($equivalente->COD_SKU);
+			        	$despacho->costosku		 				=	$detalleproducto->CAN_PRECIO_UNIT;
+			        	$despacho->ean13		 				=	trim($equivalente->COD_EAN);
+			         	$despacho->ean14		 				=	trim($equivalente->EAN14);
+			        	$despacho->lpn		 					=	$lpn;
+		         		$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
+
+			        	$despacho->save();
+
 	        			$count = $count+1;
 
 					}
@@ -663,6 +740,12 @@ class AtenderPedidoDespachoController extends Controller
 		         	$despacho->ean14		 				=	'falta';
 		        	$despacho->lpn		 					=	$lpn;
 		        	$despacho->save();
+
+
+
+
+
+
 
 				}
 
