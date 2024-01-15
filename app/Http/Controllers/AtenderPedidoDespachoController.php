@@ -299,7 +299,7 @@ class AtenderPedidoDespachoController extends Controller
 						$correlativo							=	$correlativo +1; 
 						$clpn 									= 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
 
-					    $lpn 									=	'5000000'.str_replace( ",", '', $detitem->nro_orden_cen).$clpn;
+					    $lpn 									=	'500000'.str_replace( ",", '', $detitem->nro_orden_cen).$clpn;
 
 			        	$despacho 								=	new WEBDespachoImprimir;
 			        	$despacho->id		 					=	$detitem->id;
@@ -669,7 +669,7 @@ class AtenderPedidoDespachoController extends Controller
 					$correlativo							=	$correlativo +1; 
 					$clpn 									= 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
 
-				    $lpn 									=	'5000000'.$detitem->nro_orden_cen.$clpn;
+				    $lpn 									=	'500000'.$detitem->nro_orden_cen.$clpn;
 
 		        	$despacho 								=	new WEBDespachoImprimir;
 		        	$despacho->id		 					=	$detitem->id;
