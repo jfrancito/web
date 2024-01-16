@@ -854,7 +854,7 @@ class NotaCreditoController extends Controller
 
 		$funcion 						= 	$this;
 		$contrato 						= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)->first();
-
+		//dd($lista_ordenes);
 		return View::make('notacredito/ajax/oredencen',
 						 [
 							'lista_ordenes'   		=> $lista_ordenes,

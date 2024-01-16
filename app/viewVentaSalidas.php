@@ -14,6 +14,5 @@ class viewVentaSalidas extends Model
     public $timestamps = false;
     public $incrementing = false;
     public $keyType = 'string';
-	protected $connection = 'sqlsrv_a';
 
 }

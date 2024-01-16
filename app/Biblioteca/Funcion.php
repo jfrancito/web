@@ -4726,6 +4726,17 @@ class Funcion{
 	}
 
 
+	public function combo_categoria_general($grupo){
+
+		$combo   		=	CMPCategoria::where('TXT_GRUPO','=',$grupo)
+							->where('COD_ESTADO','=',1)
+							->pluck('NOM_CATEGORIA','COD_CATEGORIA')
+							->toArray();
+
+		return 	$combo;		 			
+	}
+
+
 	public function combo_departamentos() {
 
 		$listadepartamentos   		=	CMPCategoria::where('TXT_PREFIJO','=','DEP')

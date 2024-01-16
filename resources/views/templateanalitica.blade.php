@@ -40,7 +40,7 @@
     @include('error.erroresbd', ['error' => Session::get('errorbd')])
 
     @include('menu.nav-top')
-    <!-- @include('menu.nav-left') -->
+
 
     @include('success.xml', ['xml' => Session::get('xmlmsj')])
 

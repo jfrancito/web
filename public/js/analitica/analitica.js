@@ -27,6 +27,8 @@ $(document).ready(function(){
         });
     }); 
 
+
+
       var anio = $('#anio').val();
       var meses = $('#meses').html();
       var ventas = $('#ventas').html();
