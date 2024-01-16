@@ -34,7 +34,7 @@
                             <div class="col-sm-12 abajocaja" >
                               {!! Form::select( 'empresa_nombre', $comboempresa, array($empresa_nombre),
                                                 [
-                                                  'class'       => 'select2 form-control control input-sm' ,
+                                                  'class'       => ' form-control control input-sm' ,
                                                   'id'          => 'empresa_nombre',
                                                   'required'    => '',
                                                   'data-aw'     => '1',
@@ -51,7 +51,7 @@
                             <div class="col-sm-12 abajocaja" >
                               {!! Form::select( 'periodo', $comboperiodo, array($periodo_sel),
                                                 [
-                                                  'class'       => 'select2 form-control control input-sm' ,
+                                                  'class'       => ' form-control control input-sm' ,
                                                   'id'          => 'periodo',
                                                   'required'    => '',
                                                   'data-aw'     => '1',
@@ -68,7 +68,7 @@
                             <div class="col-sm-12 abajocaja" >
                               {!! Form::select( 'tipomarca', $combotipomarca, array($tipomarca_sel),
                                                 [
-                                                  'class'       => 'select2 form-control control input-sm' ,
+                                                  'class'       => ' form-control control input-sm' ,
                                                   'id'          => 'tipomarca',
                                                   'required'    => '',
                                                   'data-aw'     => '1',

@@ -12,6 +12,29 @@ $(document).ready(function(){
 
         var _token              = $('#token').val();
         $(".reporteajax").html("");
+        actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta);
+
+    }); 
+
+    $(".contenido").on('change','#empresa_nombre,#periodo,#tipomarca', function() {
+
+
+        event.preventDefault();
+        var empresa_nombre      = $('#empresa_nombre').val();
+        var periodo             = $('#periodo').val();
+        var tipomarca           = $('#tipomarca').val();  
+
+
+        var _token              = $('#token').val();
+        $(".reporteajax").html("");
+        actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta);
+
+
+    });
+   
+
+    function actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta){
+
         abrircargando();
         $.ajax({
             type    :   "POST",
@@ -32,7 +55,9 @@ $(document).ready(function(){
                 error500(data);
             }
         });
-    }); 
+
+
+    }
 
 
 
