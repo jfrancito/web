@@ -9,9 +9,9 @@
 @stop
 @section('section')
   <div class="be-content contenido">
-    <div class="main-content container-fluid" style="padding: 1px;">
+    <div class="main-content container-fluid">
           <div class="row">
-            <div class="col-sm-12" style="padding-left: 5px; padding-right: 5px">
+            <div class="col-sm-12">
               <div class="panel panel-default panel-table">
                 <div class="panel-heading">Analitica de Ventas x Producto
                   <div class="tools tooltiptop">
@@ -98,7 +98,7 @@
                           <div id="empresa_nombre_text" class='ocultar'>{{$empresa_nombre}}</div>
                           <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
                           <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
-                          
+
                   </div>
 
                 </div>
