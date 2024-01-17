@@ -1,12 +1,11 @@
 @extends('templateanalitica')
 @section('style')
-
-
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/dataTables.bootstrap.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/responsive.dataTables.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/select2/css/select2.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/bootstrap-slider/css/bootstrap-slider.css') }} "/>
+
 @stop
 @section('section')
   <div class="be-content contenido">
@@ -94,7 +93,12 @@
                           <div id="tnc" class='ocultar'>{{$tnc}}</div>
                           <div id="prod" class='ocultar'>{{$jprod}}</div>
                           <div id="color" class='ocultar'>{{$jcol}}</div>
-
+                          <div id="anio" class='ocultar'>{{$anio}}</div>
+                          <div id="mes" class='ocultar'>{{$mes}}</div>
+                          <div id="empresa_nombre_text" class='ocultar'>{{$empresa_nombre}}</div>
+                          <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
+                          <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
+                          
                   </div>
 
                 </div>

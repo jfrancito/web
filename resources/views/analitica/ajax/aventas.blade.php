@@ -28,10 +28,12 @@
                             data: atnc
                           }
                         ],
+                        
               chart:  {
                           type: 'bar',
                           height: 350
                         },
+
               plotOptions: {
                         horizontal: false,
                         columnWidth: '80%',
