@@ -8,19 +8,19 @@
 
 @stop
 @section('section')
-  <div class="be-content contenido">
-    <div class="main-content container-fluid">
+  <div class="be-content contenido crearpedido">
+    <div class="main-content container-fluid" style="padding: 1px;">
           <div class="row">
             <div class="col-sm-12">
               <div class="panel panel-default panel-table">
                 <div class="panel-heading">Analitica de Ventas x Producto
-                  <div class="tools tooltiptop">
+<!--                   <div class="tools tooltiptop">
                     <a href="#" class="tooltipcss" id='buscarempresa' >
                       <span class="tooltiptext">Buscar</span>
                       <span class="icon mdi mdi-search"></span>
                     </a>
 
-                  </div>
+                  </div> -->
                 </div>
                 <div class="panel-body selectfiltro">
                   <div class='filtrotabla row'>
@@ -81,12 +81,9 @@
                   </div>
 
                   <div class="col-xs-12">
-
-                    <div class='listaanaitica listajax reporteajax'>
+                    <div class='listaanaitica listajax reporteajax' style="padding-top: 20px;">
                           <div id="chart01" >
                           </div>
-                    </div>
-
                           <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
                           <div id="meses" class='ocultar'>{{$meses}}</div>
                           <div id="ventas" class='ocultar'>{{$ventas}}</div>
@@ -98,7 +95,7 @@
                           <div id="empresa_nombre_text" class='ocultar'>{{$empresa_nombre}}</div>
                           <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
                           <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
-
+                    </div>
                   </div>
 
                 </div>
@@ -106,6 +103,21 @@
             </div>
           </div>
     </div>
+
+    <div class="row-menu" style="width: 99.9%;">
+      <div class="row">
+        <div class="col-sm-12 col-mobil-top">
+          <div class="col-fr-2 col-atras">
+            <span class="mdi mdi-arrow-left"></span>
+          </div> 
+          <div class="col-fr-10 col-total">
+            <strong>Total : </strong> <strong class="total total-pedido"> S/. {{number_format($totalimporte, 2, '.', ',')}}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 
 @stop

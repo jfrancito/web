@@ -7,14 +7,12 @@
 <div id="tnc" class='ocultar'>{{$tnc}}</div>
 <div id="prod" class='ocultar'>{{$jprod}}</div>
 <div id="color" class='ocultar'>{{$jcol}}</div>
-
 <div id="anio" class='ocultar'>{{$anio}}</div>
 <div id="mes" class='ocultar'>{{$mes}}</div>
-
 <div id="empresa_nombre_text" class='ocultar'>{{$empresa_nombre}}</div>
 <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
 <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
-
+<div id="totalimporte" class='ocultar'>{{$totalimporte}}</div>
 
 @if(isset($ajax))
   <script type="text/javascript">
@@ -38,7 +36,10 @@
       var empresa_nombre_text = $('#empresa_nombre_text').html();
       var periodo_sel = $('#periodo_sel').html();
       var tipomarca_txt = $('#tipomarca_txt').html();
-
+      var totalimporte = $('#totalimporte').html();
+      var data_totalimporte = new oNumero(totalimporte);
+      data_totalimporte  = data_totalimporte.formato(2, true);
+      $('.total-pedido').html('S/. '+data_totalimporte);
 
 
       var options = {
