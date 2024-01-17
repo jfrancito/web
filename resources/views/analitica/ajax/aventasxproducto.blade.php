@@ -110,6 +110,10 @@
           },
           legend: {
             position: 'bottom',
+            horizontalAlign: 'left',
+            fontSize: '10px',
+            fontWeight: 600, 
+
             formatter: function(label, opts) {
                 const total = opts.w.globals.series[opts.seriesIndex];
                 var data_total = new oNumero(total);

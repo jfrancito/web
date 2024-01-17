@@ -40,7 +40,7 @@
       var data_totalimporte = new oNumero(totalimporte);
       data_totalimporte  = data_totalimporte.formato(2, true);
       $('.total-pedido').html('S/. '+data_totalimporte);
-      
+
       const ameses  = JSON.parse(meses);
       const aventas = JSON.parse(ventas);
       const atnc = JSON.parse(tnc);
@@ -89,6 +89,9 @@
           },
           legend: {
             position: 'bottom',
+            horizontalAlign: 'left',
+            fontSize: '10px',
+            fontWeight: 600,          
             formatter: function(label, opts) {
                 const total = opts.w.globals.series[opts.seriesIndex];
                 var data_total = new oNumero(total);

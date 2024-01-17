@@ -32,6 +32,20 @@ $(document).ready(function(){
 
     });
    
+    $(".crearpedido").on('click','.col-atras', function(e) {
+      
+        event.preventDefault();
+        var empresa_nombre      = $('#empresa_nombre').val();
+        var periodo             = $('#periodo').val();
+        var tipomarca           = $('#tipomarca').val();  
+
+
+        var _token              = $('#token').val();
+        $(".reporteajax").html("");
+        actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta);
+
+    });
+
 
     function actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta){
         abrircargando();
@@ -240,6 +254,9 @@ $(document).ready(function(){
 
           legend: {
             position: 'bottom',
+            horizontalAlign: 'left',
+            fontSize: '10px',
+            fontWeight: 600, 
             formatter: function(label, opts) {
                 const total = opts.w.globals.series[opts.seriesIndex];
                 var data_total = new oNumero(total);
