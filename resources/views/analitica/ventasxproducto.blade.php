@@ -8,7 +8,7 @@
 
 @stop
 @section('section')
-  <div class="be-content contenido crearpedido">
+  <div class="be-content contenido crearpedido" style="background-color: #fff;">
     <div class="main-content container-fluid" style="padding: 1px;">
           <div class="row">
             <div class="col-sm-12">
