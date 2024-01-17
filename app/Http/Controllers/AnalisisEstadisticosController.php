@@ -80,28 +80,14 @@ class AnalisisEstadisticosController extends Controller
 		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
 
- 		$colorArray = 		array(
-							    "#3498db", // Azul brillante
-							    "#2ecc71", // Verde esmeralda
-							    "#e74c3c", // Rojo coral
-							    "#f39c12", // Amarillo brillante
-							    "#9b59b6", // Morado
-							    "#1abc9c", // Verde turquesa
-							    "#ecf0f1", // Gris claro
-							    "#e67e22", // Naranja intenso
-							    "#95a5a6", // Gris azulado
-							    "#d35400", // Naranja oscuro
-							    "#2c3e50", // Azul acero oscuro
-							    "#8e44ad", // Morado oscuro
-							    "#16a085", // Verde esmeralda oscuro
-							    "#c0392b", // Rojo oscuro
-							    "#f1c40f", // Amarillo suave
-							    "#7f8c8d", // Gris azulado suave
-							    "#d35400", // Naranja oscuro
-							    "#2c3e50", // Azul acero oscuro
-							    "#8e44ad", // Morado oscuro
-							    "#16a085"  // Verde esmeralda oscuro
-							);
+ 		$colorArray = 		 array(
+								    "#FF5733", "#3498db", "#2ecc71", "#e74c3c", "#8e44ad",
+								    "#f39c12", "#1abc9c", "#c0392b", "#2980b9", "#27ae60",
+								    "#e67e22", "#9b59b6", "#16a085", "#d35400", "#34495e",
+								    "#FF7F50", "#00BFFF", "#00FA9A", "#DC143C", "#8A2BE2",
+								    "#8B4513", "#483D8B", "#2F4F4F", "#3CB371", "#BA55D3",
+								    "#F08080", "#00CED1", "#556B2F", "#B22222", "#800080"
+								);
 
 
 		$tventas  		= 		array();
@@ -114,7 +100,7 @@ class AnalisisEstadisticosController extends Controller
 		$numerosGenerados 	= array();
 		foreach($lventas as $index=>$item){
 			if($item->COD_TIPOMARCA == $tipomarca_sel){
-				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(1, 19, $numerosGenerados);
+				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
 				$meses[$count] 		= 		$nmeses[$item->MES-1];
 				$tnprod[$count]  	= 		$item->NombreProducto;
 				$tventas[$count]  	= 		intval($item->venta);
@@ -194,29 +180,15 @@ class AnalisisEstadisticosController extends Controller
 		$meses  	= 		array();
 		$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
- 		$colorArray = 		array(
-							    "#3498db", // Azul brillante
-							    "#2ecc71", // Verde esmeralda
-							    "#e74c3c", // Rojo coral
-							    "#f39c12", // Amarillo brillante
-							    "#9b59b6", // Morado
-							    "#1abc9c", // Verde turquesa
-							    "#ecf0f1", // Gris claro
-							    "#e67e22", // Naranja intenso
-							    "#95a5a6", // Gris azulado
-							    "#d35400", // Naranja oscuro
-							    "#2c3e50", // Azul acero oscuro
-							    "#8e44ad", // Morado oscuro
-							    "#16a085", // Verde esmeralda oscuro
-							    "#c0392b", // Rojo oscuro
-							    "#f1c40f", // Amarillo suave
-							    "#7f8c8d", // Gris azulado suave
-							    "#d35400", // Naranja oscuro
-							    "#2c3e50", // Azul acero oscuro
-							    "#8e44ad", // Morado oscuro
-							    "#16a085"  // Verde esmeralda oscuro
-							);
-
+ 		
+ 		$colorArray = 		 array(
+								    "#FF5733", "#3498db", "#2ecc71", "#e74c3c", "#8e44ad",
+								    "#f39c12", "#1abc9c", "#c0392b", "#2980b9", "#27ae60",
+								    "#e67e22", "#9b59b6", "#16a085", "#d35400", "#34495e",
+								    "#FF7F50", "#00BFFF", "#00FA9A", "#DC143C", "#8A2BE2",
+								    "#8B4513", "#483D8B", "#2F4F4F", "#3CB371", "#BA55D3",
+								    "#F08080", "#00CED1", "#556B2F", "#B22222", "#800080"
+								);
 
 		$tventas  	= 		array();
 		$tnprod  	= 		array();
@@ -229,7 +201,9 @@ class AnalisisEstadisticosController extends Controller
 
 
 		foreach($lventas as $index=>$item){
-				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(1, 19, $numerosGenerados);
+
+				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+
 				$meses[$count] 		= 		$nmeses[$item->MES-1];
 				$tnprod[$count]  	= 		$item->NombreProducto;
 				$tventas[$count]  	= 		intval($item->venta);
@@ -303,29 +277,14 @@ class AnalisisEstadisticosController extends Controller
 		$meses  	= 		array();
 		$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
- 		$colorArray = 		array(
-							    "#3498db", // Azul brillante
-							    "#2ecc71", // Verde esmeralda
-							    "#e74c3c", // Rojo coral
-							    "#f39c12", // Amarillo brillante
-							    "#9b59b6", // Morado
-							    "#1abc9c", // Verde turquesa
-							    "#ecf0f1", // Gris claro
-							    "#e67e22", // Naranja intenso
-							    "#95a5a6", // Gris azulado
-							    "#d35400", // Naranja oscuro
-							    "#2c3e50", // Azul acero oscuro
-							    "#8e44ad", // Morado oscuro
-							    "#16a085", // Verde esmeralda oscuro
-							    "#c0392b", // Rojo oscuro
-							    "#f1c40f", // Amarillo suave
-							    "#7f8c8d", // Gris azulado suave
-							    "#d35400", // Naranja oscuro
-							    "#2c3e50", // Azul acero oscuro
-							    "#8e44ad", // Morado oscuro
-							    "#16a085"  // Verde esmeralda oscuro
-							);
-
+ 		$colorArray = 		 array(
+								    "#FF5733", "#3498db", "#2ecc71", "#e74c3c", "#8e44ad",
+								    "#f39c12", "#1abc9c", "#c0392b", "#2980b9", "#27ae60",
+								    "#e67e22", "#9b59b6", "#16a085", "#d35400", "#34495e",
+								    "#FF7F50", "#00BFFF", "#00FA9A", "#DC143C", "#8A2BE2",
+								    "#8B4513", "#483D8B", "#2F4F4F", "#3CB371", "#BA55D3",
+								    "#F08080", "#00CED1", "#556B2F", "#B22222", "#800080"
+								);
 
 		$tventas  	= 		array();
 		$tnprod  	= 		array();
@@ -339,7 +298,7 @@ class AnalisisEstadisticosController extends Controller
 
 		foreach($lventas as $index=>$item){
 			if($item->COD_TIPOMARCA == $tipomarca_sel){
-				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(1, 19, $numerosGenerados);
+				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
 				$meses[$count] 		= 		$nmeses[$item->MES-1];
 				$tnprod[$count]  	= 		$item->NombreProducto;
 				$tventas[$count]  	= 		intval($item->venta);
