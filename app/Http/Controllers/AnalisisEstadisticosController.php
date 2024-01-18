@@ -8,14 +8,16 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
 use App\viewVentaSalidas;
+use App\viewVentasConsolidado;
 use App\ALMProducto;
 use App\CMPCategoria;
-
+use App\CMPContrato;
 use App\Traits\AnaliticaTraits;
-
 use View;
 use Session;
 use PDO;
+
+
 
 class AnalisisEstadisticosController extends Controller
 {
@@ -31,16 +33,23 @@ class AnalisisEstadisticosController extends Controller
 	    /******************************************************/
 	    $arrayautoserv  =   ['SUPERMERCADOS PERUANOS S.A.','HIPERMERCADOS TOTTUS S.A.','HIPERMERCADOS TOTTUS ORIENTE S.A.C.'];
 
+		// $comboempresa 	=	viewVentasConsolidado::orderByRaw('viewVentasConsolidado2024.Cliente asc')	
+		// 					->groupBy(DB::raw('Cliente'))
+		// 					->where('TXT_CATEGORIA_CANAL_VENTA','=','AUTOSERVICIOS')
+		// 					->pluck('Cliente','Cliente')
+		// 					->toArray();
 
-		$comboempresa 	=	viewVentaSalidas::orderByRaw('viewVentaSalidas2024.Cliente asc')	
-							->groupBy(DB::raw('Cliente'))
-							->where('SubCanal','=','SUPER E HIPER MERCADOS')
-							->pluck('Cliente','Cliente')
+		$comboempresa   =	CMPContrato::where('COD_CATEGORIA_CANAL_VENTA','=','CVE0000000000001')
+							->where('COD_CATEGORIA_ESTADO_CONTRATO','=','ECO0000000000001')
+							->groupBy(DB::raw('TXT_EMPR_CLIENTE'))
+							->pluck('TXT_EMPR_CLIENTE','TXT_EMPR_CLIENTE')
 							->toArray();
+
+
 
 		$empresa_nombre = 	'SUPERMERCADOS PERUANOS S.A.';
 
-		$comboperiodo 	=	viewVentaSalidas::groupBy(DB::raw('Cliente'))
+		$comboperiodo 	=	viewVentasConsolidado::groupBy(DB::raw('Cliente'))
 							->whereIn('Cliente',$arrayautoserv)
 							->select(DB::raw("(CAST(Year(Fecha) AS VARCHAR(4)) +'-'+RIGHT('00' + CAST(MONTH(Fecha) AS NVARCHAR(2)), 2)) as periodo"))
 							->groupBy(DB::raw('MONTH (Fecha)'))
@@ -48,6 +57,9 @@ class AnalisisEstadisticosController extends Controller
 							->orderByRaw('YEAR(Fecha) desc,MONTH (Fecha) desc')	
 							->pluck('periodo','periodo')
 							->toArray();
+
+
+
 
 		$anio 			=	date("Y");
 		$mes 			=	date("m");
@@ -58,13 +70,13 @@ class AnalisisEstadisticosController extends Controller
 
 		$periodo_sel 	=	$anio.'-'.$mes;
 
-		$lventas 		=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.Nombreproducto')
+		$lventas 		=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
 							->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
 							->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
 							->where('Cliente','=',$empresa_nombre)
 							->whereRaw("YEAR(Fecha) = ".$anio)
 							->whereRaw("MONTH(Fecha) = ".$mes)
-							->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
+							->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(CAN_TOTAL_OV) venta,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
 							->groupBy(DB::raw('Cliente'))
 							->groupBy(DB::raw('YEAR(Fecha)'))
 							->groupBy(DB::raw('MONTH (Fecha)'))
@@ -156,24 +168,22 @@ class AnalisisEstadisticosController extends Controller
 		$tipomarca_txt 				=	$datatipomarca->NOM_CATEGORIA;
 
 
-
-		$lventas 					=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.Nombreproducto')
+		$lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
 										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
 										->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
 										->where('Cliente','=',$empresa_nombre)
 										->whereRaw("YEAR(Fecha) = ".$anio)
 										->whereRaw("MONTH(Fecha) = ".$mes)
 										->where("MARCA.NOM_CATEGORIA",'=',$marca)
-										->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,
-											sum(DescuentReglas) Descuento,
+										->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(CAN_TOTAL_OV) venta,
 											MARCA.NOM_CATEGORIA AS MARCA,
-											NombreProducto
+											ALM.PRODUCTO.NOM_PRODUCTO AS NombreProducto
 											'))
 										->groupBy(DB::raw('Cliente'))
 										->groupBy(DB::raw('YEAR(Fecha)'))
 										->groupBy(DB::raw('MONTH (Fecha)'))
 										->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
-										->groupBy(DB::raw('NombreProducto'))
+										->groupBy(DB::raw('ALM.PRODUCTO.NOM_PRODUCTO'))
 										->orderByRaw('YEAR(Fecha),MONTH (Fecha) ASC')
 										->get();
 
@@ -257,13 +267,28 @@ class AnalisisEstadisticosController extends Controller
 		$tipomarca_sel 				=	$tipomarca;
 		$periodo_sel 				=	$anio.'-'.$mes;
 
-		$lventas 					=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.Nombreproducto')
+		// $lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentasConsolidado2024.Nombreproducto')
+		// 								->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
+		// 								->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
+		// 								->where('Cliente','=',$empresa_nombre)
+		// 								->whereRaw("YEAR(Fecha) = ".$anio)
+		// 								->whereRaw("MONTH(Fecha) = ".$mes)
+		// 								->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
+		// 								->groupBy(DB::raw('Cliente'))
+		// 								->groupBy(DB::raw('YEAR(Fecha)'))
+		// 								->groupBy(DB::raw('MONTH (Fecha)'))
+		// 								->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
+		// 								->groupBy(DB::raw('TIPOMARCA.COD_CATEGORIA'))
+		// 								->orderByRaw('YEAR(Fecha),MONTH (Fecha) ASC')
+		// 								->get();
+
+		$lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
 										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
 										->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
 										->where('Cliente','=',$empresa_nombre)
 										->whereRaw("YEAR(Fecha) = ".$anio)
 										->whereRaw("MONTH(Fecha) = ".$mes)
-										->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
+										->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(CAN_TOTAL_OV) venta,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
 										->groupBy(DB::raw('Cliente'))
 										->groupBy(DB::raw('YEAR(Fecha)'))
 										->groupBy(DB::raw('MONTH (Fecha)'))
@@ -271,7 +296,6 @@ class AnalisisEstadisticosController extends Controller
 										->groupBy(DB::raw('TIPOMARCA.COD_CATEGORIA'))
 										->orderByRaw('YEAR(Fecha),MONTH (Fecha) ASC')
 										->get();
-
 
 
 		$meses  	= 		array();
@@ -348,7 +372,7 @@ class AnalisisEstadisticosController extends Controller
 
 	//     $arrayautoserv  =   ['SUPERMERCADOS PERUANOS S.A.','HIPERMERCADOS TOTTUS S.A.','HIPERMERCADOS TOTTUS ORIENTE S.A.C.'];
 
-	// 	$comboempresa 	=	viewVentaSalidas::groupBy(DB::raw('Cliente'))
+	// 	$comboempresa 	=	viewVentasConsolidado::groupBy(DB::raw('Cliente'))
 	// 						->whereIn('Cliente',$arrayautoserv)
 	// 						->pluck('Cliente','Cliente')
 	// 						->toArray();
@@ -358,7 +382,7 @@ class AnalisisEstadisticosController extends Controller
 	// 	$anio 		=		'2023';
 
 
-	// 	$lventas 	=		viewVentaSalidas::where('Cliente','=',$empresa_nombre)
+	// 	$lventas 	=		viewVentasConsolidado::where('Cliente','=',$empresa_nombre)
 	// 						->whereRaw("YEAR(Fecha) = ".$anio)
 	// 						->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento'))
 	// 						->groupBy(DB::raw('Cliente'))
@@ -405,7 +429,7 @@ class AnalisisEstadisticosController extends Controller
 	// 	$anio 		=		'2023';
 
 
-	// 	$lventas 	=		viewVentaSalidas::where('Cliente','=',$empresa_nombre)
+	// 	$lventas 	=		viewVentasConsolidado::where('Cliente','=',$empresa_nombre)
 	// 						->whereRaw("YEAR(Fecha) = ".$anio)
 	// 						->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento'))
 	// 						->groupBy(DB::raw('Cliente'))

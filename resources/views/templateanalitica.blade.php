@@ -26,13 +26,22 @@
   @yield('style')
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/style.css?v='.$version) }} " />
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/oryza.css?v='.$version) }} " />
-
+  <style type="text/css">
+    .navbar-fixed-top{
+      position: inherit !important;
+    }
+    @media (max-width: 768px){
+      .be-wrapper{
+        padding-top: 61px !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 
-  <div class="be-wrapper be-color-header be-nosidebar-left"  id="app">
+  <div class="be-wrapper be-color-header be-nosidebar-left"  id="app" style="padding-top: 0px;">
 
     @include('success.ajax-alert')
     @include('success.bienhecho', ['bien' => Session::get('bienhecho')])

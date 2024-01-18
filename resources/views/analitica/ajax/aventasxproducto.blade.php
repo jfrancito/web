@@ -32,7 +32,6 @@
         const atnc = JSON.parse(tnc);
         const aprod = JSON.parse(prod);
         const acolor = JSON.parse(color);
-
         var empresa_nombre_text = $('#empresa_nombre_text').html();
         var periodo_sel = $('#periodo_sel').html();
         var tipomarca_txt = $('#tipomarca_txt').html();
@@ -41,17 +40,13 @@
         data_totalimporte  = data_totalimporte.formato(2, true);
         $('.total-pedido').html('S/. '+data_totalimporte);
 
-
         var options = {
             series: aventas,
-
-
             colors:acolor,
             chart: {
               width: 350,
               height: 800,
               type: 'pie',
-
               events: {
                 dataPointSelection: (event, chartContext, config) => {
 
@@ -62,9 +57,7 @@
                   actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca);
                 }
               },
-
             },
-
             title: {
                 text: empresa_nombre_text,
                 align: 'center',
@@ -79,7 +72,6 @@
                   color:  '#263238'
                 },
             },
-
             subtitle: {
                 text: periodo_sel + ' / ' + tipomarca_txt,
                 align: 'center',
@@ -95,15 +87,12 @@
 
                 },
             },
-
-
             dataLabels: {
               formatter(val, opts) {
                 const name = opts.w.globals.labels[opts.seriesIndex]
                 return [name, val.toFixed(1) + '%']
               }
             },
-
             labels: aprod,
             yaxis: {
               show: false
@@ -125,8 +114,7 @@
 
         var chart = new ApexCharts(document.querySelector("#chart01"), options);
         chart.render();
-
-
+        
         function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca){
 
             var _token              = $('#token').val();
