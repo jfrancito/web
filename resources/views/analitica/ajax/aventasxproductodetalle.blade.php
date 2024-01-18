@@ -1,5 +1,14 @@
-<div id="chart02">
-</div>
+
+<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 ">
+    <h4 class="titulochar">Ventas Generales (S/. {{number_format($totalimporte, 2, '.', ',')}})</h4>
+    <div id="chart03" >
+    </div>
+</div>  
+<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+    <h4 class="titulochar">Ventas Atendidas (S/. {{number_format($totalimporte_s, 2, '.', ',')}})</h4>
+    <div id="chart04" >
+    </div>
+</div> 
 
 <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
 <div id="meses" class='ocultar'>{{$meses}}</div>
@@ -16,6 +25,10 @@
 <div id="totalimporte" class='ocultar'>{{$totalimporte}}</div>
 
 
+<div id="ventas_s" class='ocultar'>{{$ventas_s}}</div>
+<div id="tnc_s" class='ocultar'>{{$tnc_s}}</div>
+<div id="prod_s" class='ocultar'>{{$jprod_s}}</div>
+<div id="color_s" class='ocultar'>{{$jcol_s}}</div>
 
 @if(isset($ajax))
   <script type="text/javascript">
@@ -46,7 +59,7 @@
       const atnc = JSON.parse(tnc);
       const aprod = JSON.parse(prod);
       const acolor = JSON.parse(color);
-      var options = {
+      var option3 = {
           series: aventas,
           colors:acolor,
           chart: {
@@ -100,8 +113,74 @@
             }
           },
       };
-      var chart = new ApexCharts(document.querySelector("#chart02"), options);
-      chart.render();
+      var chart3 = new ApexCharts(document.querySelector("#chart03"), option3);
+      chart3.render();
+
+
+
+      var ventas_s = $('#ventas_s').html();
+      var prod_s = $('#prod_s').html();
+      var color_s = $('#color_s').html();
+      const aventas_s = JSON.parse(ventas_s);
+      const aprod_s = JSON.parse(prod_s);
+      const acolor_s = JSON.parse(color_s);
+      var option4 = {
+          series: aventas_s,
+          colors: acolor_s,
+          title: {
+              text: empresa_nombre +' ('+ marca + ')',
+              align: 'center',
+              margin: 0,
+              offsetX: 0,
+              offsetY: 0,
+              floating: false,
+              style: {
+                fontSize:  '14px',
+                fontWeight:  'bold',
+                fontFamily:  undefined,
+                color:  '#263238'
+              },
+          },
+          subtitle: {
+              text: periodo_sel + ' / ' + tipomarca_txt,
+              align: 'center',
+              margin: 25,
+              offsetX: 0,
+              offsetY: 20,
+              floating: false,
+              style: {
+                fontSize:  '12px',
+                fontWeight:  'normal',
+                fontFamily:  undefined,
+                color:  '#9699a2'
+
+              },
+          },
+          chart: {
+            width: 350,
+            height: 800,
+            type: 'pie'
+          },
+          labels: aprod_s,
+          yaxis: {
+            show: false
+          },
+          legend: {
+            position: 'bottom',
+            horizontalAlign: 'left',
+            fontSize: '10px',
+            fontWeight: 600, 
+            formatter: function(label, opts) {
+                const total = opts.w.globals.series[opts.seriesIndex];
+                var data_total = new oNumero(total);
+                data_total  = data_total.formato(2, true);
+                return label + "  S/." + data_total
+            }
+          },
+      };
+      var chart4 = new ApexCharts(document.querySelector("#chart04"), option4);
+      chart4.render();
+
 
     //Objeto oNumero
     function oNumero(numero){

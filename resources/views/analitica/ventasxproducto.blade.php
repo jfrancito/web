@@ -13,14 +13,7 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="panel panel-default panel-table">
-                <div class="panel-heading">Analitica de Ventas x Producto
-<!--                   <div class="tools tooltiptop">
-                    <a href="#" class="tooltipcss" id='buscarempresa' >
-                      <span class="tooltiptext">Buscar</span>
-                      <span class="icon mdi mdi-search"></span>
-                    </a>
-
-                  </div> -->
+                <div class="panel-heading" ><b style="font-style: italic;">Venta de Cliente</b>
                 </div>
                 <div class="panel-body selectfiltro">
                   <div class='filtrotabla row'>
@@ -81,20 +74,43 @@
                   </div>
 
                   <div class="col-xs-12">
+
                     <div class='listaanaitica listajax reporteajax' style="padding-top: 20px;">
-                          <div id="chart01" >
-                          </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 ">
+                            <h4 class="titulochar">Ventas Generales (S/. {{number_format($totalimporte, 2, '.', ',')}})</h4>
+                            <div id="chart01" >
+                            </div>
+                        </div>  
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <h4 class="titulochar">Ventas Atendidas (S/. {{number_format($totalimporte_s, 2, '.', ',')}})</h4>
+                            <div id="chart02" >
+                            </div>
+                        </div>  
+
+
                           <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
                           <div id="meses" class='ocultar'>{{$meses}}</div>
-                          <div id="ventas" class='ocultar'>{{$ventas}}</div>
-                          <div id="tnc" class='ocultar'>{{$tnc}}</div>
-                          <div id="prod" class='ocultar'>{{$jprod}}</div>
-                          <div id="color" class='ocultar'>{{$jcol}}</div>
                           <div id="anio" class='ocultar'>{{$anio}}</div>
                           <div id="mes" class='ocultar'>{{$mes}}</div>
                           <div id="empresa_nombre_text" class='ocultar'>{{$empresa_nombre}}</div>
                           <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
                           <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
+
+
+
+                          <div id="ventas" class='ocultar'>{{$ventas}}</div>
+                          <div id="tnc" class='ocultar'>{{$tnc}}</div>
+                          <div id="prod" class='ocultar'>{{$jprod}}</div>
+                          <div id="color" class='ocultar'>{{$jcol}}</div>
+
+                          <div id="ventas_s" class='ocultar'>{{$ventas_s}}</div>
+                          <div id="tnc_s" class='ocultar'>{{$tnc_s}}</div>
+                          <div id="prod_s" class='ocultar'>{{$jprod_s}}</div>
+                          <div id="color_s" class='ocultar'>{{$jcol_s}}</div>
+
+
+
                     </div>
                   </div>
 
@@ -103,7 +119,6 @@
             </div>
           </div>
     </div>
-
     <div class="row-menu" style="width: 99.9%;">
       <div class="row">
         <div class="col-sm-12 col-mobil-top">
@@ -111,17 +126,13 @@
             <span class="mdi mdi-arrow-left"></span>
           </div> 
           <div class="col-fr-10 col-total">
-            <strong>Total : </strong> <strong class="total total-pedido"> S/. {{number_format($totalimporte, 2, '.', ',')}}</strong>
+            <strong></strong> <strong class="">INDUAMERICA</strong>
           </div>
         </div>
       </div>
     </div>
-
-
   </div>
-
 @stop
-
 @section('script')
 
   <script src="{{ asset('public/lib/datatables/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>

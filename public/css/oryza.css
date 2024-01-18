@@ -1,3 +1,12 @@
+.apexcharts-canvas{
+  text-align: center;
+  margin: 0 auto;
+}
+.titulochar{
+  text-decoration: underline;
+  font-weight: bold;
+}
+
 .seleccionar{
   cursor: pointer;
 }

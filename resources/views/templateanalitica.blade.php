@@ -22,7 +22,6 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-
   @yield('style')
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/style.css?v='.$version) }} " />
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/oryza.css?v='.$version) }} " />

@@ -166,108 +166,188 @@ $(document).ready(function(){
     }//Fin del objeto oNumero:
 
 
+    //ventas generales
+    var anio = $('#anio').val();
+    var empresa_nombre = $('select[name="empresa_nombre"] option:selected').text();
+    var mes = $('#mes').html();
+    var meses = $('#meses').html();
+    var ventas = $('#ventas').html();
+    var tnc = $('#tnc').html();
+    var prod = $('#prod').html();
+    var color = $('#color').html();
+    var empresa_nombre_text = $('#empresa_nombre_text').html();
+    var periodo_sel = $('#periodo_sel').html();
+    var tipomarca_txt = $('#tipomarca_txt').html();
+    const ameses  = JSON.parse(meses);
+    const aventas = JSON.parse(ventas);
+    const atnc = JSON.parse(tnc);
+    const aprod = JSON.parse(prod);
+    const acolor = JSON.parse(color);
 
-      var anio = $('#anio').val();
-      var empresa_nombre = $('select[name="empresa_nombre"] option:selected').text();
-      var mes = $('#mes').html();
+    var options = {
+        series: aventas,
+        colors:acolor,
 
-      var meses = $('#meses').html();
-      var ventas = $('#ventas').html();
-      var tnc = $('#tnc').html();
-      var prod = $('#prod').html();
-      var color = $('#color').html();
-      var empresa_nombre_text = $('#empresa_nombre_text').html();
-      var periodo_sel = $('#periodo_sel').html();
-      var tipomarca_txt = $('#tipomarca_txt').html();
-
-
-
-      const ameses  = JSON.parse(meses);
-      const aventas = JSON.parse(ventas);
-      const atnc = JSON.parse(tnc);
-      const aprod = JSON.parse(prod);
-      const acolor = JSON.parse(color);
-
-      var options = {
-          series: aventas,
-          colors:acolor,
-
-          title: {
-              text: empresa_nombre_text,
-              align: 'center',
-              margin: 0,
-              offsetX: 0,
-              offsetY: 0,
-              floating: false,
-              style: {
-                fontSize:  '14px',
-                fontWeight:  'bold',
-                fontFamily:  undefined,
-                color:  '#263238'
-              },
-          },
-
-          subtitle: {
-              text: periodo_sel + ' / ' + tipomarca_txt,
-              align: 'center',
-              margin: 25,
-              offsetX: 0,
-              offsetY: 20,
-              floating: false,
-              style: {
-                fontSize:  '12px',
-                fontWeight:  'normal',
-                fontFamily:  undefined,
-                color:  '#9699a2'
-
-              },
-          },
-
-
-          chart: {
-            width: 350,
-            height: 800,
-            type: 'pie',
-            events: {
-              dataPointSelection: (event, chartContext, config) => {
-
-                var periodo             = $('#periodo').val();
-                var tipomarca           = $('#tipomarca').val();
-
-                const marca = chartContext.w.globals.labels[config.dataPointIndex];
-                actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca);
-              }
+        title: {
+            text: empresa_nombre_text,
+            align: 'center',
+            margin: 0,
+            offsetX: 0,
+            offsetY: 0,
+            floating: false,
+            style: {
+              fontSize:  '14px',
+              fontWeight:  'bold',
+              fontFamily:  undefined,
+              color:  '#263238'
             },
-          },
-          labels: aprod,
-          dataLabels: {
-            formatter(val, opts) {
-              const name = opts.w.globals.labels[opts.seriesIndex]
-              const importe = opts.w.globals.series[opts.seriesIndex]
-              return [name, val.toFixed(1) + '%']
+        },
+
+        subtitle: {
+            text: periodo_sel + ' / ' + tipomarca_txt,
+            align: 'center',
+            margin: 25,
+            offsetX: 0,
+            offsetY: 20,
+            floating: false,
+            style: {
+              fontSize:  '12px',
+              fontWeight:  'normal',
+              fontFamily:  undefined,
+              color:  '#9699a2'
+
+            },
+        },
+
+
+        chart: {
+          width: 350,
+          height: 800,
+          type: 'pie',
+          events: {
+            dataPointSelection: (event, chartContext, config) => {
+
+              var periodo             = $('#periodo').val();
+              var tipomarca           = $('#tipomarca').val();
+
+              const marca = chartContext.w.globals.labels[config.dataPointIndex];
+              actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca);
             }
           },
+        },
+        labels: aprod,
+        dataLabels: {
+          formatter(val, opts) {
+            const name = opts.w.globals.labels[opts.seriesIndex]
+            const importe = opts.w.globals.series[opts.seriesIndex]
+            return [name, val.toFixed(1) + '%']
+          }
+        },
 
-          yaxis: {
-            show: false
-          },
+        yaxis: {
+          show: false
+        },
 
-          legend: {
-            position: 'bottom',
-            horizontalAlign: 'left',
-            fontSize: '10px',
-            fontWeight: 600, 
-            formatter: function(label, opts) {
-                const total = opts.w.globals.series[opts.seriesIndex];
-                var data_total = new oNumero(total);
-                data_total  = data_total.formato(2, true);
+        legend: {
+          position: 'bottom',
+          horizontalAlign: 'left',
+          fontSize: '10px',
+          fontWeight: 600, 
+          formatter: function(label, opts) {
+              const total = opts.w.globals.series[opts.seriesIndex];
+              var data_total = new oNumero(total);
+              data_total  = data_total.formato(2, true);
 
-                return label + "  S/." + data_total
+              return label + "  S/." + data_total
+          }
+
+        },
+    };
+    var chart = new ApexCharts(document.querySelector("#chart01"), options);
+    chart.render();
+
+
+    //ventas atendidas
+
+
+
+    var ventas_s = $('#ventas_s').html();
+    var prod_s = $('#prod_s').html();
+    var color_s = $('#color_s').html();
+    const aventas_s = JSON.parse(ventas_s);
+    const aprod_s = JSON.parse(prod_s);
+    const acolor_s = JSON.parse(color_s);
+
+    var options2 = {
+        series: aventas_s,
+        colors: acolor_s,
+        title: {
+            text: empresa_nombre_text,
+            align: 'center',
+            margin: 0,
+            offsetX: 0,
+            offsetY: 0,
+            floating: false,
+            style: {
+              fontSize:  '14px',
+              fontWeight:  'bold',
+              fontFamily:  undefined,
+              color:  '#263238'
+            },
+        },
+        subtitle: {
+            text: periodo_sel + ' / ' + tipomarca_txt,
+            align: 'center',
+            margin: 25,
+            offsetX: 0,
+            offsetY: 20,
+            floating: false,
+            style: {
+              fontSize:  '12px',
+              fontWeight:  'normal',
+              fontFamily:  undefined,
+              color:  '#9699a2'
+
+            },
+        },
+        chart: {
+          width: 350,
+          height: 800,
+          type: 'pie',
+          events: {
+            dataPointSelection: (event, chartContext, config) => {
+              var periodo             = $('#periodo').val();
+              var tipomarca           = $('#tipomarca').val();
+              const marca = chartContext.w.globals.labels[config.dataPointIndex];
+              actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca);
             }
-
           },
-      };
-      var chart = new ApexCharts(document.querySelector("#chart01"), options);
-      chart.render();
+        },
+        labels: aprod_s,
+        dataLabels: {
+          formatter(val, opts) {
+            const name = opts.w.globals.labels[opts.seriesIndex]
+            const importe = opts.w.globals.series[opts.seriesIndex]
+            return [name, val.toFixed(1) + '%']
+          }
+        },
+        yaxis: {
+          show: false
+        },
+        legend: {
+          position: 'bottom',
+          horizontalAlign: 'left',
+          fontSize: '10px',
+          fontWeight: 600, 
+          formatter: function(label, opts) {
+              const total = opts.w.globals.series[opts.seriesIndex];
+              var data_total = new oNumero(total);
+              data_total  = data_total.formato(2, true);
+              return label + "  S/." + data_total
+          }
+        },
+    };
+    var chart2 = new ApexCharts(document.querySelector("#chart02"), options2);
+    chart2.render();
 });
 
