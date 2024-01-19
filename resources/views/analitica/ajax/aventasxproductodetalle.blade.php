@@ -257,9 +257,15 @@
               },
           },
           dataLabels: {
+            style: {
+                fontWeight: 'bold',
+                colors: ['#000', '#000']
+            },
+
             formatter: (val) => {
                 return val;
             }
+
           },
           yaxis: {
             labels: {
