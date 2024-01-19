@@ -90,7 +90,7 @@ class AnalisisEstadisticosController extends Controller
 							->where('Cliente','=',$empresa_nombre)
 							->whereRaw("YEAR(Fecha) = ".$anio)
 							->whereRaw("MONTH(Fecha) = ".$mes)
-							->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
+							->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA,sum(CostoExtendido) as CostoExtendido'))
 							->groupBy(DB::raw('Cliente'))
 							->groupBy(DB::raw('YEAR(Fecha)'))
 							->groupBy(DB::raw('MONTH (Fecha)'))
@@ -103,18 +103,9 @@ class AnalisisEstadisticosController extends Controller
 		//dd($lventassalida);					
 
 
-		$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
-
- 		$colorArray = 		 array(
-								    "#FF5733", "#3498db", "#2ecc71", "#e74c3c", "#8e44ad",
-								    "#f39c12", "#1abc9c", "#c0392b", "#2980b9", "#27ae60",
-								    "#e67e22", "#9b59b6", "#16a085", "#d35400", "#34495e",
-								    "#FF7F50", "#00BFFF", "#00FA9A", "#DC143C", "#8A2BE2",
-								    "#8B4513", "#483D8B", "#2F4F4F", "#3CB371", "#BA55D3",
-								    "#F08080", "#00CED1", "#556B2F", "#B22222", "#800080"
-								);
+		$nmeses 		= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+		$nmeses 		= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+ 		$colorArray 	= 		$this->colores_array();
 
 		$meses  		= 		array();
 		$tventas  		= 		array();
@@ -126,6 +117,7 @@ class AnalisisEstadisticosController extends Controller
 		$numerosGenerados 	= array();
 		foreach($lventas as $index=>$item){
 			if($item->COD_TIPOMARCA == $tipomarca_sel){
+
 				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
 				$meses[$count] 		= 		$nmeses[$item->MES-1];
 				$tnprod[$count]  	= 		$item->NombreProducto;
@@ -139,6 +131,11 @@ class AnalisisEstadisticosController extends Controller
 		}
 
 
+		$ttotal_s  			= 		array();
+		$tcosto_s  			= 		array();
+		$tutilidad_s  		= 		array();
+
+
 		$meses_s  			= 		array();
 		$tventas_s  		= 		array();
 		$tnprod_s  			= 		array();
@@ -146,22 +143,32 @@ class AnalisisEstadisticosController extends Controller
 		$tcolores_s  		= 		array();
 		$count_s      		= 		0;
 		$totalimporte_s 	= 		0;
+
+
 		//$numerosGenerados_s = 		array();
 
 		foreach($lventassalida as $index=>$item){
+
 			if($item->COD_TIPOMARCA == $tipomarca_sel){
+
 				$aleatorio 			= 		$numerosGenerados[$count_s];
 				$meses_s[$count_s] 	= 		$nmeses[$item->MES-1];
-				$tnprod_s[$count_s]  = 		$item->NombreProducto;
-				$tventas_s[$count_s]  = 		intval($item->venta);
-				$tcolores_s[$count_s] = 		$colorArray[$aleatorio];
+				$tnprod_s[$count_s] = 		$item->NombreProducto;
+				$tventas_s[$count_s]  = 	intval($item->venta);
+				$tcolores_s[$count_s] = 	$colorArray[$aleatorio];
 				$tnc_s[$count_s]  	= 		$item->Descuento;
-				$count_s      		= 		$count_s+1;
 				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
+
+				$ttotal_s[$count_s] =		100;
+				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+
+				$count_s 			=		$count_s +1;
+
+
 
 			}
 		}
-
 
 
 		$jmeses 	=		json_encode($meses);
@@ -170,15 +177,18 @@ class AnalisisEstadisticosController extends Controller
 		$jprod 		=		json_encode($tnprod);
 		$jcol 		=		json_encode($tcolores);
 
-
 		$jmeses_s 	=		json_encode($meses_s);
 		$jventas_s 	=		json_encode($tventas_s);
 		$jtnc_s 	=		json_encode($tnc_s);
 		$jprod_s 	=		json_encode($tnprod_s);
 		$jcol_s 	=		json_encode($tcolores_s);
 
-		//print_r($tventas);
-		//dd($jventas_s);
+		$jcostos_s 	=		json_encode($tcosto_s);
+		$jutilidad_s=		json_encode($tutilidad_s);
+		$jtotal_s 	=		json_encode($ttotal_s);
+
+
+
 		return View::make('analitica/ventasxproducto',
 						 [
 							'anio' 			=> $anio,
@@ -197,6 +207,9 @@ class AnalisisEstadisticosController extends Controller
 							'jprod_s' 		=> $jprod_s,
 							'jcol_s' 		=> $jcol_s,
 							'totalimporte_s'=> $totalimporte_s,
+							'jcostos_s'		=> $jcostos_s,
+							'jutilidad_s'	=> $jutilidad_s,
+							'jtotal_s'		=> $jtotal_s,
 
 
 							'comboempresa' 	=> $comboempresa,
@@ -252,6 +265,7 @@ class AnalisisEstadisticosController extends Controller
 										->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,
 											MARCA.NOM_CATEGORIA AS MARCA,
 											ALM.PRODUCTO.NOM_PRODUCTO AS NombreProducto
+											,sum(CostoExtendido) as CostoExtendido
 											'))
 										->groupBy(DB::raw('Cliente'))
 										->groupBy(DB::raw('YEAR(Fecha)'))
@@ -266,14 +280,7 @@ class AnalisisEstadisticosController extends Controller
 		$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
  		
- 		$colorArray = 		 array(
-								    "#FF5733", "#3498db", "#2ecc71", "#e74c3c", "#8e44ad",
-								    "#f39c12", "#1abc9c", "#c0392b", "#2980b9", "#27ae60",
-								    "#e67e22", "#9b59b6", "#16a085", "#d35400", "#34495e",
-								    "#FF7F50", "#00BFFF", "#00FA9A", "#DC143C", "#8A2BE2",
-								    "#8B4513", "#483D8B", "#2F4F4F", "#3CB371", "#BA55D3",
-								    "#F08080", "#00CED1", "#556B2F", "#B22222", "#800080"
-								);
+ 		$colorArray 	= 		$this->colores_array();
 
 		$tventas  	= 		array();
 		$tnprod  	= 		array();
@@ -301,6 +308,9 @@ class AnalisisEstadisticosController extends Controller
 
 		$meses_s  			= 		array();
 		$tventas_s  		= 		array();
+		$tcosto_s  			= 		array();
+
+		
 		$tnprod_s  			= 		array();
 		$tnc_s  			= 		array();
 		$tcolores_s  		= 		array();
@@ -308,16 +318,27 @@ class AnalisisEstadisticosController extends Controller
 		$totalimporte_s 	= 		0;
 		//$numerosGenerados_s = 		array();
 
+		$ttotal_s  			= 		array();
+		$tcosto_s  			= 		array();
+		$tutilidad_s  		= 		array();
+
+
 		foreach($lventassalida as $index=>$item){
 
-				$aleatorio 			= 		$numerosGenerados[$count_s];
-				$meses_s[$count_s] 	= 		$nmeses[$item->MES-1];
-				$tnprod_s[$count_s]  = 		$item->NombreProducto;
-				$tventas_s[$count_s]  = 		intval($item->venta);
-				$tcolores_s[$count_s] = 		$colorArray[$aleatorio];
-				$tnc_s[$count_s]  	= 		$item->Descuento;
-				$count_s      		= 		$count_s+1;
-				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
+				$aleatorio 				= 		$numerosGenerados[$count_s];
+				$meses_s[$count_s] 		= 		$nmeses[$item->MES-1];
+				$tnprod_s[$count_s]  	= 		$item->NombreProducto;
+				$tventas_s[$count_s]  	= 		intval($item->venta);
+				$tcosto_s[$count_s]  	= 		intval($item->CostoExtendido);
+				$tcolores_s[$count_s] 	= 		$colorArray[$aleatorio];
+				$tnc_s[$count_s]  		= 		$item->Descuento;
+
+				$ttotal_s[$count_s] =		100;
+				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+
+				$count_s      			= 		$count_s+1;
+				$totalimporte_s 		= 		$totalimporte_s + intval($item->venta);
 		}
 
 
@@ -331,9 +352,17 @@ class AnalisisEstadisticosController extends Controller
 
 		$jmeses_s 	=		json_encode($meses_s);
 		$jventas_s 	=		json_encode($tventas_s);
+		$jcostos_s 	=		json_encode($tcosto_s);
+
+
 		$jtnc_s 	=		json_encode($tnc_s);
 		$jprod_s 	=		json_encode($tnprod_s);
 		$jcol_s 	=		json_encode($tcolores_s);
+
+		$jcostos_s 	=		json_encode($tcosto_s);
+		$jutilidad_s=		json_encode($tutilidad_s);
+		$jtotal_s 	=		json_encode($ttotal_s);
+
 
 		return View::make('analitica/ajax/aventasxproductodetalle',
 						 [
@@ -353,6 +382,12 @@ class AnalisisEstadisticosController extends Controller
 							'jprod_s' 		=> $jprod_s,
 							'jcol_s' 		=> $jcol_s,
 							'totalimporte_s'=> $totalimporte_s,
+
+
+							'jcostos_s'		=> $jcostos_s,
+							'jutilidad_s'	=> $jutilidad_s,
+							'jtotal_s'		=> $jtotal_s,
+
 
 							'periodo_sel'	=> $periodo_sel,
 							'tipomarca_txt'	=> $tipomarca_txt,
@@ -401,7 +436,7 @@ class AnalisisEstadisticosController extends Controller
 							->where('Cliente','=',$empresa_nombre)
 							->whereRaw("YEAR(Fecha) = ".$anio)
 							->whereRaw("MONTH(Fecha) = ".$mes)
-							->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA'))
+							->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,MARCA.NOM_CATEGORIA AS NombreProducto,TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA,sum(CostoExtendido) as CostoExtendido'))
 							->groupBy(DB::raw('Cliente'))
 							->groupBy(DB::raw('YEAR(Fecha)'))
 							->groupBy(DB::raw('MONTH (Fecha)'))
@@ -414,19 +449,15 @@ class AnalisisEstadisticosController extends Controller
 		$meses  	= 		array();
 		$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
- 		$colorArray = 		 array(
-								    "#FF5733", "#3498db", "#2ecc71", "#e74c3c", "#8e44ad",
-								    "#f39c12", "#1abc9c", "#c0392b", "#2980b9", "#27ae60",
-								    "#e67e22", "#9b59b6", "#16a085", "#d35400", "#34495e",
-								    "#FF7F50", "#00BFFF", "#00FA9A", "#DC143C", "#8A2BE2",
-								    "#8B4513", "#483D8B", "#2F4F4F", "#3CB371", "#BA55D3",
-								    "#F08080", "#00CED1", "#556B2F", "#B22222", "#800080"
-								);
+ 		$colorArray 	= 		$this->colores_array();
 
 		$tventas  	= 		array();
 		$tnprod  	= 		array();
 		$tnc  		= 		array();
 		$tcolores  	= 		array();
+
+
+
 
 		$count      = 		0;
 		$totalimporte 	= 		0;
@@ -441,6 +472,7 @@ class AnalisisEstadisticosController extends Controller
 				$tventas[$count]  	= 		intval($item->venta);
 				$tcolores[$count]  	= 		$colorArray[$aleatorio];
 				$tnc[$count]  		= 		$item->Descuento;
+
 				$count      		= 		$count+1;
 				$totalimporte 		= 		$totalimporte + intval($item->venta);
 
@@ -456,6 +488,10 @@ class AnalisisEstadisticosController extends Controller
 		$totalimporte_s 	= 		0;
 		$numerosGenerados_s = 		array();
 
+		$ttotal_s  			= 		array();
+		$tcosto_s  			= 		array();
+		$tutilidad_s  		= 		array();
+
 		foreach($lventassalida as $index=>$item){
 			if($item->COD_TIPOMARCA == $tipomarca_sel){
 				$aleatorio 			= 		$numerosGenerados[$count_s];
@@ -464,6 +500,12 @@ class AnalisisEstadisticosController extends Controller
 				$tventas_s[$count_s]  = 		intval($item->venta);
 				$tcolores_s[$count_s] = 		$colorArray[$aleatorio];
 				$tnc_s[$count_s]  	= 		$item->Descuento;
+
+
+				$ttotal_s[$count_s] =		100;
+				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+
 				$count_s      		= 		$count_s+1;
 				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
 
@@ -483,6 +525,11 @@ class AnalisisEstadisticosController extends Controller
 		$jtnc 		=		json_encode($tnc);
 		$jprod 		=		json_encode($tnprod);
 		$jcol 		=		json_encode($tcolores);
+		$jcostos_s 	=		json_encode($tcosto_s);
+		$jutilidad_s=		json_encode($tutilidad_s);
+		$jtotal_s 	=		json_encode($ttotal_s);
+
+
 		$funcion 	= 		$this;
 
 		return View::make('analitica/ajax/aventasxproducto',
@@ -498,6 +545,10 @@ class AnalisisEstadisticosController extends Controller
 							'periodo_sel'	=> $periodo_sel,
 							'tipomarca_txt'	=> $tipomarca_txt,
 							'totalimporte'	=> $totalimporte,
+
+							'jcostos_s'		=> $jcostos_s,
+							'jutilidad_s'	=> $jutilidad_s,
+							'jtotal_s'		=> $jtotal_s,
 
 							'meses_s' 		=> $jmeses_s,
 							'ventas_s' 		=> $jventas_s,

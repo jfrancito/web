@@ -1,14 +1,32 @@
+<div class="tab-container">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#vg" data-toggle="tab">Ventas Atendidas</a></li>
+    <li><a href="#va" data-toggle="tab">Ventas Generales</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="vg" class="tab-pane active cont">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 15px;">
+            <h4 class="titulochar">S/. {{number_format($totalimporte_s, 2, '.', ',')}}</h4>
+            <div id="chart04" >
+            </div>
+        </div>  
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
+            <h4 class="titulochar">{{number_format($totalimporte_s, 2, '.', ',')}}</h4>
+            <div id="chart_b1" >
+            </div>
+        </div>
+    </div>
+    <div id="va" class="tab-pane cont">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style="margin-top: 15px;">
+            <h4 class="titulochar">{{number_format($totalimporte, 2, '.', ',')}}</h4>
+            <div id="chart03" >
+            </div>
+        </div>  
+    </div>
+  </div>
+</div>
 
-<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 ">
-    <h4 class="titulochar">Ventas Generales (S/. {{number_format($totalimporte, 2, '.', ',')}})</h4>
-    <div id="chart03" >
-    </div>
-</div>  
-<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-    <h4 class="titulochar">Ventas Atendidas (S/. {{number_format($totalimporte_s, 2, '.', ',')}})</h4>
-    <div id="chart04" >
-    </div>
-</div> 
+
 
 <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
 <div id="meses" class='ocultar'>{{$meses}}</div>
@@ -29,6 +47,11 @@
 <div id="tnc_s" class='ocultar'>{{$tnc_s}}</div>
 <div id="prod_s" class='ocultar'>{{$jprod_s}}</div>
 <div id="color_s" class='ocultar'>{{$jcol_s}}</div>
+
+
+<div id="costos_s" class='ocultar'>{{$jcostos_s}}</div>
+<div id="utilidad_s" class='ocultar'>{{$jutilidad_s}}</div>
+<div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
 
 @if(isset($ajax))
   <script type="text/javascript">
@@ -116,8 +139,6 @@
       var chart3 = new ApexCharts(document.querySelector("#chart03"), option3);
       chart3.render();
 
-
-
       var ventas_s = $('#ventas_s').html();
       var prod_s = $('#prod_s').html();
       var color_s = $('#color_s').html();
@@ -180,6 +201,104 @@
       };
       var chart4 = new ApexCharts(document.querySelector("#chart04"), option4);
       chart4.render();
+
+
+
+      var costos_s = $('#costos_s').html();
+      const acostos_s = JSON.parse(costos_s);
+      var utilidad_s = $('#utilidad_s').html();
+      const autilidad_s = JSON.parse(utilidad_s);
+      var totalimporte_s = $('#totalimporte_s').html();
+      var jtotal_s = $('#jtotal_s').html();
+      const total_s = JSON.parse(jtotal_s);
+
+
+      var options_b1 = {
+        series: [
+                  {
+                    name: 'Costo',
+                    group: 'u',
+                    data: acostos_s
+                  },
+                  {
+                    name: 'Utilidad',
+                    group: 'u',
+                    data: autilidad_s
+                  },
+
+                ],
+          title: {
+              text: empresa_nombre +' ('+ marca + ')',
+              align: 'center',
+              margin: 0,
+              offsetX: 0,
+              offsetY: 0,
+              floating: false,
+              style: {
+                fontSize:  '14px',
+                fontWeight:  'bold',
+                fontFamily:  undefined,
+                color:  '#263238'
+              },
+          },
+          subtitle: {
+              text: periodo_sel + ' / ' + tipomarca_txt,
+              align: 'center',
+              margin: 25,
+              offsetX: 0,
+              offsetY: 20,
+              floating: false,
+              style: {
+                fontSize:  '12px',
+                fontWeight:  'normal',
+                fontFamily:  undefined,
+                color:  '#9699a2'
+
+              },
+          },
+          dataLabels: {
+            formatter: (val) => {
+                return val;
+            }
+          },
+          yaxis: {
+            labels: {
+              formatter: (val) => {
+                return val + ' %'
+              }
+            }
+          },
+
+        chart:  {
+                  type: 'bar',
+                  height: 450,
+                  stacked: true
+                },
+        stroke:  {
+                  width: 1,
+                  colors: ['#fff']
+                },
+
+        plotOptions: {
+                  bar: {
+                    horizontal: false
+                  }
+                },
+        xaxis: {
+                  categories: aprod_s
+                },
+        fill: {
+                opacity: 1
+              },
+        colors: ['#FF5733', '#3498db', '#2ecc71'],
+        legend: {
+                  position: 'top',
+                  horizontalAlign: 'left'
+                }
+      };
+      var chart_b1 = new ApexCharts(document.querySelector("#chart_b1"), options_b1);
+      chart_b1.render();
+
 
 
     //Objeto oNumero

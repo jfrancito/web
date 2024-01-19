@@ -1,19 +1,36 @@
 @if($totalimporte>0 && $totalimporte_s>0)
 
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 ">
-      <h4 class="titulochar">Ventas Generales (S/. {{number_format($totalimporte, 2, '.', ',')}})</h4>
-      <div id="chart01" >
+    <div class="tab-container">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#vg" data-toggle="tab">Ventas Atendidas</a></li>
+        <li><a href="#va" data-toggle="tab">Ventas Generales</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="vg" class="tab-pane active cont">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 15px;">
+                <h4 class="titulochar">S/. {{number_format($totalimporte_s, 2, '.', ',')}}</h4>
+                <div id="chart02" >
+                </div>
+            </div>  
+
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
+                <h4 class="titulochar">{{number_format($totalimporte_s, 2, '.', ',')}}</h4>
+                <div id="chart_b" >
+                </div>
+            </div>
+        </div>
+        <div id="va" class="tab-pane cont">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style="margin-top: 15px;">
+                <h4 class="titulochar">{{number_format($totalimporte, 2, '.', ',')}}</h4>
+                <div id="chart01" >
+                </div>
+            </div>  
+        </div>
       </div>
-  </div>  
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-      <h4 class="titulochar">Ventas Atendidas (S/. {{number_format($totalimporte_s, 2, '.', ',')}})</h4>
-      <div id="chart02" >
-      </div>
-  </div>  
+    </div>
 
 
   <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
-
   <div id="meses" class='ocultar'>{{$meses}}</div>
   <div id="anio" class='ocultar'>{{$anio}}</div>
   <div id="mes" class='ocultar'>{{$mes}}</div>
@@ -21,7 +38,6 @@
   <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
   <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
   <div id="totalimporte" class='ocultar'>{{$totalimporte}}</div>
-
 
   <div id="ventas" class='ocultar'>{{$ventas}}</div>
   <div id="tnc" class='ocultar'>{{$tnc}}</div>
@@ -34,6 +50,10 @@
   <div id="prod_s" class='ocultar'>{{$jprod_s}}</div>
   <div id="color_s" class='ocultar'>{{$jcol_s}}</div>
 
+
+  <div id="costos_s" class='ocultar'>{{$jcostos_s}}</div>
+  <div id="utilidad_s" class='ocultar'>{{$jutilidad_s}}</div>
+  <div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
 
   @if(isset($ajax))
     <script type="text/javascript">
@@ -212,6 +232,111 @@
         };
         var chart2 = new ApexCharts(document.querySelector("#chart02"), options2);
         chart2.render();
+
+
+
+
+      var costos_s = $('#costos_s').html();
+      const acostos_s = JSON.parse(costos_s);
+      var utilidad_s = $('#utilidad_s').html();
+      const autilidad_s = JSON.parse(utilidad_s);
+      var totalimporte_s = $('#totalimporte_s').html();
+
+      var jtotal_s = $('#jtotal_s').html();
+      const total_s = JSON.parse(jtotal_s);
+
+      var options_b = {
+        series: [
+
+                  {
+                    name: 'Ventas Atendidas',
+                    group: 'va',
+                    data: total_s
+                  },
+                  {
+                    name: 'Costo',
+                    group: 'u',
+                    data: acostos_s
+                  },
+                  {
+                    name: 'Utilidad',
+                    group: 'u',
+                    data: autilidad_s
+                  },
+
+                ],
+          title: {
+              text: empresa_nombre_text,
+              align: 'center',
+              margin: 0,
+              offsetX: 0,
+              offsetY: 0,
+              floating: false,
+              style: {
+                fontSize:  '14px',
+                fontWeight:  'bold',
+                fontFamily:  undefined,
+                color:  '#263238'
+              },
+          },
+          subtitle: {
+              text: periodo_sel + ' / ' + tipomarca_txt,
+              align: 'center',
+              margin: 25,
+              offsetX: 0,
+              offsetY: 20,
+              floating: false,
+              style: {
+                fontSize:  '12px',
+                fontWeight:  'normal',
+                fontFamily:  undefined,
+                color:  '#9699a2'
+
+              },
+          },
+          dataLabels: {
+            formatter: (val) => {
+                return val + '%'
+            }
+          },
+          yaxis: {
+            labels: {
+              formatter: (val) => {
+                return val + '%'
+              }
+            }
+          },
+
+        chart:  {
+                  type: 'bar',
+                  height: 350,
+                  stacked: true
+                },
+        stroke:  {
+                  width: 1,
+                  colors: ['#fff']
+                },
+
+        plotOptions: {
+                  bar: {
+                    horizontal: false
+                  }
+                },
+        xaxis: {
+                  categories: aprod_s
+                },
+        fill: {
+                opacity: 1
+              },
+        colors: ['#FF5733', '#3498db', '#2ecc71'],
+        legend: {
+                  position: 'top',
+                  horizontalAlign: 'left'
+                }
+      };
+      var chart_b = new ApexCharts(document.querySelector("#chart_b"), options_b);
+      chart_b.render();
+
 
 
         function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca){

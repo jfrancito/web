@@ -349,5 +349,107 @@ $(document).ready(function(){
     };
     var chart2 = new ApexCharts(document.querySelector("#chart02"), options2);
     chart2.render();
+
+    var costos_s = $('#costos_s').html();
+    const acostos_s = JSON.parse(costos_s);
+    var utilidad_s = $('#utilidad_s').html();
+    const autilidad_s = JSON.parse(utilidad_s);
+    var totalimporte_s = $('#totalimporte_s').html();
+
+    var jtotal_s = $('#jtotal_s').html();
+    const total_s = JSON.parse(jtotal_s);
+
+    var options_b = {
+      series: [
+
+                {
+                  name: 'Ventas Atendidas',
+                  group: 'va',
+                  data: total_s
+                },
+                {
+                  name: 'Costo',
+                  group: 'u',
+                  data: acostos_s
+                },
+                {
+                  name: 'Utilidad',
+                  group: 'u',
+                  data: autilidad_s
+                },
+
+              ],
+        title: {
+            text: empresa_nombre_text,
+            align: 'center',
+            margin: 0,
+            offsetX: 0,
+            offsetY: 0,
+            floating: false,
+            style: {
+              fontSize:  '14px',
+              fontWeight:  'bold',
+              fontFamily:  undefined,
+              color:  '#263238'
+            },
+        },
+        subtitle: {
+            text: periodo_sel + ' / ' + tipomarca_txt,
+            align: 'center',
+            margin: 25,
+            offsetX: 0,
+            offsetY: 20,
+            floating: false,
+            style: {
+              fontSize:  '12px',
+              fontWeight:  'normal',
+              fontFamily:  undefined,
+              color:  '#9699a2'
+
+            },
+        },
+        dataLabels: {
+          formatter: (val) => {
+              return val + '%'
+          }
+        },
+        yaxis: {
+          labels: {
+            formatter: (val) => {
+              return val + '%'
+            }
+          }
+        },
+
+      chart:  {
+                type: 'bar',
+                height: 350,
+                stacked: true
+              },
+      stroke:  {
+                width: 1,
+                colors: ['#fff']
+              },
+
+      plotOptions: {
+                bar: {
+                  horizontal: false
+                }
+              },
+      xaxis: {
+                categories: aprod_s
+              },
+      fill: {
+              opacity: 1
+            },
+      colors: ['#FF5733', '#3498db', '#2ecc71'],
+      legend: {
+                position: 'top',
+                horizontalAlign: 'left'
+              }
+    };
+    var chart_b = new ApexCharts(document.querySelector("#chart_b"), options_b);
+    chart_b.render();
+
 });
 
