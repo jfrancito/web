@@ -4644,6 +4644,7 @@ class Funcion{
 
 		$lista_activas 		= 	WEBRegla::where('activo','=',1)
 				    			->whereIn('tiporegla', ['RDV'])
+				    			->where('estado','=','PU')
 								->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
 								->select('id', DB::raw("(nombre + ' ' + CAST(descuento AS varchar(100)) ) AS nombre"))
 								->pluck('nombre','id')
@@ -4659,6 +4660,7 @@ class Funcion{
 
 		$lista_activas 		= 	WEBRegla::where('activo','=',1)
 				    			->whereIn('tiporegla', ['RLC'])
+				    			->where('estado','=','PU')
 								//->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
 								->select('id', DB::raw("(nombre + ' ' + CAST(descuento AS varchar(100)) ) AS nombre"))
 								->pluck('nombre','id')
