@@ -15,7 +15,6 @@ var App = (function () {
     		rightIcon: 'mdi mdi-chevron-right',
     		leftIcon: 'mdi mdi-chevron-left'
     	}
-
     });
     
     //Select2

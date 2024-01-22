@@ -6,57 +6,81 @@ $(document).ready(function(){
    $('#buscarempresa').on('click', function(event){
         event.preventDefault();
         var empresa_nombre      = $('#empresa_nombre').val();
-        var periodo             = $('#periodo').val();
+        // var periodo             = $('#periodo').val();
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
         var tipomarca           = $('#tipomarca').val();  
-
+        var tiporeporte         = $('#tiporeporte').val();  
 
         var _token              = $('#token').val();
         $(".reporteajax").html("");
-        actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta);
+        actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
+
 
     }); 
 
-    $(".contenido").on('change','#empresa_nombre,#periodo,#tipomarca', function() {
+    $(".contenido").on('change','#empresa_nombre,#tipomarca,#tiporeporte', function() {
 
 
         event.preventDefault();
         var empresa_nombre      = $('#empresa_nombre').val();
-        var periodo             = $('#periodo').val();
+        // var periodo             = $('#periodo').val();
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
         var tipomarca           = $('#tipomarca').val();  
-
+        var tiporeporte         = $('#tiporeporte').val();  
 
         var _token              = $('#token').val();
         $(".reporteajax").html("");
-        actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta);
+        actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
 
 
     });
+
+
+    // $(".contenido").on('click','#fechainicio,#fechafin', function(e) {
+      
+    //     event.preventDefault();
+    //     var empresa_nombre      = $('#empresa_nombre').val();
+    //     // var periodo             = $('#periodo').val();
+    //     var inicio              = $('#fechainicio').val();
+    //     var hoy                 = $('#fechafin').val();
+    //     var tipomarca           = $('#tipomarca').val();  
+    //     var _token              = $('#token').val();
+    //     $(".reporteajax").html("");
+    //     actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy);
+
+    // });
+
+
    
     $(".crearpedido").on('click','.col-atras', function(e) {
       
         event.preventDefault();
         var empresa_nombre      = $('#empresa_nombre').val();
-        var periodo             = $('#periodo').val();
         var tipomarca           = $('#tipomarca').val();  
-
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
+        var tiporeporte         = $('#tiporeporte').val();
 
         var _token              = $('#token').val();
         $(".reporteajax").html("");
-        actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta);
+        actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
 
     });
 
-
-    function actualizar_ajax(empresa_nombre,periodo,tipomarca,_token,carpeta){
+    function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte){
         abrircargando();
         $.ajax({
             type    :   "POST",
             url     :   carpeta+"/ajax-listado-de-ventasxproducto",
             data    :   {
-                            _token  : _token,
-                            empresa_nombre : empresa_nombre,
-                            periodo : periodo,
-                            tipomarca : tipomarca,
+                            _token          : _token,
+                            empresa_nombre  : empresa_nombre,
+                            inicio          : inicio,
+                            hoy             : hoy,
+                            tipomarca       : tipomarca,
+                            tiporeporte     : tiporeporte,
                         },
             success: function (data) {
                 cerrarcargando();
@@ -70,10 +94,11 @@ $(document).ready(function(){
         });
     }
 
-    function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca){
+
+
+    function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte){
 
         var _token              = $('#token').val();
-
         abrircargando();
         $.ajax({
             type    :   "POST",
@@ -84,9 +109,10 @@ $(document).ready(function(){
                             empresa_nombre  : empresa_nombre,
                             mes             : mes,
                             marca           : marca,
-                            periodo         : periodo,
                             tipomarca       : tipomarca,
-
+                            inicio          : inicio,
+                            hoy             : hoy,
+                            tiporeporte     : tiporeporte,
                         },
             success: function (data) {
                 cerrarcargando();
@@ -168,6 +194,9 @@ $(document).ready(function(){
 
     //ventas generales
     var anio = $('#anio').val();
+    var simmodena = $('#simmodena').html();
+
+
     var empresa_nombre = $('select[name="empresa_nombre"] option:selected').text();
     var mes = $('#mes').html();
     var meses = $('#meses').html();
@@ -186,40 +215,7 @@ $(document).ready(function(){
 
     var options = {
         series: aventas,
-        colors:acolor,
-
-        title: {
-            text: empresa_nombre_text,
-            align: 'center',
-            margin: 0,
-            offsetX: 0,
-            offsetY: 0,
-            floating: false,
-            style: {
-              fontSize:  '14px',
-              fontWeight:  'bold',
-              fontFamily:  undefined,
-              color:  '#263238'
-            },
-        },
-
-        subtitle: {
-            text: periodo_sel + ' / ' + tipomarca_txt,
-            align: 'center',
-            margin: 25,
-            offsetX: 0,
-            offsetY: 20,
-            floating: false,
-            style: {
-              fontSize:  '12px',
-              fontWeight:  'normal',
-              fontFamily:  undefined,
-              color:  '#9699a2'
-
-            },
-        },
-
-
+        colors: acolor,
         chart: {
           width: 350,
           height: 800,
@@ -227,11 +223,14 @@ $(document).ready(function(){
           events: {
             dataPointSelection: (event, chartContext, config) => {
 
-              var periodo             = $('#periodo').val();
+              var inicio              = $('#fechainicio').val();
+              var hoy                 = $('#fechafin').val();
               var tipomarca           = $('#tipomarca').val();
+              var tiporeporte           = $('#tiporeporte').val();
+
 
               const marca = chartContext.w.globals.labels[config.dataPointIndex];
-              actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca);
+              actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte);
             }
           },
         },
@@ -251,14 +250,13 @@ $(document).ready(function(){
         legend: {
           position: 'bottom',
           horizontalAlign: 'left',
-          fontSize: '10px',
+          fontSize: '12px',
           fontWeight: 600, 
           formatter: function(label, opts) {
               const total = opts.w.globals.series[opts.seriesIndex];
               var data_total = new oNumero(total);
               data_total  = data_total.formato(2, true);
-
-              return label + "  S/." + data_total
+              return label + " => " + simmodena + data_total
           }
 
         },
@@ -268,9 +266,6 @@ $(document).ready(function(){
 
 
     //ventas atendidas
-
-
-
     var ventas_s = $('#ventas_s').html();
     var prod_s = $('#prod_s').html();
     var color_s = $('#color_s').html();
@@ -281,45 +276,20 @@ $(document).ready(function(){
     var options2 = {
         series: aventas_s,
         colors: acolor_s,
-        title: {
-            text: empresa_nombre_text,
-            align: 'center',
-            margin: 0,
-            offsetX: 0,
-            offsetY: 0,
-            floating: false,
-            style: {
-              fontSize:  '14px',
-              fontWeight:  'bold',
-              fontFamily:  undefined,
-              color:  '#263238'
-            },
-        },
-        subtitle: {
-            text: periodo_sel + ' / ' + tipomarca_txt,
-            align: 'center',
-            margin: 25,
-            offsetX: 0,
-            offsetY: 20,
-            floating: false,
-            style: {
-              fontSize:  '12px',
-              fontWeight:  'normal',
-              fontFamily:  undefined,
-              color:  '#9699a2'
-
-            },
-        },
         chart: {
           width: 350,
           height: 800,
           type: 'pie',
           events: {
             dataPointSelection: (event, chartContext, config) => {
-              var periodo             = $('#periodo').val();
+
+              var inicio              = $('#fechainicio').val();
+              var hoy                 = $('#fechafin').val();
               var tipomarca           = $('#tipomarca').val();
+              var tiporeporte           = $('#tiporeporte').val();
+
               const marca = chartContext.w.globals.labels[config.dataPointIndex];
-              actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,periodo,tipomarca);
+              actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte);
             }
           },
         },
@@ -337,13 +307,13 @@ $(document).ready(function(){
         legend: {
           position: 'bottom',
           horizontalAlign: 'left',
-          fontSize: '10px',
+          fontSize: '12px',
           fontWeight: 600, 
           formatter: function(label, opts) {
               const total = opts.w.globals.series[opts.seriesIndex];
               var data_total = new oNumero(total);
               data_total  = data_total.formato(2, true);
-              return label + "  S/." + data_total
+              return label + " => " + simmodena + data_total
           }
         },
     };
@@ -361,56 +331,21 @@ $(document).ready(function(){
 
     var options_b = {
       series: [
-
-                {
-                  name: 'Ventas Atendidas',
-                  group: 'va',
-                  data: total_s
-                },
                 {
                   name: 'Costo',
                   group: 'u',
                   data: acostos_s
                 },
                 {
-                  name: 'Utilidad',
+                  name: 'Utilidad Bruta',
                   group: 'u',
                   data: autilidad_s
                 },
 
               ],
-        title: {
-            text: empresa_nombre_text,
-            align: 'center',
-            margin: 0,
-            offsetX: 0,
-            offsetY: 0,
-            floating: false,
-            style: {
-              fontSize:  '14px',
-              fontWeight:  'bold',
-              fontFamily:  undefined,
-              color:  '#263238'
-            },
-        },
-        subtitle: {
-            text: periodo_sel + ' / ' + tipomarca_txt,
-            align: 'center',
-            margin: 25,
-            offsetX: 0,
-            offsetY: 20,
-            floating: false,
-            style: {
-              fontSize:  '12px',
-              fontWeight:  'normal',
-              fontFamily:  undefined,
-              color:  '#9699a2'
-
-            },
-        },
         dataLabels: {
           formatter: (val) => {
-              return val + '%'
+              return val
           }
         },
         yaxis: {

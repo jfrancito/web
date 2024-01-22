@@ -15,4 +15,10 @@ class viewVentaSalidas extends Model
     public $incrementing = false;
     public $keyType = 'string';
 
+    public function scopeTipoMarca($query,$name){
+    	if(trim($name) != 'TODOS'){
+    		$query->where('TIPOMARCA.COD_CATEGORIA', '=', $name);
+    	}
+    }
+
 }

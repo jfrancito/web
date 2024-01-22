@@ -13,20 +13,27 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="panel panel-default panel-table">
-                <div class="panel-heading" ><b style="font-style: italic;">Venta de Cliente</b>
+                <div class="panel-heading" ><b style="font-style: italic;">VENTA DE CLIENTE</b>
+
+                  <div class="tools tooltiptop">
+                    <a href="#" class="tooltipcss" id='buscarempresa' >
+                      <span class="tooltiptext">Buscar</span>
+                      <span class="icon mdi mdi-search" style="font-size: 40px;"></span>
+                    </a>
+
+                  </div>
+
                 </div>
                 <div class="panel-body selectfiltro">
                   <div class='filtrotabla row'>
                     <div class="col-xs-12">
-
-                      <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 cajareporte">
-
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
                           <div class="form-group">
                             <label class="col-sm-12 control-label labelleft" >Clientes :</label>
                             <div class="col-sm-12 abajocaja" >
                               {!! Form::select( 'empresa_nombre', $comboempresa, array($empresa_nombre),
                                                 [
-                                                  'class'       => ' form-control control input-sm' ,
+                                                  'class'       => 'select2 form-control control input-sm' ,
                                                   'id'          => 'empresa_nombre',
                                                   'required'    => '',
                                                   'data-aw'     => '1',
@@ -35,32 +42,58 @@
                           </div>
                       </div>
 
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
 
-                      <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 cajareporte">
-
-                          <div class="form-group">
-                            <label class="col-sm-12 control-label labelleft" >Periodo :</label>
+                          <div class="form-group ">
+                            <label class="col-sm-12 control-label labelleft" >Fecha Inicio:</label>
                             <div class="col-sm-12 abajocaja" >
-                              {!! Form::select( 'periodo', $comboperiodo, array($periodo_sel),
-                                                [
-                                                  'class'       => ' form-control control input-sm' ,
-                                                  'id'          => 'periodo',
-                                                  'required'    => '',
-                                                  'data-aw'     => '1',
-                                                ]) !!}
+                              <div data-min-view="2" 
+                                     data-date-format="dd-mm-yyyy"  
+                                     class="input-group date datetimepicker" style = 'padding: 0px 0;margin-top: -3px;'>
+                                     <input size="16" type="text" 
+                                            value="{{$inicio}}" 
+                                            placeholder="Fecha Inicio"
+                                            id='fechainicio' 
+                                            name='fechainicio' 
+                                            required = ""
+                                            class="form-control"/>
+                                      <span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
+                                </div>
                             </div>
                           </div>
-                      </div>
+                      </div> 
 
 
-                      <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 cajareporte">
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
+
+                          <div class="form-group ">
+                            <label class="col-sm-12 control-label labelleft" >Fecha Fin:</label>
+                            <div class="col-sm-12 abajocaja" >
+                              <div data-min-view="2" 
+                                     data-date-format="dd-mm-yyyy"  
+                                     class="input-group date datetimepicker" style = 'padding: 0px 0;margin-top: -3px;'>
+                                     <input size="16" type="text" 
+                                            value="{{$hoy}}" 
+                                            placeholder="Fecha Fin"
+                                            id='fechafin' 
+                                            name='fechafin' 
+                                            required = ""
+                                            class="form-control"/>
+                                      <span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
+                                </div>
+                            </div>
+                          </div>
+                      </div> 
+
+
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
 
                           <div class="form-group">
                             <label class="col-sm-12 control-label labelleft" >Tipo Marca :</label>
                             <div class="col-sm-12 abajocaja" >
                               {!! Form::select( 'tipomarca', $combotipomarca, array($tipomarca_sel),
                                                 [
-                                                  'class'       => ' form-control control input-sm' ,
+                                                  'class'       => 'select2 form-control control input-sm' ,
                                                   'id'          => 'tipomarca',
                                                   'required'    => '',
                                                   'data-aw'     => '1',
@@ -69,69 +102,29 @@
                           </div>
                       </div>
 
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
+
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label labelleft" >Ventas Equivalente en:</label>
+                            <div class="col-sm-12 abajocaja" >
+                              {!! Form::select( 'tiporeporte', $combotr, array($select_tr),
+                                                [
+                                                  'class'       => 'select2 form-control control input-sm' ,
+                                                  'id'          => 'tiporeporte',
+                                                  'required'    => '',
+                                                  'data-aw'     => '1',
+                                                ]) !!}
+                            </div>
+                          </div>
+                      </div>
 
 
                   </div>
-
                   <div class="col-xs-12">
 
                     <div class='listaanaitica listajax reporteajax' style="padding-top: 20px;">
 
-                    <div class="tab-container">
-                      <ul class="nav nav-tabs">
-                        <li class="active"><a href="#vg" data-toggle="tab">Ventas Atendidas</a></li>
-                        <li><a href="#va" data-toggle="tab">Ventas Generales</a></li>
-                      </ul>
-                      <div class="tab-content">
-                        <div id="vg" class="tab-pane active cont">
-                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 15px;">
-                                <h4 class="titulochar">S/. {{number_format($totalimporte_s, 2, '.', ',')}}</h4>
-                                <div id="chart02" >
-                                </div>
-                            </div>  
-
-                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
-                                <h4 class="titulochar">{{number_format($totalimporte_s, 2, '.', ',')}}</h4>
-                                <div id="chart_b" >
-                                </div>
-                            </div>
-                        </div>
-                        <div id="va" class="tab-pane cont">
-                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style="margin-top: 15px;">
-                                <h4 class="titulochar">{{number_format($totalimporte, 2, '.', ',')}}</h4>
-                                <div id="chart01" >
-                                </div>
-                            </div>  
-                        </div>
-                      </div>
-                    </div>
-
-
-
-
-
-
-                        <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
-                        <div id="meses" class='ocultar'>{{$meses}}</div>
-                        <div id="anio" class='ocultar'>{{$anio}}</div>
-                        <div id="mes" class='ocultar'>{{$mes}}</div>
-                        <div id="empresa_nombre_text" class='ocultar'>{{$empresa_nombre}}</div>
-                        <div id="periodo_sel" class='ocultar'>{{$periodo_sel}}</div>
-                        <div id="tipomarca_txt" class='ocultar'>{{$tipomarca_txt}}</div>
-
-                        <div id="ventas" class='ocultar'>{{$ventas}}</div>
-                        <div id="tnc" class='ocultar'>{{$tnc}}</div>
-                        <div id="prod" class='ocultar'>{{$jprod}}</div>
-                        <div id="color" class='ocultar'>{{$jcol}}</div>
-
-                        <div id="ventas_s" class='ocultar'>{{$ventas_s}}</div>
-                        <div id="tnc_s" class='ocultar'>{{$tnc_s}}</div>
-                        <div id="prod_s" class='ocultar'>{{$jprod_s}}</div>
-                        <div id="color_s" class='ocultar'>{{$jcol_s}}</div>
-                        
-                        <div id="costos_s" class='ocultar'>{{$jcostos_s}}</div>
-                        <div id="utilidad_s" class='ocultar'>{{$jutilidad_s}}</div>
-                        <div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
+                      @include('analitica.ajax.aventasxproducto')
 
 
                     </div>

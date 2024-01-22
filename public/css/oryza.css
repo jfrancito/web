@@ -1,3 +1,32 @@
+.contgrafico{
+  background-color: #eee !important;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 15px;
+}
+.titulografico{
+  padding-bottom: 10px;
+
+}
+.apexcharts-legend-series{
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+.titulobanner{
+  background-color: #A5C9FF;
+  text-align: center;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 15px;
+
+}
+
+.subtitulografico{
+    font-style: italic;
+    font-size: 14px;
+}
 .apexcharts-canvas{
   text-align: center;
   margin: 0 auto;
