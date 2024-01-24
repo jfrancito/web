@@ -3,39 +3,40 @@ $(document).ready(function(){
 
     var carpeta = $("#carpeta").val();
 
-   $('#buscarempresa').on('click', function(event){
-        event.preventDefault();
-        var empresa_nombre      = $('#empresa_nombre').val();
-        // var periodo             = $('#periodo').val();
-        var inicio              = $('#fechainicio').val();
-        var hoy                 = $('#fechafin').val();
-        var tipomarca           = $('#tipomarca').val();  
-        var tiporeporte         = $('#tiporeporte').val();  
+   // $('#buscarempresa').on('click', function(event){
 
-        var _token              = $('#token').val();
-        $(".reporteajax").html("");
-        actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
+   //      event.preventDefault();
+   //      var empresa_nombre      = $('#empresa_nombre').val();
+   //      // var periodo             = $('#periodo').val();
+   //      var inicio              = $('#fechainicio').val();
+   //      var hoy                 = $('#fechafin').val();
+   //      var tipomarca           = $('#tipomarca').val();  
+   //      var tiporeporte         = $('#tiporeporte').val();  
 
-
-    }); 
-
-    $(".contenido").on('change','#empresa_nombre,#tipomarca,#tiporeporte', function() {
+   //      var _token              = $('#token').val();
+   //      $(".reporteajax").html("");
+   //      actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
 
 
-        event.preventDefault();
-        var empresa_nombre      = $('#empresa_nombre').val();
-        // var periodo             = $('#periodo').val();
-        var inicio              = $('#fechainicio').val();
-        var hoy                 = $('#fechafin').val();
-        var tipomarca           = $('#tipomarca').val();  
-        var tiporeporte         = $('#tiporeporte').val();  
+   //  }); 
 
-        var _token              = $('#token').val();
-        $(".reporteajax").html("");
-        actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
+    // $(".contenido").on('change','#empresa_nombre,#tipomarca,#tiporeporte', function() {
 
 
-    });
+    //     event.preventDefault();
+    //     var empresa_nombre      = $('#empresa_nombre').val();
+    //     // var periodo             = $('#periodo').val();
+    //     var inicio              = $('#fechainicio').val();
+    //     var hoy                 = $('#fechafin').val();
+    //     var tipomarca           = $('#tipomarca').val();  
+    //     var tiporeporte         = $('#tiporeporte').val();  
+
+    //     var _token              = $('#token').val();
+    //     $(".reporteajax").html("");
+    //     actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
+
+
+    // });
 
 
     // $(".contenido").on('click','#fechainicio,#fechafin', function(e) {
@@ -69,35 +70,33 @@ $(document).ready(function(){
 
     });
 
-    function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte){
-        abrircargando();
-        $.ajax({
-            type    :   "POST",
-            url     :   carpeta+"/ajax-listado-de-ventasxproducto",
-            data    :   {
-                            _token          : _token,
-                            empresa_nombre  : empresa_nombre,
-                            inicio          : inicio,
-                            hoy             : hoy,
-                            tipomarca       : tipomarca,
-                            tiporeporte     : tiporeporte,
-                        },
-            success: function (data) {
-                cerrarcargando();
-                $(".reporteajax").html(data);
+    // function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte){
+    //     abrircargando();
+    //     $.ajax({
+    //         type    :   "POST",
+    //         url     :   carpeta+"/ajax-listado-de-ventasxproducto",
+    //         data    :   {
+    //                         _token          : _token,
+    //                         empresa_nombre  : empresa_nombre,
+    //                         inicio          : inicio,
+    //                         hoy             : hoy,
+    //                         tipomarca       : tipomarca,
+    //                         tiporeporte     : tiporeporte,
+    //                     },
+    //         success: function (data) {
+    //             cerrarcargando();
+    //             $(".reporteajax").html(data);
 
-            },
-            error: function (data) {
-                cerrarcargando();
-                error500(data);
-            }
-        });
-    }
-
-
+    //         },
+    //         error: function (data) {
+    //             cerrarcargando();
+    //             error500(data);
+    //         }
+    //     });
+    // }
 
     function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte){
-
+      
         var _token              = $('#token').val();
         abrircargando();
         $.ajax({
@@ -124,7 +123,6 @@ $(document).ready(function(){
                 error500(data);
             }
         });
-
     }
 
 
@@ -220,6 +218,7 @@ $(document).ready(function(){
           width: 350,
           height: 800,
           type: 'pie',
+
           events: {
             dataPointSelection: (event, chartContext, config) => {
 
@@ -233,6 +232,8 @@ $(document).ready(function(){
               actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte);
             }
           },
+
+
         },
         labels: aprod,
         dataLabels: {
@@ -258,7 +259,6 @@ $(document).ready(function(){
               data_total  = data_total.formato(2, true);
               return label + " => " + simmodena + data_total
           }
-
         },
     };
     var chart = new ApexCharts(document.querySelector("#chart01"), options);

@@ -41,6 +41,8 @@
       </div>
     </div>
   </div>
+
+  
   <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
   <div id="meses" class='ocultar'>{{$meses}}</div>
   <div id="anio" class='ocultar'>{{$anio}}</div>

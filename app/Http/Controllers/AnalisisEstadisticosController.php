@@ -21,8 +21,147 @@ use PDO;
 
 class AnalisisEstadisticosController extends Controller
 {
-
 	use AnaliticaTraits;
+
+
+	public function actionAjaxModalAutoservicioFiltro(Request $request)
+	{
+
+		$inicio 					=  	$request['inicio'];
+		$hoy 						=  	$request['hoy'];
+		$empresa 					=  	$request['empresa'];
+
+
+		$comboanio 					=	viewVentasConsolidado::groupBy(DB::raw('Cliente'))
+										->where('Cliente','=',$empresa)
+										->select(DB::raw("(CAST(Year(Fecha) AS VARCHAR(4))) as anio"))
+										->groupBy(DB::raw('YEAR (Fecha)'))
+										->orderByRaw('YEAR(Fecha) desc')	
+										->pluck('anio','anio')
+										->toArray();
+		$anio 						=	date("Y");
+
+		$combotr  					= 	array('SOLES' => "SOLES",'SACOS' => "SACOS 50KG");
+		$select_tr 					=	'SOLES';
+		$combotipomarca 			=	$this->funciones->combo_categoria_general('TIPO_MARCA');
+		$combotipomarca 			= 	array('TODOS' => "TODOS") + $combotipomarca;
+		$tipomarca_sel 				=	'TODOS';
+		$tipomarca_txt 				=	'TODOS';
+
+		return View::make('analitica/ajax/filtroautoservicio',
+						 [
+							'inicio' 		=> $inicio,
+							'hoy' 			=> $hoy,
+							'empresa' 		=> $empresa,
+							'combotr' 		=> $combotr,
+							'select_tr' 	=> $select_tr,
+							'combotipomarca'=> $combotipomarca,
+							'combotipomarca'=> $combotipomarca,
+							'tipomarca_sel' => $tipomarca_sel,
+							'tipomarca_txt' => $tipomarca_txt,
+							'comboanio' 	=> $comboanio,
+							'anio' 			=> $anio,
+							'ajax' 			=> true
+						 ]);
+
+
+	}
+
+	public function actionVentaAutoservicio($idopcion,Request $request)
+	{
+
+		/******************* validar url **********************/
+		$validarurl = $this->funciones->getUrl($idopcion,'Ver');
+	    if($validarurl <> 'true'){return $validarurl;}
+	    /******************************************************/
+		$inicio			= 	$this->inicio;
+		$hoy			= 	$this->fin;
+
+		$arrayempresa   =	CMPContrato::where('COD_CATEGORIA_CANAL_VENTA','=','CVE0000000000001')
+							->where('COD_CATEGORIA_ESTADO_CONTRATO','=','ECO0000000000001')
+							->groupBy(DB::raw('TXT_EMPR_CLIENTE'))
+							->pluck('TXT_EMPR_CLIENTE')
+							->toArray();
+
+		$lventassalida 	=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
+							->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
+							->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
+							->where('Fecha','>=',$inicio)
+							->where('Fecha','<=',$hoy)
+							->whereIn('Cliente',$arrayempresa)
+							->select(DB::raw('Cliente,sum(TotalVenta) venta,sum(CostoExtendido) as CostoExtendido'))
+							->groupBy(DB::raw('Cliente'))
+							->orderByRaw('sum(TotalVenta) desc')
+							->get();
+
+ 		$colorArray 	= 	$this->colores_array();
+		$ttotal_s  		= 	array();
+		$tcosto_s  		= 	array();
+		$tutilidad_s  	= 	array();
+		$meses_s  		= 	array();
+		$tventas_s  	= 	array();
+		$tcliente_s  	= 	array();
+
+		$tnprod_s  		= 	array();
+		$tnc_s  		= 	array();
+		$tcolores_s  	= 	array();
+		$count_s      	= 	0;
+		$totalimporte_s = 	0;
+		$numerosGenerados 	= array();
+
+		//dd($lventassalida);
+
+		foreach($lventassalida as $index=>$item){
+
+				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+				$tventas_s[$count_s]  = 	intval($item->venta);
+				$tcliente_s[$count_s]  = 	$item->Cliente;
+
+				$tcolores_s[$count_s] = 	$colorArray[$aleatorio];
+				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
+				$ttotal_s[$count_s] =		100;
+				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+				$count_s 			=		$count_s +1;
+
+		}
+
+
+		$jmeses_s 	=		json_encode($meses_s);
+		$jventas_s 	=		json_encode($tventas_s);
+		$jtnc_s 	=		json_encode($tnc_s);
+		$jprod_s 	=		json_encode($tnprod_s);
+		$jcol_s 	=		json_encode($tcolores_s);
+		$jcostos_s 	=		json_encode($tcosto_s);
+		$jutilidad_s=		json_encode($tutilidad_s);
+		$jcliente_s =		json_encode($tcliente_s);
+
+		$jtotal_s 	=		json_encode($ttotal_s);
+
+		$tituloban 	=		'SOLES';
+		$simmodena 	=		'S/.';
+
+
+		return View::make('analitica/ventasxautoservicio',
+						 [
+							'meses_s' 		=> $jmeses_s,
+							'ventas_s' 		=> $jventas_s,
+							'tnc_s' 		=> $jtnc_s,
+							'jprod_s' 		=> $jprod_s,
+							'jcol_s' 		=> $jcol_s,
+							'totalimporte_s'=> $totalimporte_s,
+							'jcostos_s'		=> $jcostos_s,
+							'jutilidad_s'	=> $jutilidad_s,
+							'jtotal_s'		=> $jtotal_s,
+							'inicio'		=> $this->inicio,
+							'hoy'			=> $this->fin,
+							'tituloban'		=> $tituloban,
+							'simmodena'		=> $simmodena,
+							'jcliente_s'	=> $jcliente_s,
+						 ]);
+	}
+
+
 
 	public function actionVentas($idopcion,Request $request)
 	{
@@ -243,7 +382,6 @@ class AnalisisEstadisticosController extends Controller
 			$tipomarca_txt 				=	'TODOS';
 			$tipomarca_sel 				=	$tipomarca;	
 		}
-
 
 		$lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
 										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
@@ -633,117 +771,5 @@ class AnalisisEstadisticosController extends Controller
 							'ajax' 			=> true
 						 ]);
 	}
-
-
-
-	// public function actionVentas($idopcion,Request $request)
-	// {
-
-	// 	/******************* validar url **********************/
-	// 	$validarurl = $this->funciones->getUrl($idopcion,'Ver');
-	//     if($validarurl <> 'true'){return $validarurl;}
-	//     /******************************************************/
-
-
-	//     $arrayautoserv  =   ['SUPERMERCADOS PERUANOS S.A.','HIPERMERCADOS TOTTUS S.A.','HIPERMERCADOS TOTTUS ORIENTE S.A.C.'];
-
-	// 	$comboempresa 	=	viewVentasConsolidado::groupBy(DB::raw('Cliente'))
-	// 						->whereIn('Cliente',$arrayautoserv)
-	// 						->pluck('Cliente','Cliente')
-	// 						->toArray();
-
-
-	// 	$empresa_nombre = 	'SUPERMERCADOS PERUANOS S.A.';
-	// 	$anio 		=		'2023';
-
-
-	// 	$lventas 	=		viewVentasConsolidado::where('Cliente','=',$empresa_nombre)
-	// 						->whereRaw("YEAR(Fecha) = ".$anio)
-	// 						->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento'))
-	// 						->groupBy(DB::raw('Cliente'))
-	// 						->groupBy(DB::raw('YEAR(Fecha)'))
-	// 						->groupBy(DB::raw('MONTH (Fecha)'))
-	// 						->orderByRaw('YEAR(Fecha),MONTH (Fecha) ASC')
-	// 						->get();
-
-	// 	$meses  	= 		array();
-	// 	$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-	// 	$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
-	// 	$tventas  	= 		array();
-	// 	$tnc  		= 		array();
-
-	// 	foreach($lventas as $index=>$item){
-
-	// 		$meses[$index] 		= 		$nmeses[$item->MES-1];
-	// 		$tventas[$index]  	= 		$item->venta;
-	// 		$tnc[$index]  		= 		$item->Descuento;
-
-	// 	}
-
-	// 	$jmeses 	=		json_encode($meses);
-	// 	$jventas 	=		json_encode($tventas);
-	// 	$jtnc 		=		json_encode($tnc);
-
-
-	// 	return View::make('analitica/ventas',
-	// 					 [
-	// 						'anio' 			=> $anio,
-	// 						'meses' 		=> $jmeses,
-	// 						'ventas' 		=> $jventas,
-	// 						'tnc' 			=> $jtnc,
-	// 						'comboempresa' 	=> $comboempresa,
-	// 						'empresa_nombre'=> $empresa_nombre,		 	
-	// 					 ]);
-	// }
-
-	// public function actionAjaxListarVentas(Request $request)
-	// {
-
-	// 	$empresa_nombre 			=  	$request['empresa_nombre'];
-	// 	$anio 		=		'2023';
-
-
-	// 	$lventas 	=		viewVentasConsolidado::where('Cliente','=',$empresa_nombre)
-	// 						->whereRaw("YEAR(Fecha) = ".$anio)
-	// 						->select(DB::raw('Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,sum(TotalVenta) venta,sum(DescuentReglas) Descuento'))
-	// 						->groupBy(DB::raw('Cliente'))
-	// 						->groupBy(DB::raw('YEAR(Fecha)'))
-	// 						->groupBy(DB::raw('MONTH (Fecha)'))
-	// 						->orderByRaw('YEAR(Fecha),MONTH (Fecha) ASC')
-	// 						->get();
-
-	// 	$meses  	= 		array();
-	// 	$nmeses 	= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-	// 	$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
-	// 	$tventas  	= 		array();
-	// 	$tnc  		= 		array();
-
-	// 	foreach($lventas as $index=>$item){
-
-	// 		$meses[$index] 		= 		$nmeses[$item->MES-1];
-	// 		$tventas[$index]  	= 		$item->venta;
-	// 		$tnc[$index]  		= 		$item->Descuento;
-
-	// 	}
-
-	// 	$jmeses 	=		json_encode($meses);
-	// 	$jventas 	=		json_encode($tventas);
-	// 	$jtnc 		=		json_encode($tnc);
-	// 	$funcion 	= 	$this;
-	// 	return View::make('analitica/ajax/aventas',
-	// 					 [
-	// 						'anio' 			=> $anio,
-	// 						'meses' 		=> $jmeses,
-	// 						'ventas' 		=> $jventas,
-	// 						'tnc' 			=> $jtnc,
-	// 						'empresa_nombre'=> $empresa_nombre,
-	// 						'ajax' 			=> true
-	// 					 ]);
-	// }
-
-
-
 
 }
