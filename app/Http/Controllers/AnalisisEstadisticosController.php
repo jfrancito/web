@@ -63,10 +63,7 @@ class AnalisisEstadisticosController extends Controller
 							'anio' 			=> $anio,
 							'ajax' 			=> true
 						 ]);
-
-
 	}
-
 	public function actionVentaAutoservicio($idopcion,Request $request)
 	{
 
@@ -160,7 +157,6 @@ class AnalisisEstadisticosController extends Controller
 							'jcliente_s'	=> $jcliente_s,
 						 ]);
 	}
-
 	public function actionAjaxListarVentasxAutoservicio(Request $request)
 	{
 
@@ -251,10 +247,6 @@ class AnalisisEstadisticosController extends Controller
 							'ajax' 			=> true
 						 ]);
 	}
-
-
-
-
 	public function actionVentas($idopcion,Request $request)
 	{
 
@@ -450,7 +442,6 @@ class AnalisisEstadisticosController extends Controller
 
 						 ]);
 	}
-
 	public function actionAjaxListarDetalleVentasxProducto(Request $request)
 	{
 
@@ -663,8 +654,6 @@ class AnalisisEstadisticosController extends Controller
 							'ajax' 			=> true
 						 ]);
 	}
-
-
 	public function actionAjaxListarClientexCliente(Request $request)
 	{
 
@@ -759,14 +748,6 @@ class AnalisisEstadisticosController extends Controller
 							'ajax' 			=> true
 						 ]);
 	}
-
-
-
-
-
-
-
-
 	public function actionAjaxListarVentasxProducto(Request $request)
 	{
 

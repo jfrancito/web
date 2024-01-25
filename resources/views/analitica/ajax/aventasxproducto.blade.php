@@ -20,8 +20,14 @@
           </div>  
           @if($tituloban =='SOLES')
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
+
+            <div class='scrollhochart'>
+              <div class="contenedorauto">
                 <div id="chart_b">
                 </div>
+              </div>
+          </div>  
+
             </div>
           @endif
       </div>

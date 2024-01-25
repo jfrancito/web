@@ -29,7 +29,6 @@ $(document).ready(function(){
           series: aventas,
           colors:acolor,
           chart: {
-            width: 350,
             height: 800,
             type: 'pie'
           },
@@ -63,7 +62,6 @@ $(document).ready(function(){
           series: aventas_s,
           colors: acolor_s,
           chart: {
-            width: 350,
             height: 800,
             type: 'pie'
           },

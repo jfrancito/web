@@ -3,7 +3,7 @@
   <div class="tab-container">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#vg" data-toggle="tab">VENTAS ATENDIDAS</a></li>
-      <li><a href="#va" data-toggle="tab">VENTAS GENERALES</a></li>
+<!--       <li><a href="#va" data-toggle="tab">VENTAS GENERALES</a></li> -->
     </ul>
     <div class="tab-content">
       <div id="vg" class="tab-pane active cont">
@@ -20,13 +20,19 @@
           </div>  
           @if($tituloban =='SOLES')
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
-              <div id="chart_b">
+
+            <div class='scrollhochart'>
+              <div class="contenedorauto">
+
+                <div id="chart_b">
+                </div>
               </div>
+            </div>             
           </div>
           @endif
           
       </div>
-      <div id="va" class="tab-pane cont">
+<!--       <div id="va" class="tab-pane cont">
           <div class="titulobanner">
             <div><b>REPORTE BASADO EN {{$tituloban}}</b></div>
           </div>
@@ -38,7 +44,7 @@
               <div id="chart01" >
               </div>
           </div>  
-      </div>
+      </div> -->
     </div>
   </div>
   <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
