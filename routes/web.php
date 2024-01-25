@@ -44,8 +44,12 @@ Route::group(['middleware' => ['authaw']], function () {
 
 
 	Route::get('/bienvenido', 'UserController@actionBienvenido');
-
 	Route::get('/gestion-de-analitica-ventas/{idopcion}', 'AnalisisEstadisticosController@actionVentaAutoservicio');
+	Route::any('/ajax-listado-de-ventasxautoservicio', 'AnalisisEstadisticosController@actionAjaxListarVentasxAutoservicio');
+	Route::any('/ajax-listado-de-clientexanio', 'AnalisisEstadisticosController@actionAjaxListarClientexCliente');
+
+
+
 
 	//Route::get('/gestion-de-analitica-ventas/{idopcion}', 'AnalisisEstadisticosController@actionVentas');
 	Route::any('/ajax-listado-de-analitica', 'AnalisisEstadisticosController@actionAjaxListarVentas');

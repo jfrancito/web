@@ -59,18 +59,33 @@
 				      	</div>
 				      	<div id="an" class="tab-pane cont">
 				          	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
-				              <div class="form-group">
-				                <label class="col-sm-12 control-label labelleft" >AÑO :</label>
-				                <div class="col-sm-12 abajocaja" >
-				                  {!! Form::select( 'anio', $comboanio, array($tipomarca_sel),
-				                                    [
-				                                      'class'       => 'form-control control input-sm' ,
-				                                      'id'          => 'anio',
-				                                      'required'    => '',
-				                                      'data-aw'     => '1',
-				                                    ]) !!}
+
+
+				                <div class="input-group my-group">
+									<label class="col-sm-12 control-label labelleft" >AÑO:</label>
+
+					                  {!! Form::select( 'anio', $comboanio, array($tipomarca_sel),
+					                                    [
+					                                      'class'       => 'form-control control input-sm' ,
+					                                      'id'          => 'anio',
+					                                      'required'    => '',
+					                                      'data-aw'     => '1',
+					                                    ]) !!}
+				                      <span class="input-group-btn">
+				                        <button class="btn btn-primary btn-autoservicio-anio"
+				                                type="button" 
+				                                style="margin-top: 27px;height: 37px;"
+				                                data_nombre_empresa = '{{$empresa}}'
+				                                >
+				                                <span class="mdi mdi-search"></span></button>
+				                      </span>
 				                </div>
-				              </div>
+
+
+
+
+
+
 				          	</div>
 				      	</div>
 				    </div>

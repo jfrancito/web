@@ -161,6 +161,98 @@ class AnalisisEstadisticosController extends Controller
 						 ]);
 	}
 
+	public function actionAjaxListarVentasxAutoservicio(Request $request)
+	{
+
+		$inicio			= 	$request['inicio'];
+		$hoy			= 	$request['hoy'];
+
+		$arrayempresa   =	CMPContrato::where('COD_CATEGORIA_CANAL_VENTA','=','CVE0000000000001')
+							->where('COD_CATEGORIA_ESTADO_CONTRATO','=','ECO0000000000001')
+							->groupBy(DB::raw('TXT_EMPR_CLIENTE'))
+							->pluck('TXT_EMPR_CLIENTE')
+							->toArray();
+
+		$lventassalida 	=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
+							->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
+							->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
+							->where('Fecha','>=',$inicio)
+							->where('Fecha','<=',$hoy)
+							->whereIn('Cliente',$arrayempresa)
+							->select(DB::raw('Cliente,sum(TotalVenta) venta,sum(CostoExtendido) as CostoExtendido'))
+							->groupBy(DB::raw('Cliente'))
+							->orderByRaw('sum(TotalVenta) desc')
+							->get();
+
+ 		$colorArray 	= 	$this->colores_array();
+		$ttotal_s  		= 	array();
+		$tcosto_s  		= 	array();
+		$tutilidad_s  	= 	array();
+		$meses_s  		= 	array();
+		$tventas_s  	= 	array();
+		$tcliente_s  	= 	array();
+
+		$tnprod_s  		= 	array();
+		$tnc_s  		= 	array();
+		$tcolores_s  	= 	array();
+		$count_s      	= 	0;
+		$totalimporte_s = 	0;
+		$numerosGenerados 	= array();
+
+		//dd($lventassalida);
+
+		foreach($lventassalida as $index=>$item){
+
+				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+				$tventas_s[$count_s]  = 	intval($item->venta);
+				$tcliente_s[$count_s]  = 	$item->Cliente;
+
+				$tcolores_s[$count_s] = 	$colorArray[$aleatorio];
+				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
+				$ttotal_s[$count_s] =		100;
+				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+				$count_s 			=		$count_s +1;
+
+		}
+
+
+		$jmeses_s 	=		json_encode($meses_s);
+		$jventas_s 	=		json_encode($tventas_s);
+		$jtnc_s 	=		json_encode($tnc_s);
+		$jprod_s 	=		json_encode($tnprod_s);
+		$jcol_s 	=		json_encode($tcolores_s);
+		$jcostos_s 	=		json_encode($tcosto_s);
+		$jutilidad_s=		json_encode($tutilidad_s);
+		$jcliente_s =		json_encode($tcliente_s);
+
+		$jtotal_s 	=		json_encode($ttotal_s);
+
+		$tituloban 	=		'SOLES';
+		$simmodena 	=		'S/.';
+
+
+		return View::make('analitica/ajax/aventasxautoservico',
+						 [
+							'meses_s' 		=> $jmeses_s,
+							'ventas_s' 		=> $jventas_s,
+							'tnc_s' 		=> $jtnc_s,
+							'jprod_s' 		=> $jprod_s,
+							'jcol_s' 		=> $jcol_s,
+							'totalimporte_s'=> $totalimporte_s,
+							'jcostos_s'		=> $jcostos_s,
+							'jutilidad_s'	=> $jutilidad_s,
+							'jtotal_s'		=> $jtotal_s,
+							'inicio'		=> $this->inicio,
+							'hoy'			=> $this->fin,
+							'tituloban'		=> $tituloban,
+							'simmodena'		=> $simmodena,
+							'jcliente_s'	=> $jcliente_s,
+							'ajax' 			=> true
+						 ]);
+	}
+
+
 
 
 	public function actionVentas($idopcion,Request $request)
@@ -571,6 +663,108 @@ class AnalisisEstadisticosController extends Controller
 							'ajax' 			=> true
 						 ]);
 	}
+
+
+	public function actionAjaxListarClientexCliente(Request $request)
+	{
+
+		$inicio			= 	$request['inicio'];
+		$hoy			= 	$request['hoy'];
+		$anio			= 	$request['anio'];
+		$empresa_nombre = 	$request['empresa_nombre'];
+
+		$lventassalida 	=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
+							->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
+							->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
+							->whereRaw("YEAR(Fecha) = ".$anio)
+							->where('Cliente','=',$empresa_nombre)
+							//->where(DB::raw("YEAR(Fecha)",'=',$anio))
+							->select(DB::raw('Cliente,sum(TotalVenta) venta,sum(CostoExtendido) as CostoExtendido,MONTH (Fecha) as MES'))
+							->groupBy(DB::raw('Cliente'))
+							->groupBy(DB::raw('MONTH (Fecha)'))
+							->orderByRaw('MONTH (Fecha) asc')
+							->get();
+
+
+
+ 		$colorArray 	= 	$this->colores_array();
+		$ttotal_s  		= 	array();
+		$tcosto_s  		= 	array();
+		$tutilidad_s  	= 	array();
+		$meses_s  		= 	array();
+		$tventas_s  	= 	array();
+		$tcliente_s  	= 	array();
+
+		$tnprod_s  		= 	array();
+		$tnc_s  		= 	array();
+		$tcolores_s  	= 	array();
+		$count_s      	= 	0;
+		$totalimporte_s = 	0;
+		$numerosGenerados 	= array();
+
+		$meses  		= 		array();
+		$nmeses 		= 		["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+		$nmeses 		= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+		//dd($lventassalida);
+
+		foreach($lventassalida as $index=>$item){
+
+				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+				$tventas_s[$count_s]  = 	intval($item->venta);
+				$tcliente_s[$count_s]  = 	$item->Cliente;
+				$meses[$count_s] 		= 		$nmeses[$item->MES-1];
+				$tcolores_s[$count_s] = 	$colorArray[$aleatorio];
+				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
+				$ttotal_s[$count_s] =		100;
+				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+				$count_s 			=		$count_s +1;
+
+		}
+
+
+		$jmeses_s 	=		json_encode($meses);
+		$jventas_s 	=		json_encode($tventas_s);
+		$jtnc_s 	=		json_encode($tnc_s);
+		$jprod_s 	=		json_encode($tnprod_s);
+		$jcol_s 	=		json_encode($tcolores_s);
+		$jcostos_s 	=		json_encode($tcosto_s);
+		$jutilidad_s=		json_encode($tutilidad_s);
+		$jcliente_s =		json_encode($tcliente_s);
+
+		$jtotal_s 	=		json_encode($ttotal_s);
+
+		$tituloban 	=		'SOLES';
+		$simmodena 	=		'S/.';
+
+		return View::make('analitica/ajax/aautoservicoxmeses',
+						 [
+							'meses_s' 		=> $jmeses_s,
+							'ventas_s' 		=> $jventas_s,
+							'tnc_s' 		=> $jtnc_s,
+							'jprod_s' 		=> $jprod_s,
+							'jcol_s' 		=> $jcol_s,
+							'totalimporte_s'=> $totalimporte_s,
+							'jcostos_s'		=> $jcostos_s,
+							'jutilidad_s'	=> $jutilidad_s,
+							'jtotal_s'		=> $jtotal_s,
+							'inicio'		=> $inicio,
+							'hoy'			=> $hoy,
+							'anio'			=> $anio,
+							'empresa_nombre'=> $empresa_nombre,
+							'tituloban'		=> $tituloban,
+							'simmodena'		=> $simmodena,
+							'jcliente_s'	=> $jcliente_s,
+							'ajax' 			=> true
+						 ]);
+	}
+
+
+
+
+
+
 
 
 	public function actionAjaxListarVentasxProducto(Request $request)

@@ -41,19 +41,17 @@ function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tipo
     });
 }
 
-
-function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte){
+function actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy){
     abrircargando();
     $.ajax({
         type    :   "POST",
-        url     :   carpeta+"/ajax-listado-de-ventasxproducto",
+        url     :   carpeta+"/ajax-listado-de-clientexanio",
         data    :   {
                         _token          : _token,
                         empresa_nombre  : empresa_nombre,
                         inicio          : inicio,
                         hoy             : hoy,
-                        tipomarca       : tipomarca,
-                        tiporeporte     : tiporeporte,
+                        anio            : anio
                     },
         success: function (data) {
             cerrarcargando();
@@ -66,6 +64,33 @@ function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tipo
         }
     });
 }
+
+
+
+
+function actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy){
+    abrircargando();
+    $.ajax({
+        type    :   "POST",
+        url     :   carpeta+"/ajax-listado-de-ventasxautoservicio",
+        data    :   {
+                        _token          : _token,
+                        inicio          : inicio,
+                        hoy             : hoy,
+                    },
+        success: function (data) {
+            cerrarcargando();
+            $(".reporteajax").html(data);
+
+        },
+        error: function (data) {
+            cerrarcargando();
+            error500(data);
+        }
+    });
+}
+
+
 
 
 //Objeto oNumero

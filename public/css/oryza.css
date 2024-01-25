@@ -1,3 +1,11 @@
+.scrollhochart{
+  overflow:auto;
+  height:850px;
+}
+.contenedorauto{
+  width: 100%;
+}
+
 .contgrafico{
   background-color: #eee !important;
   text-align: center;
@@ -803,6 +811,11 @@
 }
 
 @media (max-width: 768px){
+
+  .contenedorauto{
+    width: 1500px !important;
+  }
+
   .crearpedido  .row-menu{
       width: 100%;
   }

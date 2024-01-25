@@ -17,7 +17,41 @@ $(document).ready(function(){
 
     });
 
+    $(".crearpedido").on('click','.btn-autoservicio-anio', function(e) {
+        event.preventDefault();
+        var empresa_nombre      = $(this).attr('data_nombre_empresa');
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
+        var anio                = $('#anio').val();  
+        var _token              = $('#token').val();
+        $(".reporteajax").html("");
+        actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy);
+        $('#modal-analitica').niftyModal('hide');
 
+    });
+
+
+
+    $(".crearpedido").on('click','.col-atras', function(e) {
+        event.preventDefault();
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
+        var _token              = $('#token').val();
+        $(".reporteajax").html("");
+        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy);
+    });
+
+
+    $(".crearpedido").on('click','#buscarautoservicio', function(e) {
+
+        event.preventDefault();
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
+        var _token              = $('#token').val();
+        $(".reporteajax").html("");
+        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy);
+
+    }); 
 
 
 
@@ -38,10 +72,17 @@ $(document).ready(function(){
                                 data: aventas_s
                               }
                             ],
-                      chart: {
+                    chart: {
                         type: 'bar',
                         height: 800,
                         events: {
+
+                          legendClick: function(chartContext, seriesIndex, config) {
+                            var inicio              = $('#fechainicio').val();
+                            var hoy                 = $('#fechafin').val();
+                            const empresa = chartContext.w.globals.labels[seriesIndex];
+                            modal_autoservicio(inicio,hoy,empresa);
+                          },
                           dataPointSelection: (event, chartContext, config) => {
 
                             var inicio              = $('#fechainicio').val();
@@ -50,8 +91,11 @@ $(document).ready(function(){
                             modal_autoservicio(inicio,hoy,empresa);
 
                           }
+
                         }
                       },
+
+
                     plotOptions: {
                       bar: {
                         barHeight: '100%',
@@ -62,7 +106,10 @@ $(document).ready(function(){
                         },
                       }
                     },
+
+
                     colors: acolor_s,
+
                     dataLabels: {
                       enabled: true,
                       textAnchor: 'start',
@@ -77,10 +124,13 @@ $(document).ready(function(){
                       },
                       offsetX: 0
                     },
+
+
                     stroke: {
                       width: 1,
                       colors: ['#fff']
                     },
+
                     xaxis: {
                       categories: acliente_s,
 
@@ -88,32 +138,20 @@ $(document).ready(function(){
                         formatter: (val) => {
                           var data_total = new oNumero(val);
                           data_total  = data_total.formato(2, true);
-                          return simmodena+ data_total
+                          return simmodena + data_total
                         }
-                      }
+                      },
+
 
                     },
-
-
-
                     yaxis: {
                       labels: {
                         show: false
                       }
                     },
-                    tooltip: {
-                      theme: 'dark',
-                      x: {
-                        show: false
-                      },
-                      y: {
-                        title: {
-                          formatter: function () {
-                            return ''
-                          }
-                        }
-                      }
-                    },
+
+
+
 
                     legend: {
                       position: 'bottom',

@@ -1,7 +1,15 @@
 $(document).ready(function(){
 
-
     var carpeta = $("#carpeta").val();
+    $(".crearpedido").on('click','.col-atras', function(e) {
+        event.preventDefault();
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
+        var _token              = $('#token').val();
+        $(".reporteajax").html("");
+        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy);
+    });
+
 
    // $('#buscarempresa').on('click', function(event){
 
@@ -55,20 +63,7 @@ $(document).ready(function(){
 
 
    
-    $(".crearpedido").on('click','.col-atras', function(e) {
-      
-        event.preventDefault();
-        var empresa_nombre      = $('#empresa_nombre').val();
-        var tipomarca           = $('#tipomarca').val();  
-        var inicio              = $('#fechainicio').val();
-        var hoy                 = $('#fechafin').val();
-        var tiporeporte         = $('#tiporeporte').val();
 
-        var _token              = $('#token').val();
-        $(".reporteajax").html("");
-        actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
-
-    });
 
     // function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte){
     //     abrircargando();
@@ -96,7 +91,7 @@ $(document).ready(function(){
     // }
 
     function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte){
-      
+
         var _token              = $('#token').val();
         abrircargando();
         $.ajax({

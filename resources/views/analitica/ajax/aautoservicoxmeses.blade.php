@@ -9,17 +9,12 @@
             <div><b>REPORTE VENTAS AUTOSERVICIO</b></div>
           </div>
           <div class="col-xs-12 contgrafico">
-              <div class='titulografico'><b>({{$inicio}} / {{$hoy}})</b></div>
+              <div class='titulografico'><b>({{$empresa_nombre}})</b></div>
+              <div class='subtitulografico'><b>{{$anio}}</b></div>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-12" style="margin-top: 15px;">
-
-            <div class='scrollhochart'>
-              <div class="contenedorauto">
-                <div id="chartaut" >
-                </div> 
+              <div id="chartmeses" >
               </div>
-            </div>
-
           </div>  
       </div>
 
@@ -35,10 +30,13 @@
   <div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
   <div id="simmodena" class='ocultar'>{{$simmodena}}</div>
   <div id="cliente_s" class='ocultar'>{{$jcliente_s}}</div>
+  <div id="meses_s" class='ocultar'>{{$meses_s}}</div>
 
+
+  
 
 @if(isset($ajax))
-    <script src="{{ asset('public/js/analitica/ventasxautoservicio.js?v='.$version) }}" type="text/javascript"></script>  
+    <script src="{{ asset('public/js/analitica/autoservicoxmeses.js?v='.$version) }}" type="text/javascript"></script>  
 @endif
 
 

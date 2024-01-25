@@ -84,7 +84,7 @@
       <div class="row">
         <div class="col-sm-12 col-mobil-top">
           <div class="col-fr-2 col-atras">
-            <span class="mdi mdi-arrow-left"></span>
+            <span class="mdi mdi-home"></span>
           </div> 
           <div class="col-fr-10 col-total">
             <strong></strong> <strong class="">INDUAMERICA</strong>

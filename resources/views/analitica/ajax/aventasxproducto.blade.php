@@ -3,7 +3,7 @@
   <div class="tab-container">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#vg" data-toggle="tab">VENTAS ATENDIDAS</a></li>
-      <li><a href="#va" data-toggle="tab">VENTAS GENERALES</a></li>
+      <!-- <li><a href="#va" data-toggle="tab">VENTAS GENERALES</a></li> -->
     </ul>
     <div class="tab-content">
       <div id="vg" class="tab-pane active cont">
@@ -25,7 +25,7 @@
             </div>
           @endif
       </div>
-      <div id="va" class="tab-pane cont">
+<!--       <div id="va" class="tab-pane cont">
 
           <div class="titulobanner">
             <div><b>REPORTE BASADO EN {{$tituloban}}</b></div>
@@ -38,7 +38,7 @@
               <div id="chart01" >
               </div>
           </div>  
-      </div>
+      </div> -->
     </div>
   </div>
 
