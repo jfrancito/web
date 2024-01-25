@@ -15,7 +15,7 @@
 
             <div class='scrollhochart'>
               <div class="contenedorauto">
-                <div id="chartaut" >
+                <div id="chartaut">
                 </div> 
               </div>
             </div>

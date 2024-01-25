@@ -13,8 +13,13 @@
               <div class='subtitulografico'><b>{{$anio}}</b></div>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-12" style="margin-top: 15px;">
-              <div id="chartmeses" >
+            <div class='scrollhochart'>
+              <div class="contenedorauto">
+                <div id="chartmeses" >
+                </div>
               </div>
+            </div>
+
           </div>  
       </div>
 

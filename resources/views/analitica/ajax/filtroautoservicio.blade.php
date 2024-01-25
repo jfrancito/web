@@ -18,6 +18,7 @@
 				    <div class="tab-content" style="margin-top: 15px;">
 				      	<div id="tm" class="tab-pane active cont">
 				          	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
+
 				              <div class="form-group">
 				                <label class="col-sm-12 control-label labelleft" >Tipo Marca :</label>
 				                <div class="col-sm-12 abajocaja" >
@@ -30,19 +31,22 @@
 				                                    ]) !!}
 				                </div>
 				              </div>
+
 				          	</div>
 				          	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
 
 
+
+                        	<div class="col-sm-12 abajocaja" >
 				                <div class="input-group my-group">
 									<label class="col-sm-12 control-label labelleft" >Ventas Equivalente en:</label>
-
 				                      {!! Form::select( 'tiporeporte', $combotr, array($select_tr),
 				                                        [
 				                                          'class'       => 'form-control control input-sm' ,
 				                                          'id'          => 'tiporeporte',
 				                                          'data-aw'     => '1',
 				                                        ]) !!}
+
 				                      <span class="input-group-btn">
 				                        <button class="btn btn-primary btn-autoservicio-marca"
 				                                type="button" 
@@ -52,6 +56,9 @@
 				                                <span class="mdi mdi-search"></span></button>
 				                      </span>
 				                </div>
+
+                        	</div>
+
 
 
 
