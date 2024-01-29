@@ -169,11 +169,10 @@
 		  <table>
 		    <tr>
 			  <th class='titulo'>NRO° ITEM</th>  
-		      <th class='titulo'>REFERENCIA</th>
 		      <th class='titulo'>PRODUCTO</th>
               <th class='titulo'>CANTIDAD</th>
-			  <th class='titulo'>PAQUETES</th>
-			  <th class='titulo'>PESO</th>
+              <th class='titulo'>DETRACCIÓN</th>
+              <th class='titulo'>DOC. REFERENCIA</th>
 			 
 		    </tr>
             @php 
@@ -181,12 +180,12 @@
 				$total   =   0; 			
 			@endphp
 
-            @foreach($pickingdetalle as $item)
+            @foreach($detracciondetalle as $item)
 
                 @php $color   =   ''; @endphp
                 @php $nro = $nro + 1; @endphp
 
-                @if($item->orden_id <> '')
+                @if($item['COD_DETRACCION'])
                     @php $color   =   'badge-white'; @endphp
                 @else
                     @php $color   =   'badge-warning'; @endphp 
@@ -194,43 +193,22 @@
 
                 <tr class='{{$color}}'>
                     <td class='titulo'>{{$nro}}</td>
-                    <td class='titulo'>{{$item->transferencia_id}}</td>
-                    <td class='descripcion'>{{$item->producto->NOM_PRODUCTO}}</td>
-                    <td class='titulo'>{{number_format($item->cantidad,2,'.','')}}</td>
-					<td class='titulo'>{{number_format($item->paquete,2,'.','')}}</td>
-					<td class='titulo'>{{number_format($item->peso_total,2,'.','')}}</td>
+                    <td class='descripcion'>{{$item['producto_nombre']}}</td>
+                    <td class='titulo'>{{number_format($item['CAN_PRODUCTO'],2,'.','')}}</td>
+					<td class='titulo'>{{number_format($item['CAN_DETRACCION'],2,'.','')}}</td>
+                    <td class='titulo'>{{$item['DOC_REFERENCIA']}}</td>
                 </tr>
-				@php $total += $item->peso_total; @endphp
+				@php $total += $item['CAN_DETRACCION']; @endphp
             @endforeach	
-
+		   	
 				<tr>
-                    <td ></td>
-                    <td ></td>
                     <td ></td>
                     <td ></td>
 					<td class='titulo'>Total : </td>
 					<td class='titulo'>{{number_format($total,2,'.','')}}</td>
+                    <td ></td>
                 </tr>
-				<!-- @DPZ3 -->
-				@php 
-					$total_palets   =   $picking->palets * $palets_peso; 			
-				@endphp
-				<tr>
-                    <td ></td>
-                    <td ></td>
-                    <td class='descripcion'>PALETS</td>
-                    <td class='titulo'>Cantidad : {{number_format($picking->palets,2,'.','')}}</td>
-					<td class='titulo'>Peso : {{number_format($palets_peso,2,'.','')}}</td>
-					<td class='titulo'>{{number_format($total_palets,2,'.','')}}</td>
-                </tr>
-				<tr>
-                    <td ></td>
-                    <td ></td>
-                    <td ></td>
-                    <td ></td>
-					<td class='titulo'>PESO TOTAL : </td>
-					<td class='titulo'>{{number_format($total + $total_palets,2,'.','')}}</td>
-                </tr>
+			
 		  </table>
         </article>
 

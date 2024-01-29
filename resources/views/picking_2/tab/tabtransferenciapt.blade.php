@@ -193,7 +193,7 @@
 
 
             <div class="scroll_text_horizontal ajax_lista_servicio" style = "padding: 0px !important;">
-                @include('picking.tab.tablas.listaserviciospt')
+              @include('picking.tab.tablas.listaserviciospt')
             </div>
           </div>
         </div>

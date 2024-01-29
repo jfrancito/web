@@ -196,6 +196,13 @@ class PickingController extends Controller
 										->select('T.centro_id')
 										->first();
 		
+	
+		if (is_null($centro_registro_trans)){
+			$centrodestino = $cod_centro;	
+		}else	{			
+			$centrodestino = $centro_registro_trans->centro_id;		
+		}
+
 	    $lista_de_servicios			= 	array
 										  	(
 										  	array("servicio"=>'PRD0000000017065'),
@@ -205,12 +212,11 @@ class PickingController extends Controller
 		$array_centro_id 						=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
 		$combo_lista_centros 					= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 		$combo_almacen_origen 					=   array();
-		$combo_almacen_destino       			= 	$this->funciones->combo_almacen_pt($cod_centro, $centro_registro_trans->centro_id);							
+		$combo_almacen_destino       			= 	$this->funciones->combo_almacen_pt($cod_centro, $centrodestino);							
 		$data_productos_tranferencia_pt  		=   array();
 		$combo_serie_guia 						=   $this->funciones->combo_series('TDO0000000000009','0');
 		$count_servicio 						= 	1;
 		$calcula_cantidad_peso 					= 	0;
-
 
 		return View::make('picking/atenderpicking',
 						 [
@@ -238,6 +244,9 @@ class PickingController extends Controller
 						 	'calcula_cantidad_peso' 				=> $calcula_cantidad_peso,
 							'id_detalle' 							=> '',
 							'centro_registro_trans'					=> $centro_registro_trans,
+							'combo_sin_centro' 						=> $combo_sin_centro,
+							'centrodestino'							=> $centrodestino
+					
 						 ]);
 
 	}

@@ -71,7 +71,7 @@
 
 
 
-<form method="POST" action="{{ url('/agregar-transferencia/'.$idopcion.'/'.$idtransferencia) }}" class="form-horizontal group-border-dashed form-pedido">
+<form method="POST" action="{{ url('/agregar-transferencia/'.$idopcion.'/'.$idtransferencia) }}" class="form-horizontal group-border-dashed form-pedido" id = 'formpedido'>
   {{ csrf_field() }}
 
   <input type="hidden" name="cod_empr" id='cod_empr' value='{{$transferencia->empresa_id}}'>
@@ -87,7 +87,7 @@
   <input type="hidden" name="obs" id='obs' value='{{$transferencia->observacion}}'>
   <input type="hidden" name="idtrans" id='idtrans' value='{{$transferencia->id}}'>
 
-  <button type="submit" class="btn btn-space btn-success btn-big btn-guardar">
+  <button type="button" class="btn btn-space btn-success btn-big btn-guardar">
     <i class="icon mdi mdi-check"></i> Guardar
   </button>
 

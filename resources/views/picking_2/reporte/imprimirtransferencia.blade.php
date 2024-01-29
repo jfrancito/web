@@ -3,7 +3,7 @@
 <html lang="es">
 
 <head>
-	<title>Picking ({{$picking->codigo}}) </title>
+	<title>Transferencia ({{$transferencia->codigo}}) </title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="icon" type="image/x-icon" href="{{ asset('public/favicon.ico') }}"> 
 	<style>
@@ -152,12 +152,12 @@
     <header>
 	<div class="menu">
 	    <div class="left">
-	    		<h1>{{$funcion->funciones->data_empresa($picking->empresa_id)->NOM_EMPR}}</h1>	    		
-                <h3>{{$funcion->funciones->data_centro($picking->centro_id)->NOM_CENTRO}}</h3>	    		
+	    		<h1>{{$funcion->funciones->data_empresa($transferencia->empresa_id)->NOM_EMPR}}</h1>	    		
+                <h3>{{$funcion->funciones->data_centro($transferencia->centro_id)->NOM_CENTRO}}</h3>	    		
 	    </div>
 	    <div class="right">
-	    		<h3>{{$titulo}} : {{$picking->codigo}}</h3>
-                <h4>Fecha: {{date_format(new DateTime($picking->fecha_picking),'d/m/Y')}}</h4>
+	    		<h3>{{$titulo}} : {{$transferencia->codigo}}</h3>
+                <h4>Fecha: {{date_format(new DateTime($transferencia->fecha_pedido),'d/m/Y')}}</h4>
 	    </div>
 	</div>
     </header>
@@ -169,7 +169,7 @@
 		  <table>
 		    <tr>
 			  <th class='titulo'>NRO° ITEM</th>  
-		      <th class='titulo'>REFERENCIA</th>
+		      <th class='titulo'>COD. PRODUCTO</th>
 		      <th class='titulo'>PRODUCTO</th>
               <th class='titulo'>CANTIDAD</th>
 			  <th class='titulo'>PAQUETES</th>
@@ -181,28 +181,21 @@
 				$total   =   0; 			
 			@endphp
 
-            @foreach($pickingdetalle as $item)
+            @foreach($transferencia->transferenciadetalle as $item)
 
-                @php $color   =   ''; @endphp
                 @php $nro = $nro + 1; @endphp
 
-                @if($item->orden_id <> '')
-                    @php $color   =   'badge-white'; @endphp
-                @else
-                    @php $color   =   'badge-warning'; @endphp 
-                @endif
-
-                <tr class='{{$color}}'>
+                <tr>
                     <td class='titulo'>{{$nro}}</td>
-                    <td class='titulo'>{{$item->transferencia_id}}</td>
-                    <td class='descripcion'>{{$item->producto->NOM_PRODUCTO}}</td>
+                    <td class='titulo'>{{$item->producto_id}}</td>
+                    <td class='descripcion'>{{$item->producto_nombre}}</td>
                     <td class='titulo'>{{number_format($item->cantidad,2,'.','')}}</td>
 					<td class='titulo'>{{number_format($item->paquete,2,'.','')}}</td>
 					<td class='titulo'>{{number_format($item->peso_total,2,'.','')}}</td>
                 </tr>
 				@php $total += $item->peso_total; @endphp
             @endforeach	
-
+		   	
 				<tr>
                     <td ></td>
                     <td ></td>
@@ -211,26 +204,7 @@
 					<td class='titulo'>Total : </td>
 					<td class='titulo'>{{number_format($total,2,'.','')}}</td>
                 </tr>
-				<!-- @DPZ3 -->
-				@php 
-					$total_palets   =   $picking->palets * $palets_peso; 			
-				@endphp
-				<tr>
-                    <td ></td>
-                    <td ></td>
-                    <td class='descripcion'>PALETS</td>
-                    <td class='titulo'>Cantidad : {{number_format($picking->palets,2,'.','')}}</td>
-					<td class='titulo'>Peso : {{number_format($palets_peso,2,'.','')}}</td>
-					<td class='titulo'>{{number_format($total_palets,2,'.','')}}</td>
-                </tr>
-				<tr>
-                    <td ></td>
-                    <td ></td>
-                    <td ></td>
-                    <td ></td>
-					<td class='titulo'>PESO TOTAL : </td>
-					<td class='titulo'>{{number_format($total + $total_palets,2,'.','')}}</td>
-                </tr>
+			
 		  </table>
         </article>
 

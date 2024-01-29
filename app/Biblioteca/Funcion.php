@@ -5907,8 +5907,11 @@ class Funcion{
 		$config 			= 		 DB::table('ALM.CONFIG_PRODUCTO')->where('COD_PRODUCTO','=',$producto_id)
 									->where('COD_EMPRESA','=',Session::get('empresas')->COD_EMPR)							
 									->first();
-		$ind_igv 			= 		$config->IND_IGV;
-		return $ind_igv;		
+		$ind_igv = 0;
+		if($config){
+			$ind_igv 			= 		$config->IND_IGV;
+		}			
+		return $ind_igv;	
 	}
 
 	// GENERAR CODIGOS CON EMPRESA Y CENTRO

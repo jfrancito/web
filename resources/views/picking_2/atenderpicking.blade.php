@@ -50,7 +50,7 @@
             <div class="tab-content" style = "padding: 0px !important;">
 
               <div id="atenderpicking" class="tab-pane active cont">
-                @include('picking.tab.tabatenderpicking')            
+                @include('picking.tab.tabatenderpicking')                
               </div>
 
               <div id="tranferenciapt" class="tab-pane  cont">
@@ -58,7 +58,7 @@
               </div>
 
               <div id="ordensalida" class="tab-pane  cont">
-                 @include('picking.tab.tabordensalida')    
+                 @include('picking.tab.tabordensalida')   
               </div>
 
             </div>
@@ -68,7 +68,7 @@
       </div>
     </div>
     </div>
-      <!-- @include('despacho.modal.mlistaproductoordencen')-->
+    @include('despacho.modal.mlistaproductoordencen')
 
   </div>
 

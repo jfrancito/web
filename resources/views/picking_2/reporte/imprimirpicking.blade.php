@@ -202,7 +202,7 @@
                 </tr>
 				@php $total += $item->peso_total; @endphp
             @endforeach	
-
+		   	
 				<tr>
                     <td ></td>
                     <td ></td>
@@ -211,7 +211,6 @@
 					<td class='titulo'>Total : </td>
 					<td class='titulo'>{{number_format($total,2,'.','')}}</td>
                 </tr>
-				<!-- @DPZ3 -->
 				@php 
 					$total_palets   =   $picking->palets * $palets_peso; 			
 				@endphp
