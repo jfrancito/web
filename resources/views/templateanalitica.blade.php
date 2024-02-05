@@ -29,6 +29,9 @@
     .navbar-fixed-top{
       position: inherit !important;
     }
+    .be-scroll-top{
+      display: none !important;
+    }
     @media (max-width: 768px){
       .be-wrapper{
         padding-top: 61px !important;

@@ -721,6 +721,16 @@
 }
 
 /* BANNER */
+.crearpedido  .col-inicio{
+  background: #4285f4;
+  padding-top: 5px;
+  /*padding-bottom: 5px;*/
+  cursor: pointer;
+  color: #fff;
+  text-align: center;
+  font-size: 2em;
+}
+
 
 .crearpedido .row-menu{
     overflow: hidden;
@@ -731,11 +741,11 @@
 .crearpedido  .col-atras{
   background: #34a853;
   padding-top: 5px;
-  padding-bottom: 5px;
+  /*padding-bottom: 5px;*/
   cursor: pointer;
   color: #fff;
   text-align: center;
-  font-size: 1.3em;
+  font-size: 2em;
 }
 .crearpedido  .col-atras .mdi-arrow-left{
   font-size: 1.5em;
@@ -798,13 +808,16 @@
 .col-fr-2 {
     width: 16.66666667%;
 }
+.col-fr-8 {
+    width: 66.66666667%;
+}
 .col-fr-10 {
     width: 83.33333333%;
 }
 .col-fr-12 {
     width: 100%;
 }
-.col-fr-2,.col-fr-10{
+.col-fr-2,.col-fr-10,.col-fr-8{
   position: relative;
   min-height: 1px;
   float: left;

@@ -23,7 +23,7 @@
                   <table id="table1" class="table table-striped table-hover table-fw-widget">
                     <thead>
                       <tr>
-                        <th>Nombre</th>
+                        <th>Institucion</th>
                         <th>Perfil</th>
                         <th>Activo</th>
                         <th>Opción</th>

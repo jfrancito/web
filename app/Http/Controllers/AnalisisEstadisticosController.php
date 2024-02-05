@@ -30,7 +30,7 @@ class AnalisisEstadisticosController extends Controller
 		$inicio 					=  	$request['inicio'];
 		$hoy 						=  	$request['hoy'];
 		$empresa 					=  	$request['empresa'];
-
+		$tiporeporte 				=  	$request['tiporeporte'];
 
 		$comboanio 					=	viewVentasConsolidado::groupBy(DB::raw('Cliente'))
 										->where('Cliente','=',$empresa)
@@ -39,14 +39,25 @@ class AnalisisEstadisticosController extends Controller
 										->orderByRaw('YEAR(Fecha) desc')	
 										->pluck('anio','anio')
 										->toArray();
-		$anio 						=	date("Y");
 
+		$anio 						=	date("Y");
 		$combotr  					= 	array('SOLES' => "SOLES",'SACOS' => "SACOS 50KG");
 		$select_tr 					=	'SOLES';
+
+
 		$combotipomarca 			=	$this->funciones->combo_categoria_general('TIPO_MARCA');
 		$combotipomarca 			= 	array('TODOS' => "TODOS") + $combotipomarca;
 		$tipomarca_sel 				=	'TODOS';
 		$tipomarca_txt 				=	'TODOS';
+
+		if($tiporeporte=='SOLES'){
+			$tituloban 	=		'SOLES';
+			$simmodena 	=		'S/.';
+		}else{
+			$tituloban 	=		'SACOS DE 50KG';
+			$simmodena 	=		'SACO 50KG ';	
+		}
+
 
 		return View::make('analitica/ajax/filtroautoservicio',
 						 [
@@ -61,6 +72,10 @@ class AnalisisEstadisticosController extends Controller
 							'tipomarca_txt' => $tipomarca_txt,
 							'comboanio' 	=> $comboanio,
 							'anio' 			=> $anio,
+							'tituloban' 	=> $tituloban,
+							'simmodena' 	=> $simmodena,
+
+
 							'ajax' 			=> true
 						 ]);
 	}
@@ -73,6 +88,9 @@ class AnalisisEstadisticosController extends Controller
 	    /******************************************************/
 		$inicio			= 	$this->inicio;
 		$hoy			= 	$this->fin;
+		$combotr  		= 	array('SOLES' => "SOLES",'SACOS' => "SACOS 50KG");
+		$tiporeporte 	=	'SOLES';
+
 
 		$arrayempresa   =	CMPContrato::where('COD_CATEGORIA_CANAL_VENTA','=','CVE0000000000001')
 							->where('COD_CATEGORIA_ESTADO_CONTRATO','=','ECO0000000000001')
@@ -86,7 +104,12 @@ class AnalisisEstadisticosController extends Controller
 							->where('Fecha','>=',$inicio)
 							->where('Fecha','<=',$hoy)
 							->whereIn('Cliente',$arrayempresa)
-							->select(DB::raw('Cliente,sum(TotalVenta) venta,sum(CostoExtendido) as CostoExtendido'))
+							->select(DB::raw("Cliente,
+								(CASE
+								    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(Cant50kg)
+								    ELSE sum(CantidadProducto2*PrecioVentaIGV)
+								 END) as venta,
+								sum(CostoExtendido) as CostoExtendido"))
 							->groupBy(DB::raw('Cliente'))
 							->orderByRaw('sum(TotalVenta) desc')
 							->get();
@@ -137,7 +160,6 @@ class AnalisisEstadisticosController extends Controller
 
 		$tituloban 	=		'SOLES';
 		$simmodena 	=		'S/.';
-
 
 		return View::make('analitica/ventasxautoservicio',
 						 [
@@ -155,6 +177,8 @@ class AnalisisEstadisticosController extends Controller
 							'tituloban'		=> $tituloban,
 							'simmodena'		=> $simmodena,
 							'jcliente_s'	=> $jcliente_s,
+							'combotr'		=> $combotr,
+							'tiporeporte'	=> $tiporeporte,
 						 ]);
 	}
 	public function actionAjaxListarVentasxAutoservicio(Request $request)
@@ -162,20 +186,27 @@ class AnalisisEstadisticosController extends Controller
 
 		$inicio			= 	$request['inicio'];
 		$hoy			= 	$request['hoy'];
+		$tiporeporte	=	$request['tiporeporte'];
+
+		//dd($tiporeporte);
 
 		$arrayempresa   =	CMPContrato::where('COD_CATEGORIA_CANAL_VENTA','=','CVE0000000000001')
 							->where('COD_CATEGORIA_ESTADO_CONTRATO','=','ECO0000000000001')
 							->groupBy(DB::raw('TXT_EMPR_CLIENTE'))
 							->pluck('TXT_EMPR_CLIENTE')
 							->toArray();
-
 		$lventassalida 	=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
 							->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
 							->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
 							->where('Fecha','>=',$inicio)
 							->where('Fecha','<=',$hoy)
 							->whereIn('Cliente',$arrayempresa)
-							->select(DB::raw('Cliente,sum(TotalVenta) venta,sum(CostoExtendido) as CostoExtendido'))
+							->select(DB::raw("Cliente,
+								(CASE
+								    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(Cant50kg)
+								    ELSE sum(CantidadProducto2*PrecioVentaIGV)
+								 END) as venta,
+								sum(CostoExtendido) as CostoExtendido"))
 							->groupBy(DB::raw('Cliente'))
 							->orderByRaw('sum(TotalVenta) desc')
 							->get();
@@ -224,9 +255,14 @@ class AnalisisEstadisticosController extends Controller
 
 		$jtotal_s 	=		json_encode($ttotal_s);
 
-		$tituloban 	=		'SOLES';
-		$simmodena 	=		'S/.';
 
+		if($tiporeporte=='SOLES'){
+			$tituloban 	=		'SOLES';
+			$simmodena 	=		'S/.';
+		}else{
+			$tituloban 	=		'SACOS DE 50KG';
+			$simmodena 	=		'SACO 50KG ';	
+		}
 
 		return View::make('analitica/ajax/aventasxautoservico',
 						 [
@@ -466,34 +502,35 @@ class AnalisisEstadisticosController extends Controller
 			$tipomarca_sel 				=	$tipomarca;	
 		}
 
-		$lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
-										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
-										->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
-										->where('Cliente','=',$empresa_nombre)
-										// ->whereRaw("YEAR(Fecha) = ".$anio)
-										// ->whereRaw("MONTH(Fecha) = ".$mes)
-										->where('Fecha','>=',$inicio)
-										->where('Fecha','<=',$hoy)
+		// $lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
+		// 								->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
+		// 								->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
+		// 								->where('Cliente','=',$empresa_nombre)
+		// 								// ->whereRaw("YEAR(Fecha) = ".$anio)
+		// 								// ->whereRaw("MONTH(Fecha) = ".$mes)
+		// 								->where('Fecha','>=',$inicio)
+		// 								->where('Fecha','<=',$hoy)
 
-										->TipoMarca($tipomarca_sel)
-										->where("MARCA.NOM_CATEGORIA",'=',$marca)
-										->select(DB::raw("Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,
-											(CASE
-											    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(KG_OV/50)
-											    ELSE sum(CAN_TOTAL_OV)
-											 END) as venta,
-											MARCA.NOM_CATEGORIA AS MARCA,
-											ALM.PRODUCTO.NOM_PRODUCTO AS NombreProducto
-											"))
-										->groupBy(DB::raw('Cliente'))
-										->groupBy(DB::raw('YEAR(Fecha)'))
-										->groupBy(DB::raw('MONTH (Fecha)'))
-										->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
-										->groupBy(DB::raw('ALM.PRODUCTO.NOM_PRODUCTO'))
-										->orderByRaw('sum(CAN_TOTAL_OV) DESC')
-										->get();
+		// 								->TipoMarca($tipomarca_sel)
+		// 								->where("MARCA.NOM_CATEGORIA",'=',$marca)
+		// 								->select(DB::raw("Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,
+		// 									(CASE
+		// 									    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(KG_OV/50)
+		// 									    ELSE sum(CAN_TOTAL_OV)
+		// 									 END) as venta,
+		// 									MARCA.NOM_CATEGORIA AS MARCA,
+		// 									ALM.PRODUCTO.NOM_PRODUCTO AS NombreProducto
+		// 									"))
+		// 								->groupBy(DB::raw('Cliente'))
+		// 								->groupBy(DB::raw('YEAR(Fecha)'))
+		// 								->groupBy(DB::raw('MONTH (Fecha)'))
+		// 								->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
+		// 								->groupBy(DB::raw('ALM.PRODUCTO.NOM_PRODUCTO'))
+		// 								->orderByRaw('sum(CAN_TOTAL_OV) DESC')
+		// 								->get();
 
-						
+		$lventas 					=	array();
+
 		$lventassalida 				=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
 										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
 										->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
@@ -501,11 +538,10 @@ class AnalisisEstadisticosController extends Controller
 										->TipoMarca($tipomarca_sel)
 										->where('Fecha','>=',$inicio)
 										->where('Fecha','<=',$hoy)
-
 										// ->whereRaw("YEAR(Fecha) = ".$anio)
 										// ->whereRaw("MONTH(Fecha) = ".$mes)
 										->where("MARCA.NOM_CATEGORIA",'=',$marca)
-										->select(DB::raw("Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,
+										->select(DB::raw("Cliente,
 											(CASE
 											    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(Cant50kg)
 											    ELSE sum(CantidadProducto2*PrecioVentaIGV)
@@ -515,8 +551,8 @@ class AnalisisEstadisticosController extends Controller
 											,sum(CostoExtendido) as CostoExtendido
 											"))
 										->groupBy(DB::raw('Cliente'))
-										->groupBy(DB::raw('YEAR(Fecha)'))
-										->groupBy(DB::raw('MONTH (Fecha)'))
+										// ->groupBy(DB::raw('YEAR(Fecha)'))
+										// ->groupBy(DB::raw('MONTH (Fecha)'))
 										->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
 										->groupBy(DB::raw('ALM.PRODUCTO.NOM_PRODUCTO'))
 										->orderByRaw('sum(TotalVenta) DESC')
@@ -572,23 +608,26 @@ class AnalisisEstadisticosController extends Controller
 
 		foreach($lventassalida as $index=>$item){
 
-				$aleatorio 				= 		$numerosGenerados[$count_s];
-				$meses_s[$count_s] 		= 		$nmeses[$item->MES-1];
+				$aleatorio 				= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+				//$meses_s[$count_s] 		= 		$nmeses[$item->MES-1];
 				$tnprod_s[$count_s]  	= 		$item->NombreProducto;
 				$tventas_s[$count_s]  	= 		intval($item->venta);
 				$tcosto_s[$count_s]  	= 		intval($item->CostoExtendido);
 				$tcolores_s[$count_s] 	= 		$colorArray[$aleatorio];
 				$tnc_s[$count_s]  		= 		$item->Descuento;
-
-				$ttotal_s[$count_s] =		100;
-				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
-				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
-
+				$ttotal_s[$count_s] 	=		100;
+				if($tiporeporte=='SOLES'){
+					$tcosto_s[$count_s] 	= 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+					$tutilidad_s[$count_s] 	= 		round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+				}else{
+					$tcosto_s[$count_s] 	= 		0;
+					$tutilidad_s[$count_s] 	= 		0;
+				}
 				$count_s      			= 		$count_s+1;
 				$totalimporte_s 		= 		$totalimporte_s + intval($item->venta);
 		}
 
-
+		//dd($lventassalida);
 
 		$jmeses 	=		json_encode($meses);
 		$jventas 	=		json_encode($tventas);
@@ -617,7 +656,7 @@ class AnalisisEstadisticosController extends Controller
 			$tituloban 	=		'SACOS DE 50KG';
 			$simmodena 	=		'SACO 50KG ';	
 		}
-
+		//dd($marca);
 		return View::make('analitica/ajax/aventasxproductodetalle',
 						 [
 							'anio' 			=> $anio,
@@ -661,6 +700,7 @@ class AnalisisEstadisticosController extends Controller
 		$hoy			= 	$request['hoy'];
 		$anio			= 	$request['anio'];
 		$empresa_nombre = 	$request['empresa_nombre'];
+		$tiporeporte 	= 	$request['tiporeporte'];
 
 		$lventassalida 	=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
 							->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
@@ -668,7 +708,13 @@ class AnalisisEstadisticosController extends Controller
 							->whereRaw("YEAR(Fecha) = ".$anio)
 							->where('Cliente','=',$empresa_nombre)
 							//->where(DB::raw("YEAR(Fecha)",'=',$anio))
-							->select(DB::raw('Cliente,sum(TotalVenta) venta,sum(CostoExtendido) as CostoExtendido,MONTH (Fecha) as MES'))
+							->select(DB::raw("Cliente,
+								(CASE
+								    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(Cant50kg)
+								    ELSE sum(CantidadProducto2*PrecioVentaIGV)
+								 END) as venta,
+								sum(CostoExtendido) as CostoExtendido,
+								MONTH (Fecha) as MES"))
 							->groupBy(DB::raw('Cliente'))
 							->groupBy(DB::raw('MONTH (Fecha)'))
 							->orderByRaw('MONTH (Fecha) asc')
@@ -699,16 +745,16 @@ class AnalisisEstadisticosController extends Controller
 
 		foreach($lventassalida as $index=>$item){
 
-				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
-				$tventas_s[$count_s]  = 	intval($item->venta);
-				$tcliente_s[$count_s]  = 	$item->Cliente;
-				$meses[$count_s] 		= 		$nmeses[$item->MES-1];
-				$tcolores_s[$count_s] = 	$colorArray[$aleatorio];
-				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
-				$ttotal_s[$count_s] =		100;
-				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
-				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
-				$count_s 			=		$count_s +1;
+				$aleatorio 					= 	$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+				$tventas_s[$count_s]  		= 	intval($item->venta);
+				$tcliente_s[$count_s]  		= 	$item->Cliente;
+				$meses[$count_s] 			= 	$nmeses[$item->MES-1];
+				$tcolores_s[$count_s] 		= 	$colorArray[$aleatorio];
+				$totalimporte_s 			= 	$totalimporte_s + intval($item->venta);
+				$ttotal_s[$count_s] 		=	100;
+				$tcosto_s[$count_s] 		= 	round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] 		= 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+				$count_s 					=	$count_s +1;
 
 		}
 
@@ -724,9 +770,13 @@ class AnalisisEstadisticosController extends Controller
 
 		$jtotal_s 	=		json_encode($ttotal_s);
 
-		$tituloban 	=		'SOLES';
-		$simmodena 	=		'S/.';
-
+		if($tiporeporte=='SOLES'){
+			$tituloban 	=		'SOLES';
+			$simmodena 	=		'S/.';
+		}else{
+			$tituloban 	=		'SACOS DE 50KG';
+			$simmodena 	=		'SACO 50KG ';	
+		}
 		return View::make('analitica/ajax/aautoservicoxmeses',
 						 [
 							'meses_s' 		=> $jmeses_s,
@@ -767,32 +817,34 @@ class AnalisisEstadisticosController extends Controller
 		}
 		//dd($tipomarca);
 
-		$lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
-										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
-										->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
-										->where('Cliente','=',$empresa_nombre)
-										->TipoMarca($tipomarca_sel)
-										->where('Fecha','>=',$inicio)
-										->where('Fecha','<=',$hoy)
-										// ->whereRaw("YEAR(Fecha) = ".$anio)
-										// ->whereRaw("MONTH(Fecha) = ".$mes)
-										->select(DB::raw("	Cliente,
-															YEAR(Fecha) ANIO,
-															MONTH (Fecha) MES,
-															(CASE
-															    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(KG_OV/50)
-															    ELSE sum(CAN_TOTAL_OV)
-															 END) as venta,
-															MARCA.NOM_CATEGORIA AS NombreProducto,
-															TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA"))
-										->groupBy(DB::raw('Cliente'))
-										->groupBy(DB::raw('YEAR(Fecha)'))
-										->groupBy(DB::raw('MONTH (Fecha)'))
-										->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
-										->groupBy(DB::raw('TIPOMARCA.COD_CATEGORIA'))
-										->orderByRaw('sum(CAN_TOTAL_OV) DESC')
-										->get();
+		// $lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
+		// 								->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
+		// 								->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
+		// 								->where('Cliente','=',$empresa_nombre)
+		// 								->TipoMarca($tipomarca_sel)
+		// 								->where('Fecha','>=',$inicio)
+		// 								->where('Fecha','<=',$hoy)
+		// 								// ->whereRaw("YEAR(Fecha) = ".$anio)
+		// 								// ->whereRaw("MONTH(Fecha) = ".$mes)
+		// 								->select(DB::raw("	Cliente,
+		// 													YEAR(Fecha) ANIO,
+		// 													MONTH (Fecha) MES,
+		// 													(CASE
+		// 													    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(KG_OV/50)
+		// 													    ELSE sum(CAN_TOTAL_OV)
+		// 													 END) as venta,
+		// 													MARCA.NOM_CATEGORIA AS NombreProducto,
+		// 													TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA"))
+		// 								->groupBy(DB::raw('Cliente'))
+		// 								->groupBy(DB::raw('YEAR(Fecha)'))
+		// 								->groupBy(DB::raw('MONTH (Fecha)'))
+		// 								->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
+		// 								->groupBy(DB::raw('TIPOMARCA.COD_CATEGORIA'))
+		// 								->orderByRaw('sum(CAN_TOTAL_OV) DESC')
+		// 								->get();
 
+
+		$lventas 					=	array();
 
 		$lventassalida 				=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
 										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
@@ -801,7 +853,7 @@ class AnalisisEstadisticosController extends Controller
 										->where('Fecha','>=',$inicio)
 										->where('Fecha','<=',$hoy)
 										->TipoMarca($tipomarca_sel)
-										->select(DB::raw("Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,
+										->select(DB::raw("Cliente,
 											(CASE
 											    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(Cant50kg)
 											    ELSE sum(CantidadProducto2*PrecioVentaIGV)
@@ -810,8 +862,6 @@ class AnalisisEstadisticosController extends Controller
 											TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA,
 											sum(CostoExtendido) as CostoExtendido"))
 										->groupBy(DB::raw('Cliente'))
-										->groupBy(DB::raw('YEAR(Fecha)'))
-										->groupBy(DB::raw('MONTH (Fecha)'))
 										->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
 										->groupBy(DB::raw('TIPOMARCA.COD_CATEGORIA'))
 										->orderByRaw('sum(TotalVenta) DESC')
@@ -823,33 +873,28 @@ class AnalisisEstadisticosController extends Controller
 		$nmeses 	= 		["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
 
-
-
  		$colorArray 	= 		$this->colores_array();
 
-		$tventas  	= 		array();
-		$tnprod  	= 		array();
-		$tnc  		= 		array();
-		$tcolores  	= 		array();
+		$tventas  		= 		array();
+		$tnprod  		= 		array();
+		$tnc  			= 		array();
+		$tcolores  		= 		array();
 
-		$count      = 		0;
+		$count      	= 		0;
 		$totalimporte 	= 		0;
 
 		$numerosGenerados 	= array();
 
 		foreach($lventas as $index=>$item){
-			//if($item->COD_TIPOMARCA == $tipomarca_sel){
+
 				$aleatorio 			= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
-				$meses[$count] 		= 		$nmeses[$item->MES-1];
 				$tnprod[$count]  	= 		$item->NombreProducto;
 				$tventas[$count]  	= 		intval($item->venta);
 				$tcolores[$count]  	= 		$colorArray[$aleatorio];
 				$tnc[$count]  		= 		$item->Descuento;
-
 				$count      		= 		$count+1;
 				$totalimporte 		= 		$totalimporte + intval($item->venta);
 
-			//}
 		}
 
 		$meses_s  			= 		array();
@@ -865,24 +910,20 @@ class AnalisisEstadisticosController extends Controller
 		$tcosto_s  			= 		array();
 		$tutilidad_s  		= 		array();
 
+
 		foreach($lventassalida as $index=>$item){
-			//if($item->COD_TIPOMARCA == $tipomarca_sel){
-				$aleatorio 			= 		$numerosGenerados[$count_s];
-				$meses_s[$count_s] 	= 		$nmeses[$item->MES-1];
+
+				$aleatorio 				= 		$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
 				$tnprod_s[$count_s]  	= 		$item->NombreProducto;
-				$tventas_s[$count_s]  = 		intval($item->venta);
-				$tcolores_s[$count_s] = 		$colorArray[$aleatorio];
-				$tnc_s[$count_s]  	= 		$item->Descuento;
+				$tventas_s[$count_s]  	= 		intval($item->venta);
+				$tcolores_s[$count_s] 	= 		$colorArray[$aleatorio];
+				$tnc_s[$count_s]  		= 		$item->Descuento;
+				$ttotal_s[$count_s] 	=		100;
+				$tcosto_s[$count_s] 	= 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
+				$tutilidad_s[$count_s] 	= 		round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
+				$count_s      			= 		$count_s+1;
+				$totalimporte_s 		= 		$totalimporte_s + intval($item->venta);
 
-
-				$ttotal_s[$count_s] =		100;
-				$tcosto_s[$count_s] = 		round((intval($item->CostoExtendido)*100)/intval($item->venta),2);
-				$tutilidad_s[$count_s] = 	round(((intval($item->venta)-intval($item->CostoExtendido))*100)/intval($item->venta),2);
-
-				$count_s      		= 		$count_s+1;
-				$totalimporte_s 	= 		$totalimporte_s + intval($item->venta);
-
-			//}
 		}
 
 		$jmeses_s 	=		json_encode($meses_s);
@@ -890,9 +931,6 @@ class AnalisisEstadisticosController extends Controller
 		$jtnc_s 	=		json_encode($tnc_s);
 		$jprod_s 	=		json_encode($tnprod_s);
 		$jcol_s 	=		json_encode($tcolores_s);
-
-
-
 		$jmeses 	=		json_encode($meses);
 		$jventas 	=		json_encode($tventas);
 		$jtnc 		=		json_encode($tnc);

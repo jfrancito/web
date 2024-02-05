@@ -1,14 +1,16 @@
 
 var carpeta = $("#carpeta").val();
 
-function modal_autoservicio(inicio,hoy,empresa){
+function modal_autoservicio(inicio,hoy,empresa,tiporeporte){
 
       var _token                  =   $('#token').val();
+
       data                        =   {
                                           _token                  : _token,
                                           inicio                  : inicio,
                                           hoy                     : hoy,
-                                          empresa                 : empresa
+                                          empresa                 : empresa,
+                                          tiporeporte             : tiporeporte
                                       };
       ajax_modal(data,"/ajax-modal-autoservicio-filtro",
                 "modal-analitica","modal-analitica-container");
@@ -41,7 +43,7 @@ function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tipo
     });
 }
 
-function actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy){
+function actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy,tiporeporte){
     abrircargando();
     $.ajax({
         type    :   "POST",
@@ -51,7 +53,8 @@ function actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy){
                         empresa_nombre  : empresa_nombre,
                         inicio          : inicio,
                         hoy             : hoy,
-                        anio            : anio
+                        anio            : anio,
+                        tiporeporte     : tiporeporte
                     },
         success: function (data) {
             cerrarcargando();
@@ -68,7 +71,7 @@ function actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy){
 
 
 
-function actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy){
+function actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy,tiporeporte){
     abrircargando();
     $.ajax({
         type    :   "POST",
@@ -76,6 +79,7 @@ function actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy){
         data    :   {
                         _token          : _token,
                         inicio          : inicio,
+                        tiporeporte     : tiporeporte,
                         hoy             : hoy,
                     },
         success: function (data) {

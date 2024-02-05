@@ -1011,18 +1011,14 @@ class NotaCreditoController extends Controller
 
 
 		$notacredito            =   new NotaCredito();
-
+        //dd($documento_id);
 		$documento 		 		= 	CMPDocumentoCtble::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
-									->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
+									//->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
 									->where('COD_DOCUMENTO_CTBLE','=',$documento_id)
 									->first();
-
-
         // lista de descuento de la nota de credito
         $lista_productos    	=   CMPDetalleProducto::where('CMP.DETALLE_PRODUCTO.COD_ESTADO','=',1)
                                     ->where('CMP.DETALLE_PRODUCTO.COD_TABLA','=',$documento_id)->get();
-
-
 
 		return View::make('notacredito/modal/ajax/detalledocumento',
 						 [

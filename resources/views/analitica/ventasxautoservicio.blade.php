@@ -13,22 +13,18 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="panel panel-default panel-table">
-                <div class="panel-heading" ><b style="font-style: italic;">VENTA DE CLIENTE</b>
-
+                <div class="panel-heading" ><b style="font-style: italic;">REPORTE VENTA DE AUTOSERVICIO</b>
                   <div class="tools tooltiptop">
                     <a href="#" class="tooltipcss" id='buscarautoservicio' >
                       <span class="tooltiptext">Buscar</span>
                       <span class="icon mdi mdi-search" style="font-size: 40px;"></span>
                     </a>
-
                   </div>
-
                 </div>
                 <div class="panel-body selectfiltro">
                   <div class='filtrotabla row'>
                     <div class="col-xs-12">
                       <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
-
                           <div class="form-group ">
                             <label class="col-sm-12 control-label labelleft" >Fecha Inicio:</label>
                             <div class="col-sm-12 abajocaja" >
@@ -46,11 +42,9 @@
                                 </div>
                             </div>
                           </div>
-                      </div> 
-
+                      </div>
 
                       <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
-
                           <div class="form-group ">
                             <label class="col-sm-12 control-label labelleft" >Fecha Fin:</label>
                             <div class="col-sm-12 abajocaja" >
@@ -69,6 +63,24 @@
                             </div>
                           </div>
                       </div> 
+
+
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
+
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label labelleft" style="margin-bottom:5px;">Ventas Equivalente en :</label>
+                            <div class="col-sm-12 abajocaja" >
+                              {!! Form::select( 'tiporeporte', $combotr, array($tiporeporte),
+                                                [
+                                                  'class'       => 'select2 form-control control input-sm' ,
+                                                  'id'          => 'tiporeporte',
+                                                  'required'    => '',
+                                                  'data-aw'     => '1',
+                                                ]) !!}
+                            </div>
+                          </div>
+                      </div> 
+
                   </div>
                   <div class="col-xs-12">
                     <div class='listaanaitica listajax reporteajax' style="padding-top: 20px;">
@@ -83,11 +95,17 @@
     <div class="row-menu" style="width: 99.9%;">
       <div class="row">
         <div class="col-sm-12 col-mobil-top">
-          <div class="col-fr-2 col-atras">
+          <div class="col-fr-2 col-inicio">
             <span class="mdi mdi-home"></span>
           </div> 
-          <div class="col-fr-10 col-total">
-            <strong></strong> <strong class="">INDUAMERICA</strong>
+
+          <div class="col-fr-8 col-total">
+            <strong></strong> <strong class="">VENTAS ATENDIDAS</strong>
+          </div>
+          <div class="col-fr-2 col-atras"
+            data_posicion = '00'
+          >
+            <span class="mdi mdi-undo"></span>
           </div>
         </div>
       </div>
@@ -134,7 +152,6 @@
   </script>
 
   <script src="{{ asset('public/js/analitica/general.js?v='.$version) }}" type="text/javascript"></script> 
-
   <script src="{{ asset('public/js/analitica/ventasxautoservicio.js?v='.$version) }}" type="text/javascript"></script> 
 
 @stop

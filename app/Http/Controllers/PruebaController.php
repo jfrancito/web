@@ -11,6 +11,27 @@ use Session;
 class PruebaController extends Controller
 {
 
+
+    public function actionDRS(Request $request)
+    {
+
+        $archivoCmd = "C:/laragon/www/web/storage/exports/py/ERS.cmd";
+        // Ejecutar el archivo .cmd usando exec()
+        exec($archivoCmd, $output, $returnValue);
+        // Verificar si la ejecución fue exitosa
+        if ($returnValue === 0) {
+            echo "El comando se ejecutó correctamente.";
+        } else {
+            echo "Error al ejecutar el comando. Código de retorno: $returnValue";
+        }
+        // Puedes imprimir la salida del comando si es necesario
+        echo "Salida del comando: " . implode("\n", $output);
+
+
+    }
+
+
+
     public function actionEnviarMensajeWhatsapp(Request $request)
     {
 		$data = [

@@ -1,4 +1,4 @@
-@if($totalimporte>0 && $totalimporte_s>0)
+@if($totalimporte_s>0)
 
   <div class="tab-container">
     <ul class="nav nav-tabs">
@@ -8,7 +8,7 @@
     <div class="tab-content">
       <div id="vg" class="tab-pane active cont">
           <div class="titulobanner">
-            <div><b>REPORTE BASADO EN {{$tituloban}}</b></div>
+            <div><b>02 REPORTE BASADO EN {{$tituloban}}</b></div>
           </div>
           <div class="col-xs-12 contgrafico">
               <div class='titulografico'><b>{{$empresa_nombre}} ({{$inicio}} / {{$hoy}})</b></div>
@@ -21,30 +21,16 @@
           @if($tituloban =='SOLES')
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
 
-            <div class='scrollhochart'>
-              <div class="contenedorauto">
-                <div id="chart_b">
+              <div class='scrollhochart'>
+                <div class="contenedorauto">
+                  <div id="chart_b">
+                  </div>
                 </div>
-              </div>
-          </div>  
+              </div>  
 
             </div>
           @endif
       </div>
-<!--       <div id="va" class="tab-pane cont">
-
-          <div class="titulobanner">
-            <div><b>REPORTE BASADO EN {{$tituloban}}</b></div>
-          </div>
-          <div class="col-xs-12 contgrafico">
-              <div class='titulografico'><b>{{$empresa_nombre}} ({{$inicio}} / {{$hoy}})</b></div>
-              <div class='subtitulografico'><b>{{$simmodena}} {{number_format($totalimporte, 2, '.', ',')}} / {{$tipomarca_txt}}</b></div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style="margin-top: 15px;">
-              <div id="chart01" >
-              </div>
-          </div>  
-      </div> -->
     </div>
   </div>
 

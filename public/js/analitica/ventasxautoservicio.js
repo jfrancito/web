@@ -1,8 +1,6 @@
 $(document).ready(function(){
 
-
     var carpeta = $("#carpeta").val();
-
     $(".crearpedido").on('click','.btn-autoservicio-marca', function(e) {
         event.preventDefault();
         var empresa_nombre      = $(this).attr('data_nombre_empresa');
@@ -11,56 +9,81 @@ $(document).ready(function(){
         var tipomarca           = $('#tipomarca').val();  
         var tiporeporte         = $('#tiporeporte').val();
         var _token              = $('#token').val();
+
+        $('.col-atras').attr('data_posicion','01');
+
         $(".reporteajax").html("");
         actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
         $('#modal-analitica').niftyModal('hide');
-
     });
-
     $(".crearpedido").on('click','.btn-autoservicio-anio', function(e) {
         event.preventDefault();
         var empresa_nombre      = $(this).attr('data_nombre_empresa');
         var inicio              = $('#fechainicio').val();
         var hoy                 = $('#fechafin').val();
-        var anio                = $('#anio').val();  
+        var anio                = $('#anio').val();
+        var tiporeporte         = $('#tiporeporte').val();
+        var _token              = $('#token').val();
+        $('.col-atras').attr('data_posicion','01');
+        $(".reporteajax").html("");
+        actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy,tiporeporte);
+        $('#modal-analitica').niftyModal('hide');
+    });
+    $(".crearpedido").on('click','.col-inicio', function(e) {
+        event.preventDefault();
+        var inicio              = $('#fechainicio').val();
+        var hoy                 = $('#fechafin').val();
+        var tiporeporte         = $('#tiporeporte').val();
+
         var _token              = $('#token').val();
         $(".reporteajax").html("");
-        actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy);
-        $('#modal-analitica').niftyModal('hide');
-
+        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy,tiporeporte);
     });
-
 
 
     $(".crearpedido").on('click','.col-atras', function(e) {
         event.preventDefault();
         var inicio              = $('#fechainicio').val();
         var hoy                 = $('#fechafin').val();
+        var tiporeporte         = $('#tiporeporte').val();
+        var posicion            = $(this).attr('data_posicion');
         var _token              = $('#token').val();
-        $(".reporteajax").html("");
-        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy);
+        if(posicion!='00'){
+          if(posicion=='01'){
+            $('.col-atras').attr('data_posicion','00'); 
+            $('.col-inicio').trigger('click');
+          }
+          if(posicion=='02'){
+            $('.col-atras').attr('data_posicion','01'); 
+            var anio                = 'falta';
+            var empresa_nombre      = $('#empresa_nombre_text').html();
+            var mes                 = 'falta';
+            var tipomarca           = $('#tipomarca').val();
+            var marca               = $('#marca').html();
+            actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte);
+
+          }
+        }
     });
 
 
-    $(".crearpedido").on('click','#buscarautoservicio', function(e) {
 
+
+    $(".crearpedido").on('click','#buscarautoservicio', function(e) {
         event.preventDefault();
         var inicio              = $('#fechainicio').val();
         var hoy                 = $('#fechafin').val();
+        var tiporeporte         = $('#tiporeporte').val();
         var _token              = $('#token').val();
         $(".reporteajax").html("");
-        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy);
+        actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy,tiporeporte);
 
     }); 
-
-
-
     //ventas generales
     var   ventas_s  = $('#ventas_s').html();
     var   prod_s    = $('#prod_s').html();
     var   color_s   = $('#color_s').html();
     var   cliente_s = $('#cliente_s').html();
-
     const aventas_s   = JSON.parse(ventas_s);
     const aprod_s     = JSON.parse(prod_s);
     const acolor_s    = JSON.parse(color_s);
@@ -80,15 +103,17 @@ $(document).ready(function(){
                           legendClick: function(chartContext, seriesIndex, config) {
                             var inicio              = $('#fechainicio').val();
                             var hoy                 = $('#fechafin').val();
+                            var tiporeporte         = $('#tiporeporte').val();
                             const empresa = chartContext.w.globals.labels[seriesIndex];
-                            modal_autoservicio(inicio,hoy,empresa);
+                            modal_autoservicio(inicio,hoy,empresa,tiporeporte);
                           },
                           dataPointSelection: (event, chartContext, config) => {
 
                             var inicio              = $('#fechainicio').val();
                             var hoy                 = $('#fechafin').val();
+                            var tiporeporte         = $('#tiporeporte').val();
                             const empresa = chartContext.w.globals.labels[config.dataPointIndex];
-                            modal_autoservicio(inicio,hoy,empresa);
+                            modal_autoservicio(inicio,hoy,empresa,tiporeporte);
 
                           }
 

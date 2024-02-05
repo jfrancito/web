@@ -1,4 +1,4 @@
-@if($totalimporte>0 && $totalimporte_s>0)
+@if($totalimporte_s>0)
 
   <div class="tab-container">
     <ul class="nav nav-tabs">
@@ -8,7 +8,7 @@
     <div class="tab-content">
       <div id="vg" class="tab-pane active cont">
           <div class="titulobanner">
-            <div><b>REPORTE BASADO EN {{$tituloban}}</b></div>
+            <div><b>03 REPORTE BASADO EN {{$tituloban}}</b></div>
           </div>
           <div class="col-xs-12 contgrafico">
               <div class='titulografico'><b>{{$empresa_nombre}} ({{$inicio}} / {{$hoy}})</b></div>
@@ -66,8 +66,9 @@
   <div id="utilidad_s" class='ocultar'>{{$jutilidad_s}}</div>
   <div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
   <div id="simmodena" class='ocultar'>{{$simmodena}}</div>
+  <div id="marca" class='ocultar'>{{$marca}}</div>
+
   @if(isset($ajax))
-      <script src="{{ asset('public/js/analitica/general.js?v='.$version) }}" type="text/javascript"></script> 
       <script src="{{ asset('public/js/analitica/ventasdetallexproducto.js?v='.$version) }}" type="text/javascript"></script>  
   @endif
 @else

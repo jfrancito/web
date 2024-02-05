@@ -6,11 +6,14 @@
     <div class="tab-content">
       <div id="vg" class="tab-pane active cont">
           <div class="titulobanner">
-            <div><b>REPORTE VENTAS AUTOSERVICIO</b></div>
+            <div><b>REPORTE VENTAS AUTOSERVICIO EN {{$tituloban}}</b></div>
           </div>
           <div class="col-xs-12 contgrafico">
               <div class='titulografico'><b>({{$empresa_nombre}})</b></div>
               <div class='subtitulografico'><b>{{$anio}}</b></div>
+              <div class='subtitulografico'><b>{{$simmodena}} {{number_format($totalimporte_s, 2, '.', ',')}}</b></div>
+
+
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-12" style="margin-top: 15px;">
             <div class='scrollhochart'>
