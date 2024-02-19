@@ -20,6 +20,7 @@ function modal_autoservicio(inicio,hoy,empresa,tiporeporte){
 
 function actualizar_ajax(empresa_nombre,tipomarca,_token,carpeta,inicio,hoy,tiporeporte){
     abrircargando();
+    $(".reporteajax").html("");    
     $.ajax({
         type    :   "POST",
         url     :   carpeta+"/ajax-listado-de-ventasxproducto",
@@ -69,33 +70,27 @@ function actualizar_ajax_anio(empresa_nombre,anio,_token,carpeta,inicio,hoy,tipo
 }
 
 
-
-
 function actualizar_ajax_autoservicio(_token,carpeta,inicio,hoy,tiporeporte){
-    abrircargando();
-    $.ajax({
-        type    :   "POST",
-        url     :   carpeta+"/ajax-listado-de-ventasxautoservicio",
-        data    :   {
-                        _token          : _token,
-                        inicio          : inicio,
-                        tiporeporte     : tiporeporte,
-                        hoy             : hoy,
-                    },
-        success: function (data) {
-            cerrarcargando();
-            $(".reporteajax").html(data);
-
-        },
-        error: function (data) {
-            cerrarcargando();
-            error500(data);
-        }
-    });
+abrircargando();
+$.ajax({
+    type    :   "POST",
+    url     :   carpeta+"/ajax-listado-de-ventasxautoservicio",
+    data    :   {
+                    _token          : _token,
+                    inicio          : inicio,
+                    tiporeporte     : tiporeporte,
+                    hoy             : hoy,
+                },
+    success: function (data) {
+        cerrarcargando();
+        $(".reporteajax").html(data);
+    },
+    error: function (data) {
+        cerrarcargando();
+        error500(data);
+    }
+});
 }
-
-
-
 
 //Objeto oNumero
 function oNumero(numero){

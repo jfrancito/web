@@ -15,26 +15,23 @@
               <div class='subtitulografico'><b>{{$simmodena}} {{number_format($totalimporte_s, 2, '.', ',')}} / {{$tipomarca_txt}}</b></div>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 15px;">
-              <div id="chart02" >
+              <div id="chartmarca" >
               </div>
-          </div>  
+          </div>
           @if($tituloban =='SOLES')
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="margin-top: 20px;">
-
               <div class='scrollhochart'>
                 <div class="contenedorauto">
                   <div id="chart_b">
                   </div>
                 </div>
               </div>  
-
             </div>
           @endif
       </div>
     </div>
   </div>
 
-  
   <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
   <div id="meses" class='ocultar'>{{$meses}}</div>
   <div id="anio" class='ocultar'>{{$anio}}</div>
@@ -54,8 +51,7 @@
   <div id="utilidad_s" class='ocultar'>{{$jutilidad_s}}</div>
   <div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
   <div id="simmodena" class='ocultar'>{{$simmodena}}</div>
-
-
+  <div id="tituloban" class='ocultar'>{{$tituloban}}</div>
   @if(isset($ajax))
       <script src="{{ asset('public/js/analitica/ventasxproducto.js?v='.$version) }}" type="text/javascript"></script>  
   @endif

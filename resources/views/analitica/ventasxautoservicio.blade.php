@@ -5,7 +5,6 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/select2/css/select2.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/bootstrap-slider/css/bootstrap-slider.css') }} "/>
-
 @stop
 @section('section')
   <div class="be-content contenido crearpedido" style="background-color: #fff;">
@@ -83,8 +82,11 @@
 
                   </div>
                   <div class="col-xs-12">
-                    <div class='listaanaitica listajax reporteajax' style="padding-top: 20px;">
-                      @include('analitica.ajax.aventasxautoservico')
+                    <div class='todoschart'>
+                        @include('analitica.ajax.aventastodos')
+                      <div class='listaanaitica listajax reporteajax' style="padding-top: 20px;">
+                        @include('analitica.ajax.aventasxautoservico')
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -100,7 +102,7 @@
           </div> 
 
           <div class="col-fr-8 col-total">
-            <strong></strong> <strong class="">VENTAS ATENDIDAS</strong>
+            <strong></strong> <strong class=""></strong>
           </div>
           <div class="col-fr-2 col-atras"
             data_posicion = '00'
@@ -110,21 +112,16 @@
         </div>
       </div>
     </div>
-
-
     @include('analitica.modal.manalitica')
-
   </div>
 @stop
 @section('script')
-
   <script src="{{ asset('public/lib/datatables/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/plugins/buttons/js/dataTables.buttons.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/dataTables.responsive.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/responsive.bootstrap.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/app-tables-datatables.js?v='.$version) }}" type="text/javascript"></script>
-
   <script src="{{ asset('public/lib/jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/jquery.nestable/jquery.nestable.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/moment.js/min/moment.min.js') }}" type="text/javascript"></script>
@@ -134,24 +131,19 @@
   <script src="{{ asset('public/js/app-form-elements.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/parsley/parsley.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/jquery.niftymodals/dist/jquery.niftymodals.js') }}" type="text/javascript"></script>
-
   <script type="text/javascript">
-
     $.fn.niftyModal('setDefaults',{
       overlaySelector: '.modal-overlay',
       closeSelector: '.modal-close',
       classAddAfterOpen: 'modal-show',
     });
-
     $(document).ready(function(){
       App.init();
       App.formElements();
       $('.scroll_text_horizontal_analitica').scrollLeft(500);
-
     });
   </script>
-
   <script src="{{ asset('public/js/analitica/general.js?v='.$version) }}" type="text/javascript"></script> 
-  <script src="{{ asset('public/js/analitica/ventasxautoservicio.js?v='.$version) }}" type="text/javascript"></script> 
+  <script src="{{ asset('public/js/analitica/ventasxautoservicio.js?v='.$version) }}" type="text/javascript"></script>  
 
 @stop

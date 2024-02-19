@@ -162,6 +162,26 @@
           @if($sw_crear_movil == 1 and $item->grupo_movil <> '0') 
             <td rowspan = "{{$item->grupo_orden_movil - $rowspan_mobil_producto}}" class='fondogris' >
               <b style="padding-right: 4px;">{{$item->grupo_movil}}</b>
+
+              <div class="text-center be-checkbox be-checkbox-sm has-primary">
+                <input
+                  type="checkbox"
+                    class="{{$index}}{{$item->grupo_movil}} input_asignar_grupo"
+                    id="{{$index}}{{$item->grupo_movil}}"
+                    data_grupo = '{{$item->grupo_movil}}'
+                    data_despacho_id = '{{$ordendespacho->id}}'
+                    @if($item->ind_segmento == '1') checked @endif
+                  >
+                <label  for="{{$index}}{{$item->grupo_movil}}"
+                      data-atr = "ver"
+                      class = "checkbox checkbox_asignar_grupo"                    
+                      name="{{$index}}{{$item->grupo_movil}}"
+                      data_grupo = '{{$item->grupo_movil}}'
+                      data_despacho_id = '{{$ordendespacho->id}}'
+                ></label>
+              </div>
+
+
             </td>
           @else
             @if($item->grupo_movil == '0') 

@@ -5,6 +5,8 @@ $(document).ready(function(){
     //ventas generales
     var anio = $('#anio').val();
     var simmodena = $('#simmodena').html();
+    var tituloban = $('#tituloban').html();
+
     var empresa_nombre = $('#empresa_nombre_text').html();
     var mes = $('#mes').html();
     var meses = $('#meses').html();
@@ -21,57 +23,6 @@ $(document).ready(function(){
     const aprod = JSON.parse(prod);
     const acolor = JSON.parse(color);
 
-    // var options = {
-    //     series: aventas,
-    //     colors: acolor,
-    //     chart: {
-    //       height: 500,
-    //       type: 'pie',
-    //       events: {
-    //         dataPointSelection: (event, chartContext, config) => {
-
-    //           var inicio              = $('#fechainicio').val();
-    //           var hoy                 = $('#fechafin').val();
-    //           var tipomarca           = $('#tipomarca').val();
-    //           var tiporeporte           = $('#tiporeporte').val();
-
-    //           debugger;
-    //           const marca = chartContext.w.globals.labels[config.dataPointIndex];
-    //           actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte);
-    //         }
-    //       },
-
-
-    //     },
-    //     labels: aprod,
-    //     dataLabels: {
-    //       formatter(val, opts) {
-    //         const name = opts.w.globals.labels[opts.seriesIndex]
-    //         const importe = opts.w.globals.series[opts.seriesIndex]
-    //         return [name, val.toFixed(1) + '%']
-    //       }
-    //     },
-
-    //     yaxis: {
-    //       show: false
-    //     },
-
-    //     legend: {
-    //       position: 'bottom',
-    //       horizontalAlign: 'left',
-    //       fontSize: '12px',
-    //       fontWeight: 600, 
-    //       formatter: function(label, opts) {
-    //           const total = opts.w.globals.series[opts.seriesIndex];
-    //           var data_total = new oNumero(total);
-    //           data_total  = data_total.formato(2, true);
-    //           return label + " => " + simmodena + data_total
-    //       }
-    //     },
-    // };
-    // var chart = new ApexCharts(document.querySelector("#chart01"), options);
-    // chart.render();
-
     //ventas atendidas
     var ventas_s = $('#ventas_s').html();
     var prod_s = $('#prod_s').html();
@@ -79,8 +30,7 @@ $(document).ready(function(){
     const aventas_s = JSON.parse(ventas_s);
     const aprod_s = JSON.parse(prod_s);
     const acolor_s = JSON.parse(color_s);
-
-    var options2 = {
+    var optionsmarca = {
         series: aventas_s,
         colors: acolor_s,
         chart: {
@@ -88,14 +38,12 @@ $(document).ready(function(){
           type: 'pie',
           events: {
             dataPointSelection: (event, chartContext, config) => {
-
               var inicio              = $('#fechainicio').val();
               var hoy                 = $('#fechafin').val();
               var tipomarca           = $('#tipomarca').val();
               var tiporeporte         = $('#tiporeporte').val();
               const marca = chartContext.w.globals.labels[config.dataPointIndex];
               $('.col-atras').attr('data_posicion','02');
-              debugger;
               actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipomarca,inicio,hoy,tiporeporte);
             }
           },
@@ -124,9 +72,9 @@ $(document).ready(function(){
           }
         },
     };
-    var chart2 = new ApexCharts(document.querySelector("#chart02"), options2);
-    chart2.render();
+    var optionsmarca = new ApexCharts(document.querySelector("#chartmarca"), optionsmarca);
 
+    optionsmarca.render();
 
     var costos_s = $('#costos_s').html();
     const acostos_s = JSON.parse(costos_s);
@@ -136,7 +84,7 @@ $(document).ready(function(){
     var jtotal_s = $('#jtotal_s').html();
     const total_s = JSON.parse(jtotal_s);
 
-    if(simmodena == 'SOLES'){
+    if(tituloban == 'SOLES'){
       var options_b = {
         series: [
                   {
@@ -201,7 +149,6 @@ $(document).ready(function(){
       chart_b.render();
     }
 
-
 });
 
 
@@ -209,6 +156,7 @@ function actualizar_ajax_det_producto(anio,empresa_nombre,mes,carpeta,marca,tipo
 
     var _token              = $('#token').val();
     abrircargando();
+    $(".reporteajax").html('');
     $.ajax({
         type    :   "POST",
         url     :   carpeta+"/ajax-listado-detalle-ventasxproducto",

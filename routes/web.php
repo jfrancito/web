@@ -320,7 +320,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-detalle-pedido-imprimir', 'AtenderPedidoDespachoController@actionModalDetalleImprimir');
 	Route::any('/ajax-quitar-agregar-pedido-producto', 'AtenderPedidoDespachoController@actionAjaxQuitarAgregarPedidoProducto');
 
-
+	Route::any('/ajax-quitar-agregar-pedido-producto-grupo', 'AtenderPedidoDespachoController@actionAjaxQuitarAgregarPedidoProductoGrupo');
 
 
 

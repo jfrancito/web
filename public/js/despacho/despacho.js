@@ -1366,9 +1366,61 @@ $(document).ready(function(){
             }
         });
 
+    });
+
+
+    $(".listadespacho").on('click','.checkbox_asignar_grupo', function() {
+
+        var input               = $(this).siblings('.input_asignar_grupo');
+        var accion              = $(this).attr('data-atr');
+        var name                = $(this).attr('name');
+        var data_grupo          = $(this).attr('data_grupo');
+        var data_despacho_id    = $(this).attr('data_despacho_id');
+
+        debugger;
+        var _token              = $('#token').val();
+
+        var check   = -1;
+        var estado  = -1;
+        if($(input).is(':checked')){
+
+            check   = 0;
+            estado  = false;
+
+        }else{
+
+            check   = 1;
+            estado  = true;
+
+        }
+
+        //validarrelleno_imprimir(accion,name,estado,check);
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-quitar-agregar-pedido-producto-grupo",
+            data    :   {
+                            _token           : _token,
+                            check            : check,
+                            data_grupo       : data_grupo,
+                            data_despacho_id : data_despacho_id,
+                            estado           : estado
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.ajax_pedido_qr').html(data);
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
 
 
     });
+
 
 
 

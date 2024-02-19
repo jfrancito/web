@@ -8,6 +8,9 @@ $(document).ready(function(){
       var periodo_sel = $('#periodo_sel').html();
       var tipomarca_txt = $('#tipomarca_txt').html();
       var simmodena = $('#simmodena').html();
+      var tituloban = $('#tituloban').html();
+
+
       var anio = $('#anio').val();
       var meses = $('#meses').html();
       var ventas = $('#ventas').html();
@@ -25,32 +28,7 @@ $(document).ready(function(){
       const atnc = JSON.parse(tnc);
       const aprod = JSON.parse(prod);
       const acolor = JSON.parse(color);
-      // var options = {
-      //     series: aventas,
-      //     colors:acolor,
-      //     chart: {
-      //       height: 800,
-      //       type: 'pie'
-      //     },
-      //     labels: aprod,
-      //     yaxis: {
-      //       show: false
-      //     },
-      //     legend: {
-      //       position: 'bottom',
-      //       horizontalAlign: 'left',
-      //       fontSize: '12px',
-      //       fontWeight: 600,          
-      //       formatter: function(label, opts) {
-      //           const total = opts.w.globals.series[opts.seriesIndex];
-      //           var data_total = new oNumero(total);
-      //           data_total  = data_total.formato(2, true);
-      //           return label + " => " + simmodena + data_total
-      //       }
-      //     },
-      // };
-      // var chart3 = new ApexCharts(document.querySelector("#chart01"), options);
-      // chart3.render();
+
 
       var ventas_s = $('#ventas_s').html();
       var prod_s = $('#prod_s').html();
@@ -94,8 +72,8 @@ $(document).ready(function(){
       var totalimporte_s = $('#totalimporte_s').html();
       var jtotal_s = $('#jtotal_s').html();
       const total_s = JSON.parse(jtotal_s);
-      debugger;
-      if(simmodena == 'SOLES'){
+
+      if(tituloban == 'SOLES'){
         var options_b = {
           series: [
                     {

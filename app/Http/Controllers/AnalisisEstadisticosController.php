@@ -264,6 +264,7 @@ class AnalisisEstadisticosController extends Controller
 			$simmodena 	=		'SACO 50KG ';	
 		}
 
+
 		return View::make('analitica/ajax/aventasxautoservico',
 						 [
 							'meses_s' 		=> $jmeses_s,
@@ -275,8 +276,8 @@ class AnalisisEstadisticosController extends Controller
 							'jcostos_s'		=> $jcostos_s,
 							'jutilidad_s'	=> $jutilidad_s,
 							'jtotal_s'		=> $jtotal_s,
-							'inicio'		=> $this->inicio,
-							'hoy'			=> $this->fin,
+							'inicio'		=> $inicio,
+							'hoy'			=> $hoy,
 							'tituloban'		=> $tituloban,
 							'simmodena'		=> $simmodena,
 							'jcliente_s'	=> $jcliente_s,
@@ -491,8 +492,7 @@ class AnalisisEstadisticosController extends Controller
 		$hoy 						=  	$request['hoy'];
 		$tiporeporte 				=  	$request['tiporeporte'];
 
-		//dd($tiporeporte);
-		//dd($tipomarca);
+
 		if($tipomarca <> 'TODOS'){
 			$datatipomarca 				=	CMPCategoria::where('COD_CATEGORIA','=',$tipomarca)->first();
 			$tipomarca_txt 				=	$datatipomarca->NOM_CATEGORIA;
@@ -501,33 +501,6 @@ class AnalisisEstadisticosController extends Controller
 			$tipomarca_txt 				=	'TODOS';
 			$tipomarca_sel 				=	$tipomarca;	
 		}
-
-		// $lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
-		// 								->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
-		// 								->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
-		// 								->where('Cliente','=',$empresa_nombre)
-		// 								// ->whereRaw("YEAR(Fecha) = ".$anio)
-		// 								// ->whereRaw("MONTH(Fecha) = ".$mes)
-		// 								->where('Fecha','>=',$inicio)
-		// 								->where('Fecha','<=',$hoy)
-
-		// 								->TipoMarca($tipomarca_sel)
-		// 								->where("MARCA.NOM_CATEGORIA",'=',$marca)
-		// 								->select(DB::raw("Cliente,YEAR(Fecha) ANIO,MONTH (Fecha) MES,
-		// 									(CASE
-		// 									    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(KG_OV/50)
-		// 									    ELSE sum(CAN_TOTAL_OV)
-		// 									 END) as venta,
-		// 									MARCA.NOM_CATEGORIA AS MARCA,
-		// 									ALM.PRODUCTO.NOM_PRODUCTO AS NombreProducto
-		// 									"))
-		// 								->groupBy(DB::raw('Cliente'))
-		// 								->groupBy(DB::raw('YEAR(Fecha)'))
-		// 								->groupBy(DB::raw('MONTH (Fecha)'))
-		// 								->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
-		// 								->groupBy(DB::raw('ALM.PRODUCTO.NOM_PRODUCTO'))
-		// 								->orderByRaw('sum(CAN_TOTAL_OV) DESC')
-		// 								->get();
 
 		$lventas 					=	array();
 
@@ -815,37 +788,8 @@ class AnalisisEstadisticosController extends Controller
 			$tipomarca_txt 				=	'TODOS';
 			$tipomarca_sel 				=	$tipomarca;	
 		}
-		//dd($tipomarca);
-
-		// $lventas 					=	viewVentasConsolidado::join('ALM.PRODUCTO', 'ALM.PRODUCTO.COD_PRODUCTO', '=', 'viewVentasConsolidado2024.COD_PRODUCTO')
-		// 								->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
-		// 								->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')
-		// 								->where('Cliente','=',$empresa_nombre)
-		// 								->TipoMarca($tipomarca_sel)
-		// 								->where('Fecha','>=',$inicio)
-		// 								->where('Fecha','<=',$hoy)
-		// 								// ->whereRaw("YEAR(Fecha) = ".$anio)
-		// 								// ->whereRaw("MONTH(Fecha) = ".$mes)
-		// 								->select(DB::raw("	Cliente,
-		// 													YEAR(Fecha) ANIO,
-		// 													MONTH (Fecha) MES,
-		// 													(CASE
-		// 													    WHEN '".$tiporeporte."' = 'SACOS' THEN sum(KG_OV/50)
-		// 													    ELSE sum(CAN_TOTAL_OV)
-		// 													 END) as venta,
-		// 													MARCA.NOM_CATEGORIA AS NombreProducto,
-		// 													TIPOMARCA.COD_CATEGORIA AS COD_TIPOMARCA"))
-		// 								->groupBy(DB::raw('Cliente'))
-		// 								->groupBy(DB::raw('YEAR(Fecha)'))
-		// 								->groupBy(DB::raw('MONTH (Fecha)'))
-		// 								->groupBy(DB::raw('MARCA.NOM_CATEGORIA'))
-		// 								->groupBy(DB::raw('TIPOMARCA.COD_CATEGORIA'))
-		// 								->orderByRaw('sum(CAN_TOTAL_OV) DESC')
-		// 								->get();
-
 
 		$lventas 					=	array();
-
 		$lventassalida 				=	viewVentaSalidas::join('ALM.PRODUCTO', 'ALM.PRODUCTO.NOM_PRODUCTO', '=', 'viewVentaSalidas2024.NombreProducto')
 										->join('CMP.CATEGORIA AS MARCA', 'MARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_MARCA')
 										->join('CMP.CATEGORIA AS TIPOMARCA', 'TIPOMARCA.COD_CATEGORIA', '=', 'ALM.PRODUCTO.COD_CATEGORIA_PRODUCTO_SUPERMERCADOS')

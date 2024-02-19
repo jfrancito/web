@@ -27,6 +27,104 @@ use App\WEBDespachoImprimirCantidad;
 class AtenderPedidoDespachoController extends Controller
 {
 
+	public function actionAjaxQuitarAgregarPedidoProductoGrupo(Request $request)
+	{
+
+		$check 					=	$request['check'];
+		$data_grupo 			=	$request['data_grupo'];
+		$despacho_id 			=	$request['data_despacho_id'];
+		$estado 				=	$request['estado'];
+
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$despacho_id)->first();
+
+
+		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
+		->where('grupo','=',$data_grupo)
+		->update(['ind_segmento' => $check]);
+
+		WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
+		->update(['segmento_palets' => '']);
+
+
+		$ind_todo 						=	1;
+		$detalletodo 					=	WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
+											->where('ind_segmento','=','0')
+											->get();
+		if(count($detalletodo)>0){
+			$ind_todo 					=	0;
+		}
+
+		//agregar valores 
+        $correlativo			=	0;
+    	foreach($ordendespacho->viewdetalleordendespacho as $index => $item){
+
+    		//$nroordecen = '';
+
+    		if($item->ind_segmento==1){
+    			$nroordecen		=	$item->nro_orden_cen;
+	    		if($index == 0){
+	    			$nroordecen		=	$item->nro_orden_cen;
+	    		}else{
+	    			if($nroordecen!=$item->nro_orden_cen){
+						$correlativo =	0;  
+						$nroordecen		=	$item->nro_orden_cen;			
+	    			}
+	    		}
+	    		$segmento_palets = '';
+	    		$primervalor = '';
+	    		$ultimovalor = '';
+	    		$countpalets =	$item->palets;	
+				for ($i = 1; $i <= $countpalets; $i++) {
+					$correlativo = $correlativo +1; 
+					if($i == 1){
+						$primervalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
+					}
+					if($i == $countpalets){
+						$ultimovalor = 	str_pad($correlativo, 4, "0", STR_PAD_LEFT);
+					}
+				}
+				
+				if($primervalor == $ultimovalor){
+					$segmento_palets = $primervalor;
+				}else{
+					$segmento_palets = $primervalor.' - '.$ultimovalor;
+				}
+
+				$detdespacho = WEBDetalleOrdenDespacho::where('id','=',$item->id_detalle)->first();
+				$detdespacho->segmento_palets = $segmento_palets;
+				$detdespacho->save();
+	    		//dd($detdespacho);
+    		}
+
+
+
+
+
+    	}
+
+        $listaxcantidad			=	WEBDespachoImprimir::orderby('item','asc')->get();
+        $listaxpalest			=	WEBDespachoImprimir::orderby('item','asc')->get();
+		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$despacho_id)->first();
+        $array_detalle_palets 	= 	array();
+        $array_detalle_cantidad = 	array();
+
+		$funcion 				= 	$this;
+
+		return View::make('despacho/ajax/alistadetallepedido',
+						 [
+						 	'ordendespacho' 			=> $ordendespacho,
+						 	'funcion' 					=> $funcion,
+						 	'listaxcantidad' 			=> $listaxcantidad,
+						 	'listaxpalest' 				=> $listaxpalest,
+						 	'array_detalle_palets' 		=> $array_detalle_palets,
+						 	'array_detalle_cantidad' 	=> $array_detalle_cantidad,
+						 	'ind_todo' 					=> $ind_todo,
+						 	'ajax' 						=> true,
+						 ]);
+	}
+
+
+
 	public function actionAjaxQuitarAgregarPedidoProducto(Request $request)
 	{
 
@@ -39,17 +137,12 @@ class AtenderPedidoDespachoController extends Controller
 		$ordendespacho 			=	WEBOrdenDespacho::where('id','=',$despacho_id)->first();
 
 		//dd($ordendespacho);
-
 		if($data_detalle_id =='todo'){
-
 			WEBDetalleOrdenDespacho::where('ordendespacho_id','=',$ordendespacho->id)
 			->where('tipo_grupo_oc','<>','muestras')
 			->where('activo','=','1')
 			->update(['ind_segmento' => $check]);
-
 		}else{
-
-
 			$detalledespacho 				=	WEBDetalleOrdenDespacho::where('id','=',$data_detalle_id)->first();
 			$detalledespacho->ind_segmento 	= 	$check;
 			$detalledespacho->save();

@@ -32,22 +32,11 @@
           @endif
           
       </div>
-<!--       <div id="va" class="tab-pane cont">
-          <div class="titulobanner">
-            <div><b>REPORTE BASADO EN {{$tituloban}}</b></div>
-          </div>
-          <div class="col-xs-12 contgrafico">
-              <div class='titulografico'><b>{{$empresa_nombre}} ({{$inicio}} / {{$hoy}})</b></div>
-              <div class='subtitulografico'><b>{{$simmodena}} {{number_format($totalimporte, 2, '.', ',')}} / {{$tipomarca_txt}}</b></div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style="margin-top: 15px;">
-              <div id="chart01" >
-              </div>
-          </div>  
-      </div> -->
+
     </div>
   </div>
   <input type="text" name="anio" id="anio" value='{{$anio}}' class='ocultar'>
+  
   <div id="meses" class='ocultar'>{{$meses}}</div>
   <div id="anio" class='ocultar'>{{$anio}}</div>
   <div id="mes" class='ocultar'>{{$mes}}</div>
@@ -67,6 +56,7 @@
   <div id="jtotal_s" class='ocultar'>{{$jtotal_s}}</div>
   <div id="simmodena" class='ocultar'>{{$simmodena}}</div>
   <div id="marca" class='ocultar'>{{$marca}}</div>
+  <div id="tituloban" class='ocultar'>{{$tituloban}}</div>
 
   @if(isset($ajax))
       <script src="{{ asset('public/js/analitica/ventasdetallexproducto.js?v='.$version) }}" type="text/javascript"></script>  
