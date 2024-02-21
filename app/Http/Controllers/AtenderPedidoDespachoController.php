@@ -314,6 +314,8 @@ class AtenderPedidoDespachoController extends Controller
 		$ordendespacho 						=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
     	$correlativo						=	0;
         $despachoc 							=	WEBOrdenDespacho::where('id','=',$pedido_id)->first();
+
+
         	//eliminar si existe
         WEBDespachoImprimir::where('activo',1)->delete();
         $array_detalle_palets = array();
@@ -389,6 +391,13 @@ class AtenderPedidoDespachoController extends Controller
 	        		
 					for ($i = 1; $i <= $countpalets; $i++) {
 
+						if(trim($equivalente->EAN14)==''){
+							$campoean14 = '';
+						}else{
+							$campoean14 = 'EAN 14 : '.trim($equivalente->EAN14);
+						}
+
+
 						$correlativo							=	$correlativo +1; 
 						$clpn 									= 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
 
@@ -462,7 +471,7 @@ class AtenderPedidoDespachoController extends Controller
 			        	$despacho->sku		 					=	trim($equivalente->COD_SKU);
 			        	$despacho->costosku		 				=	$detalleproducto->CAN_PRECIO_UNIT;
 			        	$despacho->ean13		 				=	trim($equivalente->COD_EAN);
-			         	$despacho->ean14		 				=	trim($equivalente->EAN14);
+			         	$despacho->ean14		 				=	$campoean14;
 			        	$despacho->lpn		 					=	$lpn;
 		         		$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
 
@@ -539,7 +548,10 @@ class AtenderPedidoDespachoController extends Controller
 			        	$despacho->sku		 					=	trim($equivalente->COD_SKU);
 			        	$despacho->costosku		 				=	$detalleproducto->CAN_PRECIO_UNIT;
 			        	$despacho->ean13		 				=	trim($equivalente->COD_EAN);
-			         	$despacho->ean14		 				=	trim($equivalente->EAN14);
+
+			         	$despacho->ean14		 				=	$campoean14;
+
+
 			        	$despacho->lpn		 					=	$lpn;
 		         		$despacho->ind_ean13		 			=	$equivalente->ESGRANEL;
 
