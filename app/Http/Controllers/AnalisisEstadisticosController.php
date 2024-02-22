@@ -284,6 +284,9 @@ class AnalisisEstadisticosController extends Controller
 							'ajax' 			=> true
 						 ]);
 	}
+
+
+	
 	public function actionVentas($idopcion,Request $request)
 	{
 

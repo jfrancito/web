@@ -56,6 +56,11 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-autoservicio-filtro', 'AnalisisEstadisticosController@actionAjaxModalAutoservicioFiltro');
 
 
+
+	Route::get('/gestion-de-ventas-autoservicio-anios/{idopcion}', 'AnalisisEstadisticosAniosController@actionVentaAutoservicioEntreAnios');
+	Route::any('/ajax-listado-de-ventasxautoservicioanio', 'AnalisisEstadisticosAniosController@actionAjaxListarVentasxAutoservicioAnio');
+
+
 	Route::any('/gestion-de-usuarios/{idopcion}', 'UserController@actionListarUsuarios');
 	Route::any('/agregar-usuario/{idopcion}', 'UserController@actionAgregarUsuario');
 	Route::any('/modificar-usuario/{idopcion}/{idusuario}', 'UserController@actionModificarUsuario');

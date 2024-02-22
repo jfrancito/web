@@ -32,6 +32,7 @@ $(document).ready(function(){
                 }
               },
       dataLabels: {
+        
                 enabled: true,
                 formatter: function (val) {
 
