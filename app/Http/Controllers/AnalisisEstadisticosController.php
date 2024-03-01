@@ -735,6 +735,32 @@ class AnalisisEstadisticosController extends Controller
 		}
 
 
+		for($i=0; $i<count($nmeses); $i++)
+      	{
+      		$sw = 0;
+			for($j=0; $j<count($meses); $j++)
+	      	{
+	      		if($i == $j){
+	      			$sw = 1;
+	      		}
+	      	}
+	      	if($sw == 0){
+				$aleatorio 					= 	$this->obtenerNumeroAleatorioNoRepetido(0, 29, $numerosGenerados);
+
+
+				$meses[$count_s] 			= 	$nmeses[$i];
+				$tventas_s[$count_s]  		= 	0.00;
+				$tcolores_s[$count_s] 		= 	$colorArray[$aleatorio];
+				$totalimporte_s 			= 	$totalimporte_s + 0.00;
+				$ttotal_s[$count_s] 		=	100;
+				$tcosto_s[$count_s] 		= 	0.00;
+				$tutilidad_s[$count_s] 		= 	0.00;
+	      		$count_s 					=	$count_s +1;
+	      	}
+      	}
+
+		// dd($tventas_s);
+
 		$jmeses_s 	=		json_encode($meses);
 		$jventas_s 	=		json_encode($tventas_s);
 		$jtnc_s 	=		json_encode($tnc_s);

@@ -14,10 +14,10 @@
               <div class="panel panel-default panel-table">
                 <div class="panel-heading" ><b style="font-style: italic;">REPORTE VENTA DE AUTOSERVICIO</b>
                   <div class="tools tooltiptop">
-                    <a href="#" class="tooltipcss" id='buscarautoservicio' >
+<!--                     <a href="#" class="tooltipcss" id='buscarautoservicio' >
                       <span class="tooltiptext">Buscar</span>
                       <span class="icon mdi mdi-search" style="font-size: 40px;"></span>
-                    </a>
+                    </a> -->
                   </div>
                 </div>
                 <div class="panel-body selectfiltro">
@@ -79,6 +79,18 @@
                             </div>
                           </div>
                       </div> 
+
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
+                          <div class="form-group">
+                            <a href="#" class="tooltipcss btn btn-space btn-success" id='buscarautoservicio' style="margin-top:32px;margin-left: 15px;" >
+                              BUSCAR
+                            </a>
+                          </div>
+                      </div> 
+
+
+
+
 
                   </div>
                   <div class="col-xs-12">

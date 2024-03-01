@@ -14,6 +14,7 @@ $(document).ready(function(){
     const ameses_s  = JSON.parse(meses_s);
     var simmodena = $('#simmodena').html();
 
+    debugger;
     var optionsmeses = {
       series: [{
                 name: 'Ventas',

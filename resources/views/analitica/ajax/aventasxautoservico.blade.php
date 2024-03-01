@@ -29,9 +29,13 @@
         var   totalimporte_s    = $('#totalimporte_s').html();
 
 
+        var data_total          = new oNumero(totalimporte_s);
+        data_total              = data_total.formato(2, true);
+
+
         $('.titulo01').html('01 REPORTE VENTAS AUTOSERVICIO EN '+tituloban);
         $('.subtitulo0101').html(inicio + ' / '+ hoy);
-        $('.subtitulo0102').html(simmodena + ' '+ totalimporte_s);
+        $('.subtitulo0102').html(simmodena + ' '+ data_total);
 
 
         chartaut.updateSeries([{
