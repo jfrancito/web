@@ -64,11 +64,12 @@
                       </div> 
 
 
+
                       <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
 
-                          <div class="form-group">
-                            <label class="col-sm-12 control-label labelleft" style="margin-bottom:5px;">Ventas Equivalente en :</label>
-                            <div class="col-sm-12 abajocaja" >
+                        <div class="input-group my-group">
+                            <label class="col-sm-12 control-label labelleft" >Ventas Equivalente en:</label>
+
                               {!! Form::select( 'tiporeporte', $combotr, array($tiporeporte),
                                                 [
                                                   'class'       => 'select2 form-control control input-sm' ,
@@ -76,21 +77,16 @@
                                                   'required'    => '',
                                                   'data-aw'     => '1',
                                                 ]) !!}
-                            </div>
-                          </div>
+                              <span class="input-group-btn">
+                                <button class="btn btn-primary"
+                                        type="button" 
+                                        id='buscarautoservicio'
+                                        style="margin-top: 26px;height: 48px;"
+                                        >
+                                        <span class="mdi mdi-search"></span></button>
+                              </span>
+                        </div>
                       </div> 
-
-                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
-                          <div class="form-group">
-                            <a href="#" class="tooltipcss btn btn-space btn-success" id='buscarautoservicio' style="margin-top:32px;margin-left: 15px;" >
-                              BUSCAR
-                            </a>
-                          </div>
-                      </div> 
-
-
-
-
 
                   </div>
                   <div class="col-xs-12">

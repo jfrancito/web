@@ -49,8 +49,9 @@
 				      	</div>
 				      	<div id="an" class="tab-pane cont">
 				          	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 cajareporte">
+
 				                <div class="input-group my-group">
-									<label class="col-sm-12 control-label labelleft" >AÑO:</label>
+														<label class="col-sm-12 control-label labelleft" >AÑO:</label>
 
 					                  {!! Form::select( 'anio', $comboanio, array($tipomarca_sel),
 					                                    [
@@ -68,6 +69,7 @@
 				                                <span class="mdi mdi-search"></span></button>
 				                      </span>
 				                </div>
+				                
 				          	</div>
 				      	</div>
 				    </div>

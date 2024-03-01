@@ -28,7 +28,8 @@ $(document).ready(function(){
                 bar: {
                   borderRadius: 10,
                   dataLabels: {
-                    position: 'top', // top, center, bottom
+                    position: 'center', // top, center, bottom,
+                    orientation: 'vertical'
                   },
                 }
               },
@@ -51,7 +52,7 @@ $(document).ready(function(){
     
       xaxis: {
                 categories: ameses_s,
-                position: 'top',
+                position: 'bottom',
                 axisBorder: {
                   show: false
                 },
