@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Log;
 use App\WEBRegla,App\WEBIlog,App\WEBMaestro,App\WEBPedido,App\User,App\WEBReglaCreditoCliente;
 use Mail;
 use PDO;
+use App\Traits\WhatsappTraits;
 
 class PedidoNotificacionVendedor extends Command
 {
+    use WhatsappTraits;
     /**
      * The name and signature of the console command.
      *
@@ -90,6 +92,11 @@ class PedidoNotificacionVendedor extends Command
             $correorv           =   $vendedor->email;
             $codigo             =   $item->codigo;
 
+            //whatsaap
+            $mensaje            =   'NOTA DE PEDIDO : '.$item->codigo.'%0D%0A'.'Solicitud : '.$vendedor->nombre;
+            $this->insertar_whatsaap('51979820173','JORGE FRANCELLI',$mensaje,'');
+            $this->insertar_whatsaap('51953251272','MAGALY',$mensaje,'');
+            $this->insertar_whatsaap('51943516853','JOSE LUIS',$mensaje,'');
 
             Mail::send('emails.notificacionpedido', $array, function($message) use ($emailfrom,$email,$codigo,$correorv)
             {
