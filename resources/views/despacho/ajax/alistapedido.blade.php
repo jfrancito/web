@@ -312,7 +312,6 @@
     <div class="col-xs-12" >
 
       <div class="col-xs-6">
-
         <div class="panel panel-default panel-table panel-muestra-pedido">
           <div class="panel-heading"><b>Muestras</b></div>
           <div class="panel-body">
@@ -359,17 +358,27 @@
             </table>
           </div>
         </div>
-
-
-
       </div>
+
+
       <div class="col-xs-6" style="text-align: right;">
           <form method="POST"  action="{{ url('/crear-orden-pedido-despacho/'.$opcion_id) }}" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
               {{ csrf_field() }}
-            <input type="hidden" name="array_detalle_producto" id='array_detalle_producto' value='{{json_encode($array_detalle_producto)}}'>
-            <input type="hidden" name="ind_plantilla" id='ind_plantilla' value=''>
-            <input type="hidden" name="array_detalle_producto_muestra" id='array_detalle_producto_muestra' value='{{json_encode($array_detalle_producto_muestra)}}'>
-            <button type="submit" class="btn btn-space btn-primary btn-guardar-pedido">Guardar</button>
+
+              <div class="col-xs-12 col-sm-6 col-md-8 col-lg-10 cajareporte ajax_combo_tipo">
+                @include('despacho.combo.combotipo')
+              </div>
+              <div class="col-xs-12 col-sm-6 col-md-8 col-lg-10 cajareporte ajax_combo_puntoentrega">
+                @include('despacho.combo.combopuntoentrega')
+              </div>
+
+              <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 cajareporte">
+                <input type="hidden" name="array_detalle_producto" id='array_detalle_producto' value='{{json_encode($array_detalle_producto)}}'>
+                <input type="hidden" name="ind_plantilla" id='ind_plantilla' value=''>
+                <input type="hidden" name="array_detalle_producto_muestra" id='array_detalle_producto_muestra' value='{{json_encode($array_detalle_producto_muestra)}}'>
+                <button type="submit" class="btn btn-space btn-primary btn-guardar-pedido">Guardar</button>
+
+              </div>
           </form>
       </div>
 

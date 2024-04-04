@@ -17,6 +17,7 @@ use Mail;
 use PDF;
 use App\WEBOrdenDespacho,App\WEBDetalleOrdenDespacho,App\CMPOrden,App\WEBListaCliente,App\ALMProducto,App\CMPCategoria;
 use App\WEBViewDetalleOrdenDespacho,App\ALMCentro;
+use App\WEBEstado;
 
 
 class PedidoDespachoController extends Controller
@@ -102,12 +103,16 @@ class PedidoDespachoController extends Controller
 	    $ordendespacho 								=   WEBOrdenDespacho::where('id','=',$ordendespacho_id)->first();
 		$funcion 									= 	$this;
 
-
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
 
 		return View::make('despacho/ajax/alistapedidogestion',
 						 [
 						 	'ordendespacho' 			=> $ordendespacho,
 						 	'funcion' 					=> $funcion,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
 						 	'ajax'   		  			=> true,
 						 ]);
 	}
@@ -395,12 +400,17 @@ class PedidoDespachoController extends Controller
 
 	    $ordendespacho 							=   WEBOrdenDespacho::where('id','=',$ordendespacho_id)->first();
 		$funcion 								= 	$this;
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
 
 
 		return View::make('despacho/ajax/alistapedidogestion',
 						 [
 						 	'ordendespacho' 			=> $ordendespacho,
 						 	'funcion' 					=> $funcion,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
 						 	'ajax'   		  			=> true,
 						 ]);
 
@@ -439,6 +449,10 @@ class PedidoDespachoController extends Controller
 
 		$comboordencen 					= 	array('' => "Seleccione orden cen");
 
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 		return View::make('despacho/modal/ajax/lproducto',
 						 [
@@ -449,6 +463,9 @@ class PedidoDespachoController extends Controller
 						 	'comboclientes' 			=> $comboclientes,
 						 	'comboordencen' 			=> $comboordencen,
 						 	'funcion' 					=> $funcion,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
 						 	'ajax' 						=> true,
 						 ]);
 
@@ -756,6 +773,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
 
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -767,6 +788,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -784,6 +808,11 @@ class PedidoDespachoController extends Controller
 		$array_centro_id 			=   ['CEN0000000000001','CEN0000000000004','CEN0000000000006'];
 		$combo_lista_centros 		= 	$this->funciones->combo_lista_centro_array_filtro($array_centro_id);
 
+
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 		return View::make('despacho/gestionordendespacho',
 						 [
 						 	'ordendespacho' 						=> $ordendespacho,
@@ -791,6 +820,9 @@ class PedidoDespachoController extends Controller
 						 	'idopcion' 								=> $idopcion,
 						 	'idordendespacho' 						=> $idordendespacho,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
 						 ]);
 
 	}
@@ -888,6 +920,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
 
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -899,6 +935,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -928,6 +967,29 @@ class PedidoDespachoController extends Controller
 				$array_detalle_producto_muestra_request 	= 	json_decode($request['array_detalle_producto_muestra'],true);
 				$ind_plantilla 	= 	$request['ind_plantilla'];
 
+
+				$lugarentrega 	= 	$request['lugarentrega'];
+				$tipo 			= 	$request['tipo'];
+
+				$led 			=	WEBEstado::where('id','=',$lugarentrega)->first();
+				$tid 			=	WEBEstado::where('id','=',$tipo)->first();
+
+				$leid           =   '';
+				$lenombre       =   '';
+				$tiid 			=	'';
+				$tinombre       =	'';
+
+				if(count($led)>0){
+					$leid           =   $led->id;
+					$lenombre       =   $led->nombre;
+				}
+
+				if(count($tid)>0){
+					$tiid           =   $tid->id;
+					$tinombre       =   $tid->nombre;
+				}
+
+
 				//PEDIDO
 				$cabecera            	 	=	new WEBOrdenDespacho;
 				$cabecera->id 	     	 	=  	$idordendespacho;
@@ -936,10 +998,20 @@ class PedidoDespachoController extends Controller
 				$cabecera->fecha_crea 	 	=   $this->fechaactual;
 				$cabecera->fecha_orden 	 	=   $this->fecha_sin_hora;
 				$cabecera->ind_plantilla 	=   $ind_plantilla;
+
+				$cabecera->tipo_id 			=   $tiid;
+				$cabecera->tipo_nombre 		=   $tinombre;
+				$cabecera->lugarentrega_id 	=   $leid;	
+				$cabecera->lugarentrega_nombre 	=   $lenombre;	
+
+
 				$cabecera->usuario_crea 	=   Session::get('usuario')->id;
 				$cabecera->empresa_id 		=   Session::get('empresas')->COD_EMPR;
 				$cabecera->centro_id 		=   Session::get('centros')->COD_CENTRO;
 				$cabecera->save();
+
+
+
 
 				foreach($array_detalle_producto_request as $key => $row) {
 
@@ -1156,6 +1228,10 @@ class PedidoDespachoController extends Controller
 			$combo_lista_centros 		= 	$this->funciones->combo_lista_centro();
 			$combo_con_sin_muestra 		= 	$this->funciones->combo_con_sin_muestra();
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 			return View::make('despacho/crearordenpedidodespacho',
 							 [
 							 	'idopcion' 				=> $idopcion,
@@ -1167,9 +1243,86 @@ class PedidoDespachoController extends Controller
 							 	'combo_lista_centros' 	=> $combo_lista_centros,
 							 	'numero_mobil' 			=> $numero_mobil,
 							 	'combo_con_sin_muestra' => $combo_con_sin_muestra,
+
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
+
 							 ]);
 		}
 	}
+
+
+	public function actionAjaxModalConfiguracionTipo(Request $request)
+	{
+
+		// $estado = WEBEstado::
+
+
+		return View::make('despacho/modal/ajax/configuraciontipo',
+						 [
+						 	'ajax'   		  						=> true,
+						 ]);
+	}
+
+
+	public function actionAjaxModalConfiguracionLugarEntrega(Request $request)
+	{
+
+		return View::make('despacho/modal/ajax/configuracionlugarentrega',
+						 [
+						 	'ajax'   		  						=> true,
+						 ]);
+	}
+
+
+	public function modificarconfiguraciontipo(Request $request)
+	{
+
+		$lbltipo 							= 	$request['lbltipo'];
+		$idestado							= 	$this->funciones->getCreateIdMaestraEstado('WEB.estados','ESTI','ESTADO_TIPO');
+
+		$producto 							= 	New WEBEstado;
+		$producto->id 						= 	$idestado;
+		$producto->tipoestado 				= 	'ESTADO_TIPO';
+		$producto->nombre 					= 	$lbltipo;
+		$producto->activo 					= 	1;		
+		$producto->save();
+
+		$combotipo 							= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		// $combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+		return View::make('despacho/combo/combotipo',
+						 [
+						 	'combotipo' 				=> $combotipo,
+						 	'ajax'   		  			=> true,
+						 ]);
+	}
+
+
+	public function modificarconfiguracionLugarEntrega(Request $request)
+	{
+
+		$lbllugarentrega 					= 	$request['lbllugarentrega'];
+		$idestado							= 	$this->funciones->getCreateIdMaestraEstado('WEB.estados','ESLE','ESTADO_LUGARENTREGA');
+
+		$producto 							= 	New WEBEstado;
+		$producto->id 						= 	$idestado;
+		$producto->tipoestado 				= 	'ESTADO_LUGARENTREGA';
+		$producto->nombre 					= 	$lbllugarentrega;
+		$producto->activo 					= 	1;		
+		$producto->save();
+
+		
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+		return View::make('despacho/combo/combopuntoentrega',
+						 [
+						 	'combole' 				=> $combole,
+						 	'ajax'   		  			=> true,
+						 ]);
+	}
+
 
 
 
@@ -1225,6 +1378,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra = array();
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -1236,6 +1393,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1312,6 +1472,11 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra = array();
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
+
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -1322,6 +1487,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1360,6 +1528,10 @@ class PedidoDespachoController extends Controller
 		$funcion 					= 	$this;
 
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -1370,6 +1542,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1412,6 +1587,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -1422,6 +1601,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1479,6 +1661,11 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -1489,6 +1676,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1578,6 +1768,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 		return View::make('despacho/ajax/alistapedido',
 						 [
 						 	'array_detalle_producto' 				=> $array_detalle_producto,
@@ -1588,6 +1782,9 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 	}
@@ -1689,6 +1886,9 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra = array();
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -1700,6 +1900,11 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
+
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -1804,6 +2009,10 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
 
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -1815,6 +2024,10 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -1911,6 +2124,14 @@ class PedidoDespachoController extends Controller
 		$array_detalle_producto_muestra = array();
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
 
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
+			$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+			$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 		return View::make('despacho/ajax/alistapedido',
 						 [
@@ -1922,6 +2143,12 @@ class PedidoDespachoController extends Controller
 						 	'funcion' 								=> $funcion,
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
+
+							 	'combotipo' 							=> $combotipo,
+							 	'combole' 								=> $combole,
+
 						 	'ajax'   		  						=> true,
 						 ]);
 
@@ -2033,6 +2260,12 @@ class PedidoDespachoController extends Controller
 		//crear tabla muestras
 		$array_detalle_producto_muestra = array();
 		$array_detalle_producto_muestra  = 	$this->funciones->crear_array_producto_muestras($array_detalle_producto,$array_detalle_producto_muestra);
+		
+
+		$combotipo 		= $this->funciones->combo_estados_web('ESTADO_TIPO');
+		$combole 		= $this->funciones->combo_estados_web('ESTADO_LUGARENTREGA');
+
+
 
 
 		return View::make('despacho/ajax/alistapedido',
@@ -2045,6 +2278,8 @@ class PedidoDespachoController extends Controller
 						 	'opcion_id' 							=> $opcion_id,
 						 	'combo_lista_centros' 					=> $combo_lista_centros,
 						 	'funcion' 								=> $funcion,
+						 	'combotipo' 							=> $combotipo,
+						 	'combole' 								=> $combole,
 						 	'ajax'   		  						=> true,
 						 ]);
 

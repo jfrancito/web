@@ -205,4 +205,28 @@
 
     </table>
 
+
+
+      <table class="table demo" >
+
+          <tr><th></th></tr>  
+          <tr>
+            <th>TIPO : </th>
+            <th>{{$pedido->tipo_nombre}}</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>  
+          <tr>
+            <th>LUGAR ENTREGA :</th>
+            <th>{{$pedido->lugarentrega_nombre}}</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>                            
+      </table>
+
+
 </html>

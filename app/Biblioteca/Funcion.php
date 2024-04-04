@@ -15,6 +15,7 @@ use App\CMPAprobarDoc;
 use App\WEBCategoriaActivoFijo;
 use App\WEBActivoFijo;
 use App\WEBAsignarRegla;
+use App\WEBEstado;
 
 use App\WEBPlanillaComision;
 use App\WEBDetallePlanillaComision;
@@ -5348,6 +5349,20 @@ class Funcion{
 	}
 
 
+	public function combo_estados_web($tipo) {
+
+		$lista_centros 				= 	WEBEstado::where('activo','=','1')
+										->where('tipoestado','=',$tipo)
+										->pluck('nombre','id')
+										->toArray();
+
+		$combocentros  				=   array('' => "Seleccione Estado") + $lista_centros;
+
+	 	return  $combocentros;				 			
+	}
+
+
+
 	//18-10-2019
 	public function combo_lista_productos() {
 
@@ -5511,6 +5526,34 @@ class Funcion{
   		return $idopcioncompleta;	
 
 	}
+
+
+	public function getCreateIdMaestraEstado($tabla,$prefijo,$tipo) {
+
+  		$id="";
+
+  		// maximo valor de la tabla referente
+		$id = DB::table($tabla)
+		->where('tipoestado','=',$tipo)
+        ->select(DB::raw('max(SUBSTRING(id,5,8)) as id'))
+        ->get();
+
+        //conversion a string y suma uno para el siguiente id
+        $idsuma = (int)$id[0]->id + 1;
+
+	  	//concatenar con ceros
+	  	$idopcioncompleta = str_pad($idsuma, 8, "0", STR_PAD_LEFT);
+
+	  	//concatenar prefijo
+		$prefijo = $prefijo;
+
+		$idopcioncompleta = $prefijo.$idopcioncompleta;
+
+  		return $idopcioncompleta;	
+
+	}
+
+
 
 	public function decodificarmaestra($id) {
 

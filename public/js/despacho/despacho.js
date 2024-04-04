@@ -735,6 +735,110 @@ $(document).ready(function(){
 
     });
 
+    $(".despacho").on('click','#modificarconfiguracionlugarentrega', function() {
+
+        event.preventDefault();
+        var _token                  = $('#token').val();
+        var lbllugarentrega                 = $('#lbllugarentrega').val();
+        if(lbllugarentrega == ''){alerterrorajax("Ingrese valor lugar entrega");return false;}
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modificar-configuracion-lugar-entrega",
+            data    :   {
+                            _token                      : _token,
+                            lbllugarentrega                     : lbllugarentrega
+                        },
+            success: function (data) {
+                alertajax("Registro exitosa");
+                $('.ajax_combo_puntoentrega').html(data);
+                $('#modal-cofiguracion-cantidad').niftyModal('hide');
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+
+    });
+
+
+    $(".despacho").on('click','#modificarconfiguraciontipo', function() {
+
+        event.preventDefault();
+        var _token                  = $('#token').val();
+        var lbltipo                 = $('#lbltipo').val();
+        if(lbltipo == ''){alerterrorajax("Ingrese valor tipo");return false;}
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modificar-configuracion-tipo",
+            data    :   {
+                            _token                      : _token,
+                            lbltipo                     : lbltipo
+                        },
+            success: function (data) {
+                alertajax("Registro exitosa");
+                $('.ajax_combo_tipo').html(data);
+                $('#modal-cofiguracion-cantidad').niftyModal('hide');
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+
+    });
+
+
+    $(".despacho").on('click','.configuracion-tipo', function() {
+
+        var _token              = $('#token').val();
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modal-configuracion-tipo",
+            data    :   {
+                            _token          : _token
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.modal-configuracion-container').html(data);
+                $('#modal-cofiguracion-cantidad').niftyModal();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+    });
+
+    $(".despacho").on('click','.configuracion-lugar-entrega', function() {
+
+        var _token              = $('#token').val();
+
+        abrircargando();
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modal-configuracion-lugar-entrega",
+            data    :   {
+                            _token          : _token
+                        },
+            success: function (data) {
+                cerrarcargando();
+                $('.modal-configuracion-container').html(data);
+                $('#modal-cofiguracion-cantidad').niftyModal();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+    });
+
+
+
 
     $(".despacho").on('click','.configuracion-despacho-cantidad', function() {
 

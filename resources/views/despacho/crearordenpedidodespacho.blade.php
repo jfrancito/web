@@ -7,6 +7,13 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/select2/css/select2.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/bootstrap-slider/css/bootstrap-slider.css') }} "/>
+
+    <style type="text/css">
+      .select2-selection__rendered{
+        text-align: left; !important;
+      }
+    </style>
+
 @stop
 @section('section')
 
