@@ -18,6 +18,7 @@
       <th>Fecha Orden</th>
       <th>Cliente</th>
       <th>Estado Orden</th>
+      <th>Alias</th>
       <th>Sel</th>
     </tr>
   </thead>
@@ -35,7 +36,17 @@
           <td>{{$row['NRO_ORDEN_CEN']}}</td>
           <td>{{date_format(date_create($row['FEC_ORDEN']), 'd-m-Y')}}</td>
           <td>{{$row['TXT_EMPR_CLIENTE']}}</td>
+
+
           <td>{{$row['TXT_CATEGORIA_ESTADO_ORDEN']}}</td>
+          <td class='alias'>
+              {!! Form::select( 'alias', $comboalias, array(""),
+                            [
+                              'class'       => 'form-control control input-tabla' ,
+                              'id'          => 'alias',
+              ]) !!}
+          </td>
+
           <td>
             <div class="text-center be-checkbox be-checkbox-sm has-primary">
               <input  

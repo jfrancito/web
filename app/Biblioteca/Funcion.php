@@ -2267,7 +2267,7 @@ class Funcion{
 										   $cantidad,$kilos,$cantidad_sacos,$palets,$grupo,
 										   $grupo_orden,$grupo_movil,$grupo_orden_movil,$correlativo,$tipo_grupo_oc,
 										   $presentacion_producto,$centro_atender_id,$centro_atender_txt,
-										   $empresa_atender_id,$empresa_atender_txt){
+										   $empresa_atender_id,$empresa_atender_txt,$alias_id,$alias_nombre){
 
 
 		return						array(
@@ -2296,7 +2296,9 @@ class Funcion{
 								            "centro_atender_id"     	=> $centro_atender_id,
 								            "centro_atender_txt"     	=> $centro_atender_txt,
 								            "empresa_atender_id"     	=> $empresa_atender_id,
-								            "empresa_atender_txt"     	=> $empresa_atender_txt
+								            "empresa_atender_txt"     	=> $empresa_atender_txt,
+								            "alias_id"     				=> $alias_id,
+								            "alias_nombre"     			=> $alias_nombre
 								        );
 
 

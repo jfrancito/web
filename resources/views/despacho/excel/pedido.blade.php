@@ -30,7 +30,10 @@
           <th class= 'center tablaho'>Fecha pedido</th>  
           <th class= 'center tablaho'>Fecha entrega</th>           
           <th class= 'center tablaho'>Cliente</th>
-          <th class= 'center tablaho'>Orden Cen</th> 
+          <th class= 'center tablaho'>Orden Cen</th>
+          <th class= 'center tablaho'>Alias</th>
+
+
           <th class= 'center tablaho'>Producto</th>
           <th class= 'center tablaho'>Unidad medida</th>
           <th class= 'center tablaho' >Cantidad</th>
@@ -80,7 +83,7 @@
                     {{$funcion->nombre_cliente_despacho_cliente($item->cliente_id)}}
                   @endif</td>
               <td>{{substr($item->nro_orden_cen, 0, -1)}}</td>
-
+              <td>{{$item->alias_nombre}}</td>
               <td>{{$item->producto->NOM_PRODUCTO}}</td>
               <td>{{$unidad_medida}}</td>
 
@@ -163,6 +166,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
             <th>Muestras</th>
           </tr>                            
       </table>
@@ -175,12 +179,14 @@
               <th></th>
               <th></th>
               <th></th>
+              <th></th>
               <th class= 'center tablaho'>Producto</th>
               <th class= 'center tablaho'>Unidad de medida</th>
               <th class= 'center tablaho'>muestra</th>
           </tr>
           @foreach($muestras as $index => $item)
               <tr>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>

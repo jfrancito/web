@@ -1352,6 +1352,9 @@ $(document).ready(function(){
         var tabestado               = $('#tabestado').val();
         var opcion_id               = $('#opcion').val();
 
+
+
+
         if(tabestado == 'prod'){
 
             var cuenta_id_m             = $('#cuenta_id_m').val();
@@ -1394,7 +1397,7 @@ $(document).ready(function(){
             data_orden_cen = dataenviar();
             if(data_orden_cen.length<=0){alerterrorajax('Seleccione por lo menos una fila'); return false;}
             $('#modal-detalledocumento').niftyModal('hide');
-
+            debugger;
 
             $.ajax({
 
@@ -1630,10 +1633,13 @@ function dataenviar(){
 
         check           = $(this).find('.input_asignar_oc');
         ordencen_id     = $(this).attr('data_orden_id');
+        alias           = $(this).children(".alias").children("#alias").val();
 
         if($(check).is(':checked')){
             data.push({
-                ordencen_id     : ordencen_id
+                ordencen_id     : ordencen_id,
+                alias     : alias,
+
             });
         }               
 

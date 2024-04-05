@@ -151,7 +151,7 @@
                         <td class="cell-detail relative" rowspan = "{{$item['grupo_orden']}}" > 
                           <span><b>Cliente</b> : {{$item['empresa_cliente_nombre']}}</span>
                           <span><b>Orden Cen</b> : {{$item['orden_cen']}}</span>
-
+                          <span><b>Alias</b> : {{$item['alias_nombre']}}</span>
 
                           @if($item['tipo_grupo_oc'] == 'oc_grupo') 
                             <div class="text-center be-checkbox be-checkbox-sm has-primary absolute" style="bottom: 10px;right: 6px;" >

@@ -604,7 +604,8 @@ class PedidoDespachoController extends Controller
 									$item['fecha_entrega'],$item['producto_id'],$item['nombre_producto'],$item['unidad_medida_id'],$item['nombre_unidad_medida'],
 									$cantidad_atender,$kilos,$cantidad_sacos,$faltante_palets,$correlativo,
 									'1',$grupo_mobil,$item['grupo_orden_movil'],$correlativo,'oc_individual',
-									$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']);
+									$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']
+									,$item['alias_id'],$item['alias_nombre']);
 					array_push($array_detalle_producto,$array_nuevo_producto);
 
 					$sumar_33_paltes 			=   $sumar_33_paltes + $faltante_palets;
@@ -642,7 +643,7 @@ class PedidoDespachoController extends Controller
 										$item['fecha_entrega'],$item['producto_id'],$item['nombre_producto'],$item['unidad_medida_id'],$item['nombre_unidad_medida'],
 										$cantidad_atender,$kilos,$cantidad_sacos,$faltante_palets,$correlativo,
 										'1',$grupo_mobil,$item['grupo_orden_movil'],$correlativo,'oc_individual',
-										$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']);
+										$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt'],$item['alias_id'],$item['alias_nombre']);
 						array_push($array_detalle_producto,$array_nuevo_producto);
 
 						$sumar_33_paltes 			=   $sumar_33_paltes + $faltante_palets;
@@ -704,7 +705,7 @@ class PedidoDespachoController extends Controller
 										$item['fecha_entrega'],$item['producto_id'],$item['nombre_producto'],$item['unidad_medida_id'],$item['nombre_unidad_medida'],
 										$cantidad_atender,$kilos,$cantidad_sacos,$faltante_palets,$correlativo,
 										'1',$grupo_mobil,$item['grupo_orden_movil'],$correlativo,'oc_individual',
-										$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt']);
+										$item['presentacion_producto'],$item['centro_atender_id'],$item['centro_atender_txt'],$item['empresa_atender_id'],$item['empresa_atender_txt'],$item['alias_id'],$item['alias_nombre']);
 						array_push($array_detalle_producto,$array_nuevo_producto);
 
 						$sumar_33_paltes 			=   $sumar_33_paltes + $faltante_palets;
@@ -1073,7 +1074,8 @@ class PedidoDespachoController extends Controller
 					$detalle->palets_atender 			=  	$palets_atende;
 					$detalle->fecha_carga 				=  	'';
 					$detalle->fecha_recepcion 			=  	'';
-
+					$detalle->alias_id 					=  	$row['alias_id'];
+					$detalle->alias_nombre 				=  	$row['alias_nombre'];
 
 					$detalle->save();
 			    }
@@ -2096,7 +2098,7 @@ class PedidoDespachoController extends Controller
 			$this->funciones->llenar_array_productos($cliente_id,$cliente_nombre,'','',$this->fin,
 							$this->fin,$producto->COD_PRODUCTO,$producto->NOM_PRODUCTO,$producto->COD_CATEGORIA_UNIDAD_MEDIDA,$unidad_medida->NOM_CATEGORIA,
 							$cantidad_atender,$kilos,$cantidad_sacos,$palets,$grupo,'1',$numero_mobil,'1',$correlativo,'oc_individual',$producto->CAN_PESO_MATERIAL,
-							'','','','');
+							'','','','','','');
 
 
 			$rowspan 						= 	$rowspan + 1;
@@ -2171,6 +2173,14 @@ class PedidoDespachoController extends Controller
 
 		foreach($data_orden_cen as $obj){
 
+			//alias
+			$nombre_alias 					=	'';
+			$id_alias 						=	$obj['alias'];
+			//alias
+			$alias 							=	WEBEstado::where('id','=',$id_alias)->first();
+			if(count($alias)>0){
+				$nombre_alias 				=	$alias->nombre;
+			}
 
 
 		    $ordencen_id 					= 	$obj['ordencen_id'];
@@ -2217,7 +2227,7 @@ class PedidoDespachoController extends Controller
 				$this->funciones->llenar_array_productos($orden->COD_EMPR_CLIENTE,$orden->TXT_EMPR_CLIENTE,$row['COD_TABLA'],$orden->NRO_ORDEN_CEN,$this->fin,
 					$this->fin,$row['COD_PRODUCTO'],$row['TXT_NOMBRE_PRODUCTO'],$row['COD_CATEGORIA_UNIDAD_MEDIDA'],$unidad_medida->NOM_CATEGORIA,
 					$row['CAN_PRODUCTO'],$kilos,$cantidad_sacos,$palets,$grupo,$grupo_orden,$grupo_movil,$grupo_orden_movil,$correlativo,$tipo_grupo,$producto->CAN_PESO_MATERIAL,
-					'','','','');
+					'','','','',$id_alias,$nombre_alias);
 
 				$rowspan 	= 	$rowspan + 1;
 				array_push($array_detalle_producto,$array_nuevo_producto);
@@ -2395,6 +2405,8 @@ class PedidoDespachoController extends Controller
 		$listaordencen					= 	$this->funciones->lista_orden_cen($empresa_id,$cliente_id,$centro_id,$fecha_inicio,$fecha_fin);
 
 		$combotipogrupo					= 	array('oc_grupo' => "Grupo",'oc_individual' => "Individual"); 	
+		$comboalias 					= 	$this->funciones->combo_estados_web('ESTADO_ALIAS');
+
 
 		return View::make('despacho/modal/ajax/ordencenproducto',
 						 [
@@ -2405,6 +2417,7 @@ class PedidoDespachoController extends Controller
 						 	'listaordencen' 			=> $listaordencen,
 						 	'funcion' 					=> $funcion,
 						 	'combotipogrupo' 			=> $combotipogrupo,
+						 	'comboalias' 				=> $comboalias,
 						 	'ajax' 						=> true,
 						 ]);
 
