@@ -30,7 +30,9 @@
           <th class= 'center tablaho'>Fecha pedido</th>  
           <th class= 'center tablaho'>Fecha entrega</th>           
           <th class= 'center tablaho'>Cliente</th>
-          <th class= 'center tablaho'>Orden Cen</th> 
+          <th class= 'center tablaho'>Orden Cen</th>
+          <th class= 'center tablaho'>Alias</th>
+           
           <th class= 'center tablaho'>Producto</th>
           <th class= 'center tablaho'>Unidad medida</th>
           <th class= 'center tablaho' >Cantidad</th>
@@ -135,7 +137,7 @@
                     {{$funcion->nombre_cliente_despacho_cliente($item->cliente_id)}}
                   @endif</td>
               <td>{{$item->nro_orden_cen}}</td>
-
+              <td>{{$item->alias_nombre}}</td>
               <td>{{$item->producto->NOM_PRODUCTO}}</td>
               <td>{{$unidad_medida}}</td>
 

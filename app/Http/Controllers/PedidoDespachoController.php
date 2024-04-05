@@ -963,6 +963,9 @@ class PedidoDespachoController extends Controller
 				DB::beginTransaction();
 
 				$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto'],true);
+
+				dd($array_detalle_producto_request);
+
 				$idordendespacho			= 	$this->funciones->getCreateIdMaestra('WEB.ordendespachos');
 				$codigo 					= 	$this->funciones->generar_codigo('WEB.ordendespachos',8);
 				$array_detalle_producto_muestra_request 	= 	json_decode($request['array_detalle_producto_muestra'],true);
