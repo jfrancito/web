@@ -1583,7 +1583,7 @@ class OrdenPedidoController extends Controller
 			if(Session::get('usuario')->fuerzaventa_id=='JVE0000000000102'){
 				$id_vendedor_adicionar = 'adicionarm';
 			}
-				
+
 
 		    $listaclientes 		= 	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
 									->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)

@@ -964,7 +964,7 @@ class PedidoDespachoController extends Controller
 
 				$array_detalle_producto_request 	= 	json_decode($request['array_detalle_producto'],true);
 
-				dd($array_detalle_producto_request);
+				//dd($array_detalle_producto_request);
 
 				$idordendespacho			= 	$this->funciones->getCreateIdMaestra('WEB.ordendespachos');
 				$codigo 					= 	$this->funciones->generar_codigo('WEB.ordendespachos',8);
