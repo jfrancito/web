@@ -1604,6 +1604,10 @@ class Funcion{
 			$total = $this->importe_autoservicio($vendedor_id,$cod_periodo,$proviene);
 		}
 
+		if($proviene == 'INCENTIVOS'){
+			$total = $this->importe_autoservicio($vendedor_id,$cod_periodo,$proviene);
+		}
+
 		if($proviene == 'AUTOSERVICIOS'){
 			$total = $this->importe_autoservicio($vendedor_id,$cod_periodo,$proviene);
 		}

@@ -153,7 +153,7 @@ class ComisionPlanillaController extends Controller
 		}
 
 
-		if($proviene == 'AUTOSERVICIOS' || $proviene == 'AUTOSERVICIOSGC'){
+		if($proviene == 'AUTOSERVICIOS' || $proviene == 'INCENTIVOS' || $proviene == 'AUTOSERVICIOSGC'){
 
 			$cabecerauno 		=   WEBDetallePlanillaComision::where('COD_PERIODO','=',$codperiodo)
 									->where('COD_CATEGORIA_JEFE_VENTA','=',$codcategoriajefe)

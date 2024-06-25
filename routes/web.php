@@ -120,6 +120,13 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-lista-precio-producto_masivo', 'GestionProductoController@actionAjaxListaPrecioProductoMasiva');
 	Route::any('/ajax-actualizar-precio-producto-masivas', 'GestionProductoController@actionAjaxActualizarPrecioProductoMasivas');
 
+
+	Route::any('/gestion-de-contacto/{idopcion}', 'GestionContactoController@actionGestionContacto');
+	// Route::any('/ajax-lista-precio-producto_masivo', 'GestionProductoController@actionAjaxListaPrecioProductoMasiva');
+	// Route::any('/ajax-actualizar-precio-producto-masivas', 'GestionProductoController@actionAjaxActualizarPrecioProductoMasivas');
+
+
+
 	Route::any('/gestion-de-regla-de-cupon-producto/{idopcion}', 'ProductoController@actionListarReglaCupones');
 	Route::any('/agregar-regla-cupon/{idopcion}', 'ProductoController@actionAgregarCupon');
 	Route::any('/modificar-regla-cupon/{idopcion}/{idregla}', 'ProductoController@actionModificarCupon');
