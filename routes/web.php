@@ -430,7 +430,11 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-detalle-calculobono-rd', 'CalcularBonosController@actionAjaxModalDetalleCalculoBono');
 	Route::any('/cambiar-estado-bono/{idopcion}', 'CalcularBonosController@actionCambiarEstadoBono');
 
-
+	//Excel Exportar
+	Route::any('/gestion-import-excel/{idopcion}', 'ImportExcelController@actionGestionImportExcel');
+    Route::post('/gestion-import-excel/{idopcion}/{autoservicio}/{fecha}', 'ImportExcelController@actionImportExcel');
+    Route::post('/gestion-import-excel/{idopcion}', 'ImportExcelController@actionValidateExcel');
+    
 
 	//-- Picking
 	Route::any('/gestion-transferencia/{idopcion}', 'TransferenciaController@actionListarTransferencia');
