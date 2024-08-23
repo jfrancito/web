@@ -7,9 +7,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\WEBRegla,App\WEBIlog,App\WEBMaestro,App\WEBPedido,App\User,App\STDEmpresaDireccion;
 use Mail;
-
+use App\Traits\WhatsappTraits;
 class PedidoNotificacionDespachoCix extends Command
 {
+    use WhatsappTraits;
     /**
      * The name and signature of the console command.
      *

@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Log;
 use App\WEBRegla,App\WEBIlog,App\WEBMaestro,App\WEBPedido,App\User,App\WEBReglaCreditoCliente;
 use Mail;
 use PDO;
+use App\Traits\WhatsappTraits;
 
 class PedidoNotificacionVendedorCix extends Command
 {
+
+        use WhatsappTraits;
     /**
      * The name and signature of the console command.
      *
