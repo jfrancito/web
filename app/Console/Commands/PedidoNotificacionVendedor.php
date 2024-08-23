@@ -92,6 +92,8 @@ class PedidoNotificacionVendedor extends Command
             $correorv           =   $vendedor->email;
             $codigo             =   $item->codigo;
 
+
+
             //whatsaap
             $mensaje            =   'NOTA DE PEDIDO : '.$item->codigo.'%0D%0A'.'Solicitud : '.$vendedor->nombre.'%0D%0A'.'Cliente : '.$item->empresa->NOM_EMPR;
             $this->insertar_whatsaap('51979820173','JORGE FRANCELLI',$mensaje,'');

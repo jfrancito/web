@@ -275,6 +275,9 @@ class NotaCredito{
                                         ->pluck('nombre','id')
                                         ->toArray();
 
+            
+
+
             $combo_reglas           =   array('' => "Seleccione regla") + $lista_reglas;
             return $combo_reglas;   
 

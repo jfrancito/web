@@ -91,6 +91,11 @@ class PedidoNotificacionVendedorCix extends Command
             $correorv           =   $vendedor->email;
             $codigo             =   $item->codigo;
 
+            $mensaje            =   'NOTA DE PEDIDO : '.$item->codigo.'%0D%0A'.'Solicitud : '.$vendedor->nombre.'%0D%0A'.'Cliente : '.$item->empresa->NOM_EMPR;
+            $this->insertar_whatsaap('51979820173','JORGE FRANCELLI',$mensaje,'');
+            $this->insertar_whatsaap('51979683411','EVELINNE',$mensaje,'');
+            $this->insertar_whatsaap('51943516853','JOSE LUIS',$mensaje,'');
+            $this->insertar_whatsaap('51914693880','JOSE CHERO',$mensaje,'');
 
             Mail::send('emails.notificacionpedido', $array, function($message) use ($emailfrom,$email,$codigo,$correorv)
             {
@@ -109,8 +114,6 @@ class PedidoNotificacionVendedorCix extends Command
                 $message->subject($email->descripcion);
 
             });
-
-
 
             $pedido                         =   WEBPedido::where('WEB.pedidos.id','=',$item->id)->first();
             $pedido->ind_notificacion       =   1;
