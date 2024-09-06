@@ -40,7 +40,14 @@ class WEBPedido extends Model
         if(trim($centro) == 'CEN0000000000002'){
             $query->where('centro_id','=',$centro);
         }else{
-            $query->whereIn('centro_id', ['CEN0000000000001','CEN0000000000004','CEN0000000000006']);
+
+            if(trim($centro) == 'CEN0000000000001'){
+                $query->whereIn('centro_id', ['CEN0000000000001','CEN0000000000004','CEN0000000000006']);
+            }else{
+                $query->where('centro_id','=',$centro);
+            }    
+
+
         }
         
     }

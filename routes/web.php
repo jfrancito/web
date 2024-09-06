@@ -432,9 +432,11 @@ Route::group(['middleware' => ['authaw']], function () {
 
 	//Excel Exportar
 	Route::any('/gestion-import-excel/{idopcion}', 'ImportExcelController@actionGestionImportExcel');
-    Route::post('/gestion-import-excel/{idopcion}/{autoservicio}/{fecha}', 'ImportExcelController@actionImportExcel');
-    Route::post('/gestion-import-excel/{idopcion}', 'ImportExcelController@actionValidateExcel');
-    
+    Route::post('/gestion-import-excel/{idopcion}/import', 'ImportExcelController@actionImportExcel');
+    Route::post('/gestion-import-excel/{idopcion}/validate', 'ImportExcelController@actionValidateExcel');
+    Route::post('/ajax-listar-archivo-autoservicio', 'ImportExcelController@actionAjaxListarArchivoAutoservicio');
+    Route::post('/descargar-reporte-refuerzo/{idopcion}', 'ImportExcelController@actionDescargarReporteRefuerzo');
+    Route::any('/ajax-combo-periodo-xanio-xempresa', 'ImportExcelController@actionAjaxComboPeriodoAnioEmpresa');
 
 	//-- Picking
 	Route::any('/gestion-transferencia/{idopcion}', 'TransferenciaController@actionListarTransferencia');

@@ -2,6 +2,7 @@
 namespace App\Biblioteca;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Hashids,Session,Redirect,table;
 use App\WEBRolOpcion,App\WEBListaCliente,App\STDTipoDocumento,App\WEBPrecioProducto,App\WEBReglaProductoCliente;
 use App\WEBRegla,App\WEBUserEmpresaCentro,App\WEBPrecioProductoContrato,App\CMPCategoria,App\WEBPedido;
@@ -6057,6 +6058,18 @@ class Funcion{
 		
 		return 1;
  	 }
+
+ 	public function validate(Request $request) {
+        $extensions = array("xls","xlsx","csv");
+
+        $result = array($request->file('select_file')->getClientOriginalExtension());
+
+        if(in_array($result[0],$extensions)){
+            return true;
+        }else{
+            return false;
+        }
+    }
  	 	
 }
 
