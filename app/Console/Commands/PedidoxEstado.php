@@ -56,13 +56,11 @@ class PedidoxEstado extends Command
             $array              =   Array();
 
             file_get_contents('http://10.1.50.2:8080/web/pedido-estado-excel-automatico');
-            //file_get_contents('http://localhost:81/web/pedido-estado-excel-automatico');
 
             $emailfrom          =   WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00001')->first();
             // correos principales y  copias
             $email              =   WEBMaestro::where('codigoatributo','=','0001')->where('codigoestado','=','00015')->first();
 
-            
             $array      =  Array(
                                     'fecha_actual'      =>  $fecha_actual,
                                 );

@@ -87,7 +87,7 @@ class PedidoNotificacionAutorizarCix extends Command
 
             $codigo             =   $item->codigo;
 
-            $mensaje            =   'NOTA DE PEDIDO : '.$item->codigo.'%0D%0A'.'Solicitud : '.$vendedor->nombre.'%0D%0A'.'Cliente : '.$item->empresa->NOM_EMPR;
+            //$mensaje            =   'NOTA DE PEDIDO : '.$item->codigo.'%0D%0A'.'Solicitud : '.$vendedor->nombre.'%0D%0A'.'Cliente : '.$item->empresa->NOM_EMPR;
             //$this->insertar_whatsaap('51979820173','JORGE FRANCELLI',$mensaje,'');
             //$this->insertar_whatsaap('51977197023','PAUCAR',$mensaje,'');
             //$this->insertar_whatsaap('51943516853','JOSE LUIS',$mensaje,'');
