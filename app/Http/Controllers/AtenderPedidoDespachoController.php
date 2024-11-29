@@ -401,7 +401,14 @@ class AtenderPedidoDespachoController extends Controller
 						$correlativo							=	$correlativo +1; 
 						$clpn 									= 	str_pad($correlativo, 4, "0", STR_PAD_LEFT); 
 
-					    $lpn 									=	'500000'.str_replace( ",", '', $detitem->nro_orden_cen).$clpn;
+						if($detitem->nro_orden_cen =='11494564,11494564,'){
+					    	$lpn 									=	'500000'.str_replace( ",", '', '11494564').$clpn;
+						}else{
+							$lpn 									=	'500000'.str_replace( ",", '', $detitem->nro_orden_cen).$clpn;
+						}
+
+
+
 
 			        	$despacho 								=	new WEBDespachoImprimir;
 			        	$despacho->id		 					=	str_replace( ",", '', $detitem->id);
