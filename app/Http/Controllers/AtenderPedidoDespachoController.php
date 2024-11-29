@@ -408,8 +408,6 @@ class AtenderPedidoDespachoController extends Controller
 						}
 
 
-
-
 			        	$despacho 								=	new WEBDespachoImprimir;
 			        	$despacho->id		 					=	str_replace( ",", '', $detitem->id);
 			        	$despacho->codigo		 				=	$despachoc->codigo;

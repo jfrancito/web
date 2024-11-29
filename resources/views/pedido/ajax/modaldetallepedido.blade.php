@@ -134,7 +134,6 @@
                                               'class'       => 'select2 form-control control input-sm' ,
                                               'id'          => 'empresa_id',
                                               'required'    => '',
-                                              $disabled,
                                               'data-aw'     => '1',
                                             ]) !!}
 
