@@ -404,7 +404,7 @@ class AtenderPedidoDespachoController extends Controller
 					    $lpn 									=	'500000'.str_replace( ",", '', $detitem->nro_orden_cen).$clpn;
 
 			        	$despacho 								=	new WEBDespachoImprimir;
-			        	$despacho->id		 					=	$detitem->id;
+			        	$despacho->id		 					=	str_replace( ",", '', $detitem->id);
 			        	$despacho->codigo		 				=	$despachoc->codigo;
 			        	$despacho->item		 					=	$count;
 			        	$despacho->nro_orden_cen		 		=	str_replace( ",", '', $detitem->nro_orden_cen);
@@ -481,7 +481,7 @@ class AtenderPedidoDespachoController extends Controller
 	        			$count = $count+1;
 
 			        	$despacho 								=	new WEBDespachoImprimir;
-			        	$despacho->id		 					=	$detitem->id;
+			        	$despacho->id		 					=	str_replace( ",", '', $detitem->id);
 			        	$despacho->codigo		 				=	$despachoc->codigo;
 			        	$despacho->item		 					=	$count;
 			        	$despacho->nro_orden_cen		 		=	str_replace( ",", '', $detitem->nro_orden_cen);

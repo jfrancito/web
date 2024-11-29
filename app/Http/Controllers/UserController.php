@@ -95,6 +95,8 @@ class UserController extends Controller
 	public function actionAcceso()
 	{
 
+		//dd(Session::get('usuario')->id);
+
 		$accesos  	= 	WEBUserEmpresaCentro::where('activo','=',1)
 						->where('usuario_id','=',Session::get('usuario')->id)->get();
 

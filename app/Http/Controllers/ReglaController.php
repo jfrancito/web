@@ -144,6 +144,10 @@ class ReglaController extends Controller
 		$array_orden 			= 	$this->funciones->array_orden_venta_documento_fechas_cuenta_regla_nuevo($tipo_documento_id,$cuenta_id);
 
 		$lista_deuda 			= 	$this->funciones->lista_deuda_cliente($contrato->COD_EMPR_CLIENTE,$this->fechaactual);
+
+		//DD($contrato->COD_EMPR_CLIENTE);
+
+
 		$comboregla	 			= 	$this->funciones->combo_regla_descuento();
 
 		$funcion 				= 	$this;
