@@ -20,12 +20,27 @@
 <div class="col-xs-12" style="margin-top: 25px !important;" >
 
       <div class="form-group">
+          <label class="col-sm-12 control-label">
+            Tipo Comprobante:
+          </label>
+          <div class="col-sm-12">
+            <div class="input-group_mobil">
+              {!! Form::select( 'tipo_documento', $combotipocom, array($tipo_comp),
+                                [
+                                  'class'       => 'form-control control' ,
+                                  'id'          => 'tipo_documento',
+                                  'data-aw'     => '1',
+                                ]) !!}
+            </div>
+          </div>
+      </div>
+
+      <div class="form-group">
            <label class="col-sm-12 control-label labelleft"> Orden CEN: </label>
               <div class="col-xs-12 abajocaja">
                 <input id="iordencen" type="text" class="form-control input-sm" placeholder="" >
               </div>
       </div>
-
 
       <div class="form-group">
            <label class="col-sm-12 control-label labelleft"> Recibo de Conformidad: </label>
@@ -94,7 +109,9 @@
 
   <input type="hidden" name="c_ind_regla_canal_subcanal" id='c_ind_regla_canal_subcanal'>
 
+  <input type="hidden" name="c_tipo_documento" id='c_tipo_documento'>
 
+  
   <button type="submit" class="btn btn-space btn-success btn-big btn-guardar">
     <i class="icon mdi mdi-check"></i> Guardar
   </button>

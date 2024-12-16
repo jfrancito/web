@@ -1355,6 +1355,8 @@ class OrdenPedidoController extends Controller
 				DB::beginTransaction();
 
 				$productos 					= 	$request['productos'];
+				$c_tipo_documento 			= 	$request['c_tipo_documento'];
+
 
 				$total 						=   $this->funciones->calcular_cabecera_total($productos);
 				$codigo 					= 	$this->funciones->generar_codigo('WEB.pedidos',8);
@@ -1469,6 +1471,8 @@ class OrdenPedidoController extends Controller
 				$cabecera->fecha_despacho   			= 	$request['fecha_entrega'];
 				$cabecera->estado_id   					= 	'EPP0000000000002';
 				$cabecera->tipopago_id   				= 	$request['condicion_pago'];
+				$cabecera->tipo_documento   			= 	$c_tipo_documento;
+
 				$cabecera->recibo_conformidad  			= 	$request['recibo'];
 				$cabecera->nro_orden_cen  				= 	$request['ordencen'];
 				$cabecera->glosa  						= 	$request['obs'];
@@ -1591,9 +1595,11 @@ class OrdenPedidoController extends Controller
 									->orderBy('NOM_EMPR', 'asc')
 									->get();
 	
+			$tipo_comp 			=	'SIN_COMPROBANTE';
+			$combotipocom      	=   array('SIN_COMPROBANTE' => "SIN COMPROBANTE",
+											'BOLETA' => "BOLETA",
+											'FACTURA' => "FACTURA");
 
-			//dd($listaclientes);
-		
 			$listaproductos 	= 	DB::table('WEB.LISTAPRODUCTOSAVENDER')
 									->where('IND_MOVIL','=',1)
 		    					 	->orderBy('NOM_PRODUCTO', 'asc')->get();
@@ -1603,6 +1609,10 @@ class OrdenPedidoController extends Controller
 						[				
 						  	'idopcion'  			=> $idopcion,
 						  	'listaclientes'  		=> $listaclientes,
+						  	'tipo_comp'  			=> $tipo_comp,
+						  	'combotipocom'  		=> $combotipocom,
+
+
 						  	'listaproductos'  		=> $listaproductos,
 						]);
 		}

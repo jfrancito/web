@@ -55,7 +55,7 @@ style='width: 100%;font-size: 0.85em;'>
           <span class="cell-detail-description"><b>Empresa (registro pedido) : </b> {{$funcion->funciones->data_empresa($item->empresa_id)->NOM_EMPR}}</span>
           <span class="cell-detail-description"><b>Centro : </b> {{$funcion->funciones->data_centro($item->centro_id)->NOM_CENTRO}}</span>
           <span class="cell-detail-description"><b>Orden CEN : </b> {{$item->nro_orden_cen}}</span>
-
+          <span class="cell-detail-description"><b>Tipo Documento : </b> {{$item->tipo_documento}}</span>
         </td>
         <td>{{$item->empresa->NRO_DOCUMENTO}}</td>
         <td>{{$funcion->funciones->data_categoria($item->tipopago_id)->NOM_CATEGORIA}}</td>
