@@ -130,7 +130,7 @@ class Osiris{
                 $can_tipo_cambio                                =       $pedido->tipo_cambio;
                 $cod_categoria_modulo                           =       'MSI0000000000010';
                 $txt_glosa_atencion                             =       $glosa;
-                $txt_glosa                                      =       'NOTA DE PEDIDO ORIGEN '.$pedido->codigo.'//'.str_replace("'", "", $pedido->glosa).'//'.$usuario->nombre.'//RC '.$pedido->recibo_conformidad;
+                $txt_glosa                                      =       'NOTA DE PEDIDO ORIGEN '.$pedido->codigo.'//'.str_replace("'", "", $pedido->glosa).'//'.$usuario->nombre.'//RC '.$pedido->recibo_conformidad.'//'.$pedido->tipo_documento;
                 $cod_estado                                     =       '1';
                 $cod_usuario_registro                           =       Session::get('usuario')->name;
                 $cod_categoria_actividad_negocio                =       'VENTA_MERCADERIA';

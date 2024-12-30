@@ -589,8 +589,8 @@ class AsignarReglaController extends Controller
 				$regla->canlimitecredito = $request->limitecredito;
 				$regla->condicionpago_id = $request->condicionpago;
 				$regla->clasificacion = $request->clasificacion;
-				$regla->fecha_mod 	    =  	$this->fechaactual;
-				$regla->usuario_mod 	=  	Session::get('usuario')->id;
+				$regla->fecha_modif 	    =  	$this->fechaactual;
+				$regla->usuario_modif 	=  	Session::get('usuario')->id;
 
 				$regla->save();
 				
