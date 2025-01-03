@@ -25,7 +25,7 @@
           </label>
           <div class="col-sm-12">
             <div class="input-group_mobil">
-              {!! Form::select( 'tipo_documento', $combotipocom, array($tipo_comp),
+              {!! Form::select( 'tipo_documento', $combotipocom, array(''),
                                 [
                                   'class'       => 'form-control control' ,
                                   'id'          => 'tipo_documento',

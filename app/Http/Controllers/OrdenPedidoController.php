@@ -1599,8 +1599,8 @@ class OrdenPedidoController extends Controller
 									->orderBy('NOM_EMPR', 'asc')
 									->get();
 	
-			$tipo_comp 			=	'SIN_COMPROBANTE';
-			$combotipocom      	=   array('SIN_COMPROBANTE' => "SIN COMPROBANTE",
+			$tipo_comp 			=	'';
+			$combotipocom      	=   array('' => "Seleccione Tipo de comprobante",'SIN_COMPROBANTE' => "SIN COMPROBANTE",
 											'BOLETA' => "BOLETA",
 											'FACTURA' => "FACTURA");
 

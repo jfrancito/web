@@ -768,12 +768,13 @@ $(document).ready(function(){
         var c_adicional_limite_credito  =   parseFloat($('#c_adicional_limite_credito').val());
         var c_deuda_oryza  =   parseFloat($('#c_deuda_oryza').val());
 
-
         var suma_total_cgeneral       =   c_deuda_cliente_general + total + c_deuda_oryza;
-
 
         $('#ordencen').val(ordencen);
         $('#c_tipo_documento').val(tipo_documento);  
+
+        if(tipo_documento==''){ alertdangermobil("Seleccione un tipo documento"); return false;}
+
         $('#c_tipo_venta').val(tipo_venta); 
          
         //console.log(obs+' '+recibo);
