@@ -1472,7 +1472,7 @@ class OrdenPedidoController extends Controller
 				$cabecera->estado_id   					= 	'EPP0000000000002';
 				$cabecera->tipopago_id   				= 	$request['condicion_pago'];
 				$cabecera->tipo_documento   			= 	$c_tipo_documento;
-				$cabecera->tipo_venta   				= 	$c_tipo_venta;
+				//$cabecera->tipo_venta   				= 	$c_tipo_venta;
 
 
 				$cabecera->recibo_conformidad  			= 	$request['recibo'];
