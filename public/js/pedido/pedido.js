@@ -758,7 +758,7 @@ $(document).ready(function(){
         var recibo              =   $('#irecibo').val();
         var ordencen            =   $('#iordencen').val();
         var tipo_documento      =   $('#tipo_documento').val();
-
+        var tipo_venta          =   $('#tipo_venta').val();
 
         var condicion_pago            =   $('#condicion_pago').val();
         var c_limite_credito          =   parseFloat($('#c_limite_credito').val());
@@ -773,7 +773,9 @@ $(document).ready(function(){
 
 
         $('#ordencen').val(ordencen);
-        $('#c_tipo_documento').val(tipo_documento);   
+        $('#c_tipo_documento').val(tipo_documento);  
+        $('#c_tipo_venta').val(tipo_venta); 
+         
         //console.log(obs+' '+recibo);
         agregar_obs_hidden(obs,recibo);
         // validacion cliente

@@ -1356,7 +1356,7 @@ class OrdenPedidoController extends Controller
 
 				$productos 					= 	$request['productos'];
 				$c_tipo_documento 			= 	$request['c_tipo_documento'];
-
+				$c_tipo_venta 				= 	$request['c_tipo_venta'];
 
 				$total 						=   $this->funciones->calcular_cabecera_total($productos);
 				$codigo 					= 	$this->funciones->generar_codigo('WEB.pedidos',8);
@@ -1472,10 +1472,14 @@ class OrdenPedidoController extends Controller
 				$cabecera->estado_id   					= 	'EPP0000000000002';
 				$cabecera->tipopago_id   				= 	$request['condicion_pago'];
 				$cabecera->tipo_documento   			= 	$c_tipo_documento;
+				$cabecera->tipo_venta   				= 	$c_tipo_venta;
+
 
 				$cabecera->recibo_conformidad  			= 	$request['recibo'];
 				$cabecera->nro_orden_cen  				= 	$request['ordencen'];
 				$cabecera->glosa  						= 	$request['obs'];
+
+
 				$cabecera->ind_notificacion 	    	=  	0;
 				$cabecera->ind_notificacion_autorizacion =   -1;
 				$cabecera->ind_notificacion_rechazado 	=   -1;
@@ -1604,6 +1608,9 @@ class OrdenPedidoController extends Controller
 									->where('IND_MOVIL','=',1)
 		    					 	->orderBy('NOM_PRODUCTO', 'asc')->get();
 
+			$tipo_orden 		=	'ORDEN_VENTA';
+			$combotipoorden     =   array('ORDEN_VENTA' => "ORDEN VENTA",
+										  'ENTREGA_VENTA' => "ENTREGA VENTA");
 
 			return View::make('pedido/ordenpedido',
 						[				
@@ -1612,6 +1619,8 @@ class OrdenPedidoController extends Controller
 						  	'tipo_comp'  			=> $tipo_comp,
 						  	'combotipocom'  		=> $combotipocom,
 
+						  	'tipo_orden'  			=> $tipo_orden,
+						  	'combotipoorden'  		=> $combotipoorden,
 
 						  	'listaproductos'  		=> $listaproductos,
 						]);

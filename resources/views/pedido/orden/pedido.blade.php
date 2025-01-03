@@ -36,6 +36,24 @@
       </div>
 
       <div class="form-group">
+          <label class="col-sm-12 control-label">
+            Tipo Venta:
+          </label>
+          <div class="col-sm-12">
+            <div class="input-group_mobil">
+              {!! Form::select( 'tipo_venta', $combotipoorden, array($tipo_orden),
+                                [
+                                  'class'       => 'form-control control' ,
+                                  'id'          => 'tipo_venta',
+                                  'data-aw'     => '1',
+                                ]) !!}
+            </div>
+          </div>
+      </div>
+
+
+
+      <div class="form-group">
            <label class="col-sm-12 control-label labelleft"> Orden CEN: </label>
               <div class="col-xs-12 abajocaja">
                 <input id="iordencen" type="text" class="form-control input-sm" placeholder="" >
@@ -110,7 +128,7 @@
   <input type="hidden" name="c_ind_regla_canal_subcanal" id='c_ind_regla_canal_subcanal'>
 
   <input type="hidden" name="c_tipo_documento" id='c_tipo_documento'>
-
+  <input type="hidden" name="c_tipo_venta" id='c_tipo_venta'>
   
   <button type="submit" class="btn btn-space btn-success btn-big btn-guardar">
     <i class="icon mdi mdi-check"></i> Guardar
