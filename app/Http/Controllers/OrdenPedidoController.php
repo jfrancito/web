@@ -1610,7 +1610,7 @@ class OrdenPedidoController extends Controller
 
 			$tipo_orden 		=	'ORDEN_VENTA';
 			$combotipoorden     =   array('ORDEN_VENTA' => "ORDEN VENTA",
-										  'ENTREGA_VENTA' => "ENTREGA VENTA");
+										  'ENTREGA_VENTA' => "ENTREGA VENTA (Solo Cuando es Factura de Anticipo)");
 
 			return View::make('pedido/ordenpedido',
 						[				
