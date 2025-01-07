@@ -62,23 +62,13 @@
                             </div>
                           </div>
                       </div>
-
                       <input type="hidden" name="idopcion" id ='idopcion' value ='{{$idopcion}}'>
-
-
                     </div>
-
                   </div>
-
-
 
                   <div class='listatablapedido listajax'>
-
                     @include('pedido.ajax.listatomapedidovendedor')
-
                   </div>
-
-
 
                 </div>
               </div>
@@ -99,7 +89,6 @@
   <script src="{{ asset('public/lib/datatables/js/dataTables.responsive.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/responsive.bootstrap.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/app-tables-datatables.js?v='.$version) }}" type="text/javascript"></script>
-
   <script src="{{ asset('public/lib/jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/jquery.nestable/jquery.nestable.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/moment.js/min/moment.min.js') }}" type="text/javascript"></script>
@@ -108,10 +97,7 @@
   <script src="{{ asset('public/lib/bootstrap-slider/js/bootstrap-slider.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/app-form-elements.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/parsley/parsley.js') }}" type="text/javascript"></script>
-
   <script src="{{ asset('public/lib/jquery.niftymodals/dist/jquery.niftymodals.js') }}" type="text/javascript"></script>
-
-
 
   <script type="text/javascript">
 

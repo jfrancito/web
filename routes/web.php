@@ -180,7 +180,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-limite-credito', 'OrdenPedidoController@actionAjaxLimiteCredito');
 	Route::any('/ajax-relacion-producto-obsequio', 'OrdenPedidoController@actionAjaxObsequioRelacion');
 
-
+	Route::any('/ajax-modal-seguimiento-pedido-mobil', 'OrdenPedidoController@actionAjaxSeguimientoPedidoMobil');
 
 
 	/************************************** GENERALES ********************************************/

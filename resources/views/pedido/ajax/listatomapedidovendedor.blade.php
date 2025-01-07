@@ -13,20 +13,17 @@
       <th>Orden Cen</th>
       <th>Detalle</th>
       <th>Obsequio</th>
+      <th>Seguimiento</th>
     </tr>
   </thead>
   <tbody>
    @foreach($listapedidos as $item)
       <tr>
-
           <td class="cell-detail">
             <span><?php echo wordwrap($item->empresa->NOM_EMPR,20,"<br>\n"); ?></span> 
             <span>{{$item->codigo}}</span>
           </td>
-
-
         <td>
-
           @if($item->COD_CATEGORIA == 'EPP0000000000003') 
             @if($funcion->funciones->pedido_producto_registrado($item) == '0') 
               <span class="badge badge-warning">{{$item->NOM_CATEGORIA}}</span> 
@@ -44,7 +41,6 @@
               @endif
             @endif
           @endif
-
         </td>
         <td> 
           {{$item->empresa->NOM_EMPR}}
@@ -58,7 +54,6 @@
         <td>{{$item->subtotal}}</td>
         <td>{{$item->total}}</td>
         <td>{{$funcion->funciones->data_empresa($item->empresa_id)->NOM_EMPR}}</td>
-
         <td>{{$item->nro_orden_cen}}</td>
         <td>
             <span class="badge badge-primary btn-eyes btn-detalle-pedido-mobil" 
@@ -67,14 +62,18 @@
             </span>
         </td>
         <td>
-          
-        <a href="{{ url('/obsequio-orden-pedido/'.Hashids::encode(substr($item->id, -8))).'/'.$idopcion }}" class="tooltipcss opciones">
-          <span class="badge badge-primary btn-eyes">
-            agregar obsequios
-          </span>
-        </a>
+          <a href="{{ url('/obsequio-orden-pedido/'.Hashids::encode(substr($item->id, -8))).'/'.$idopcion }}" class="tooltipcss opciones">
+            <span class="badge badge-primary btn-eyes">
+              agregar obsequios
+            </span>
+          </a>
+        </td>
 
-
+        <td>
+            <span class="badge badge-primary btn-eyes btn-seguimiento-pedido-mobil" 
+                  data-id="{{Hashids::encode(substr($item->id, -8))}}">
+              Seguimiento Pedido
+            </span>
         </td>
 
 

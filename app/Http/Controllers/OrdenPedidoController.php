@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
 use App\WEBListaCliente,App\STDTipoDocumento,App\WEBReglaProductoCliente,App\WEBPedido;
 use App\WEBDetallePedido,App\CMPCategoria,App\WEBReglaCreditoCliente,App\STDEmpresa,App\WEBPrecioProducto,App\WEBMaestro,App\WEBPrecioProductoContrato,App\STDEmpresaDireccion,App\CMPContrato,App\ALMProducto;
-
 use App\WEBAsignarRegla;
+use App\Traits\OrdenPedidoTraits;
+
 
 use View;
 use Session;
@@ -23,7 +24,7 @@ use PDF;
 class OrdenPedidoController extends Controller
 {
 
-
+	use OrdenPedidoTraits;
 
 	public function actionAjaxObsequioRelacion(Request $request)
 	{
@@ -240,6 +241,37 @@ class OrdenPedidoController extends Controller
 						 ]);
 
 	}
+
+	public function actionAjaxSeguimientoPedidoMobil(Request $request)
+	{
+
+		$pedido_id 					= 	$request['pedido_id'];
+		$pedido_id 					= 	$this->funciones->desencriptar_id('1CIX-'.$pedido_id,8);
+		$pedido 					=   WEBPedido::where('id','=',$pedido_id)->first();
+
+
+		$ordenes 					 = 	DB::table('CMP.REFERENCIA_ASOC as asoc')
+									    ->distinct()
+									    ->join('WEB.detallepedidos as det', 'asoc.COD_TABLA', '=', 'det.id')
+									    ->join('CMP.ORDEN as ord', 'ord.COD_ORDEN', '=', 'asoc.COD_TABLA_ASOC')
+									    ->select('ord.*')
+									    ->where('det.pedido_id', '=', $pedido_id)
+									    ->where('asoc.COD_ESTADO', '=', 1)
+									    ->where('ord.COD_ESTADO', '=', 1)
+									    ->get();
+
+		$funcion 					= 	$this;	
+
+		return View::make('pedido/ajax/modalseguimientopedidomobil',
+						 [
+							 'pedido_id'   	=> $pedido_id,
+							 'pedido'   	=> $pedido,
+							 'ordenes'   	=> $ordenes,
+							 'funcion'   	=> $funcion,
+						 ]);
+
+	}
+
 
 
 	public function actionNoAutorizarPedido($idopcion,Request $request)
@@ -1279,17 +1311,16 @@ class OrdenPedidoController extends Controller
 		$centro_id 			= 	Session::get('centros')->COD_CENTRO;
 
 
-
-	    $listapedidos		= 		WEBPedido::where('activo','=',1)
-	    							->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.pedidos.estado_id')
-	    							->where('usuario_crea','=',Session::get('usuario')->id)
-									//->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
-									//->where('centro_id','=',Session::get('centros')->COD_CENTRO)
-									->Centro($centro_id)
-				    				->where('fecha_venta','>=', $fechainicio)
-				    				->where('fecha_venta','<=', $fechafin)
-	    							->orderBy('fecha_venta', 'desc')
-	    							->get();
+	    $listapedidos		= 	WEBPedido::where('activo','=',1)
+    							->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.pedidos.estado_id')
+    							->where('usuario_crea','=',Session::get('usuario')->id)
+								//->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
+								//->where('centro_id','=',Session::get('centros')->COD_CENTRO)
+								->Centro($centro_id)
+			    				->where('fecha_venta','>=', $fechainicio)
+			    				->where('fecha_venta','<=', $fechafin)
+    							->orderBy('fecha_venta', 'desc')
+    							->get();
 
 		$funcion 			= 	$this;	
 

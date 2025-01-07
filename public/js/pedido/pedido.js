@@ -279,6 +279,32 @@ $(document).ready(function(){
     });
 
 
+    $(".listapedidoosiris").on('click','.btn-seguimiento-pedido-mobil', function() {
+
+        var _token              = $('#token').val();
+        var pedido_id           = $(this).attr('data-id');
+
+        $.ajax({
+            
+            type    :   "POST",
+            url     :   carpeta+"/ajax-modal-seguimiento-pedido-mobil",
+            data    :   {
+                            _token                  : _token,
+                            pedido_id               : pedido_id
+                        },    
+            success: function (data) {
+                $('.modal-detalle-pedido').html(data);
+                $('#detalle-producto').niftyModal();
+            },
+            error: function (data) {
+                error500(data);
+            }
+        });
+
+        
+    });
+
+
     /*************** DETALLE DEL PEDIDO MODAL**************/
 
 
