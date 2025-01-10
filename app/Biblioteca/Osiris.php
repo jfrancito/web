@@ -37,6 +37,7 @@ class Osiris{
                     }
                 }
 
+                $tipoventa                      =       'OV';
                 $total_parcial                  =       0.00;
                 $detallepedido                  =       WEBDetallePedido::where('pedido_id','=',$pedido->id)
                                                         ->whereIn('id',$array_detalle_pedido_id)
@@ -48,9 +49,31 @@ class Osiris{
 
                 $glosa                          =       '';
                 $usuario                        =       User::where('id','=',$pedido->usuario_crea)->first();
+                $cod_categoria_modulo           =       'MSI0000000000010';
+                $cod_categoria_tipo_orden       =       'TOR0000000000006';
+                $txt_categoria_tipo_orden       =       'VENTAS COMERCIAL';
+                $txtctc                                         =       '';
+
+                if($pedido->tipo_venta == 'ENTREGA_VENTA'){
+                    $txtctc                                     =       '1';  
+                }
 
                 /**************************************** GLOSA ORDEN  *************************************/                          
                 foreach($detallepedido as $item){
+
+                        if($item->producto->COD_CATEGORIA_FAMILIA == 'FAM0000000000061' || $item->producto->COD_CATEGORIA_FAMILIA == 'FAM0000000000062'){
+                            $tipoventa                      =       'PA';
+                            $cod_categoria_modulo           =       'MSI0000000000015';
+                            $cod_categoria_tipo_orden       =       'TOR0000000000029';
+                            $txt_categoria_tipo_orden       =       'VENTAS PACAS';
+                            if($pedido->tipo_venta == 'ENTREGA_VENTA'){
+                                $cod_categoria_tipo_orden       =       'TOR0000000000057';
+                                $txt_categoria_tipo_orden       =       'ORDEN ENTREGA VENTA PACA';
+                            }
+                        }else{
+                            $tipoventa          =       'OV';
+                        }
+
                         $glosa =        $glosa . $item->producto->NOM_PRODUCTO.',';
                         $cantidad_dt  = 0.00;
                         foreach($lista_array_detalle_pedido as $obj){
@@ -61,10 +84,10 @@ class Osiris{
                         if($item->ind_obsequio == 0){
                             $total_parcial = $total_parcial + ($cantidad_dt*$item->precio);
                         }
+
                 }       
 
                 /**************************************** GUARDAR ORDEN  *************************************/
-
 
                 $vacio                                          =       '';
                 $accion                                         =       'I';
@@ -73,10 +96,8 @@ class Osiris{
                 $txt_empr_cliente                               =       $empresa_cliente->NOM_EMPR;
 
                 $cod_centro                                     =       $pedido->centro_id;
-                $txtctc                                         =       '';
-                if($pedido->tipo_venta == 'ENTREGA_VENTA'){
-                    $txtctc                                     =       '1';  
-                }
+
+
                 $fecha_venta                                    =       date_format(date_create(date('d-m-Y')), 'Y-m-d');
                 //fecha gracia y pago
                 $tipo_de_pago                                   =       CMPCategoria::where('COD_CATEGORIA','=',$pedido->tipopago_id)->first();
@@ -85,12 +106,9 @@ class Osiris{
                 $nuevagp                                        =       date ('Y-m-j' , $nuevagp);
                 $nuevagp                                        =       date_format(date_create($nuevagp), 'Y-m-d');
 
-
-
                 $fecha_ilimitada                                =       date_format(date_create('1901-01-01'), 'Y-m-d');
                 $ind_material_servicio                          =       'M';
-                $cod_categoria_tipo_orden                       =       'TOR0000000000006';
-                $txt_categoria_tipo_orden                       =       'VENTAS COMERCIAL';
+
 
                 $cod_categoria_moneda                           =       $pedido->moneda_id;
                 $txt_categoria_moneda                           =       $pedido->moneda_nombre;
@@ -129,7 +147,7 @@ class Osiris{
 
                 $valor_cero                                     =       '0';
                 $can_tipo_cambio                                =       $pedido->tipo_cambio;
-                $cod_categoria_modulo                           =       'MSI0000000000010';
+
                 $txt_glosa_atencion                             =       $glosa;
                 $txt_glosa                                      =       'NOTA DE PEDIDO ORIGEN '.$pedido->codigo.'//'.str_replace("'", "", $pedido->glosa).'//'.$usuario->nombre.'//RC '.$pedido->recibo_conformidad.'//'.$pedido->tipo_documento;
                 $cod_estado                                     =       '1';

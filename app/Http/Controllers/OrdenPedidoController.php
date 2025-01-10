@@ -1472,6 +1472,26 @@ class OrdenPedidoController extends Controller
 
 		        }
 
+		        //validar una sola categoria
+		        $sw_ov 							=	0;
+		        $sw_pa 							=	0;
+				$productosv 					= 	json_decode($productos, true);
+				foreach($productosv as $obj){
+					$producto_id 				= 	$this->funciones->desencriptar_id($obj['prefijo_producto'].'-'.$obj['id_producto'],13);
+					$producto 					=	ALMProducto::where('COD_PRODUCTO','=',$producto_id)->first();
+					if($producto->COD_CATEGORIA_FAMILIA == 'FAM0000000000061' || $producto->COD_CATEGORIA_FAMILIA == 'FAM0000000000062'){
+						$sw_pa 							=	1;
+					}else{
+						$sw_ov 							=	1;
+					}
+				}	
+                if($sw_pa == 1 && $sw_ov == 1){
+                	return Redirect::to('/agregar-orden-pedido/'.$idopcion)->with('errorbd', 'Hay productos que pertenecen a dos famlias diferentes no se puede realizar la venta');
+                }
+
+
+
+
 				//PEDIDO
 				$cabecera            	 	=	new WEBPedido;
 				$cabecera->id 	     	 	=  	$idpedido;

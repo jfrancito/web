@@ -104,7 +104,7 @@ class ProductoController extends Controller
 	    $cod_empresa 		= 	Session::get('empresas')->COD_EMPR;
 	    $cod_centro 		= 	Session::get('centros')->COD_CENTRO;
 
-	    $listaproductos 	= 	DB::table('WEB.LISTAPRODUCTOSAVENDERCONFI')
+	    $listaproductos 	= 	DB::table('WEB.LISTAPRODUCTOSAVENDER')
 	    					 	->orderBy('NOM_PRODUCTO', 'asc')
 	    					 	->get();
 
