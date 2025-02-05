@@ -580,6 +580,8 @@ class NotaCredito{
                                 ->pluck('NOM_CATEGORIA','COD_CATEGORIA')
                                 ->toArray();
                                
+
+
         $combo_motivos       =   array('' => "Seleccione motivo") + $lista_motivos;
         return $combo_motivos;   
 

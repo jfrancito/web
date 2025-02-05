@@ -99,6 +99,9 @@ class Osiris{
 
 
                 $fecha_venta                                    =       date_format(date_create(date('d-m-Y')), 'Y-m-d');
+                $fecha_entrega                                  =       $pedido->fecha_despacho;
+
+
                 //fecha gracia y pago
                 $tipo_de_pago                                   =       CMPCategoria::where('COD_CATEGORIA','=',$pedido->tipopago_id)->first();
                 $fechagp                                        =       date('Y-m-j');
@@ -178,7 +181,7 @@ class Osiris{
                 $stmt->bindParam(14, $vacio  ,PDO::PARAM_STR);                                  //@COD_CENTRO_ORIGEN='',
                 $stmt->bindParam(15, $fecha_venta ,PDO::PARAM_STR);                             //@FEC_ORDEN='2019-06-12', 
                 $stmt->bindParam(16, $fecha_venta ,PDO::PARAM_STR);                             //@FEC_RECEPCION='2019-06-12', 
-                $stmt->bindParam(17, $fecha_venta ,PDO::PARAM_STR);                             //@FEC_ENTREGA='2019-06-12',
+                $stmt->bindParam(17, $fecha_entrega ,PDO::PARAM_STR);                           //@FEC_ENTREGA='2019-06-12',
                 $stmt->bindParam(18, $fecha_ilimitada ,PDO::PARAM_STR);                         //@FEC_ENTREGA_2='1901-01-01',
                 $stmt->bindParam(19, $fecha_ilimitada ,PDO::PARAM_STR);                         //@FEC_ENTREGA_3='1901-01-01',
                 $stmt->bindParam(20, $nuevagp ,PDO::PARAM_STR);                                 //@FEC_PAGO='2019-06-12',

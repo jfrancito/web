@@ -531,9 +531,9 @@ class NotaCreditoController extends Controller
 
 		$combo_series 					= 	$notacredito->combo_series();
 
+		$motivos_array 					= ['MEM0000000000004','MEM0000000000016','MEM0000000000007'];
 
-
-		$combo_motivos 					= 	$notacredito->combo_motivos_documento('TDO0000000000007');
+		$combo_motivos 					= 	$notacredito->combo_motivos_documento('TDO0000000000007',$motivos_array);
 
 
 		$funcion 						= 	$this;
@@ -973,7 +973,9 @@ class NotaCreditoController extends Controller
 		$direccion 						= 	$notacredito->direccion_cuenta($cuenta_id);
 		$contrato 						= 	WEBListaCliente::where('COD_CONTRATO','=',$cuenta_id)->first();				
 		$combo_series 					= 	$notacredito->combo_series();
-		$combo_motivos 					= 	$notacredito->combo_motivos_documento('TDO0000000000007');
+		$motivos_array 					= ['MEM0000000000004','MEM0000000000016','MEM0000000000007'];
+
+		$combo_motivos 					= 	$notacredito->combo_motivos_documento('TDO0000000000007',$motivos_array);
 
 		//dd($notacredito->numero_documento('F005','TDO0000000000007'));
 
