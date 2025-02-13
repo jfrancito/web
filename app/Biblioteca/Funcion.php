@@ -3575,6 +3575,11 @@ class Funcion{
 				$empresa 		= 	STDEmpresa::where('COD_EMPR','=','')->first();
 			}
 		}
+
+		if(Session::get('empresas')->COD_EMPR =='IACHEM0000007086'){
+			$empresa 		= 	STDEmpresa::where('COD_EMPR','=','IACHEM0000007086')->first();
+		}
+
 		return $empresa;
 	}
 
