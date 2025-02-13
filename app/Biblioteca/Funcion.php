@@ -1253,6 +1253,9 @@ class Funcion{
         $stmt->execute();
       	while ($row = $stmt->fetch()){
       		$deuda = $deuda + $row['CAN_SALDO'];
+      		if($deuda<=0.1){
+      			$deuda = 0;
+      		}
       	}
 
 		return $deuda;
