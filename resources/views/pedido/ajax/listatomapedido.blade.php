@@ -56,7 +56,7 @@
           <span class="cell-detail-description"><b>Documento : </b> {{$item->empresa->NRO_DOCUMENTO}}</span>
           <span class="cell-detail-description"><b>Orden CEN : </b> {{$item->nro_orden_cen}}</span>
           <span class="cell-detail-description"><b>Tipo Documento : </b> {{$item->tipo_documento}}</span>
-          
+                    <span class="cell-detail-description"><b>Tipo Venta : </b> {{$item->tipo_venta}}</span>
         </td>
 
         <td>
