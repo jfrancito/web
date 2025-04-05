@@ -539,6 +539,30 @@ class NotaCredito{
     }
 
 
+    public function numero_documento_con($serie,$tipodocumento_id,$conexion) {
+
+        $nro_documento  =   '00000000';
+
+        $documento      =   CMPDocumentoCtble::on($conexion)->where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
+                                ->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
+                                ->where('NRO_SERIE','=',$serie)
+                                ->where('COD_CATEGORIA_TIPO_DOC','=',$tipodocumento_id)
+                                ->where('IND_COMPRA_VENTA','=','V')
+                                ->orderBy('NRO_DOC', 'desc')
+                                ->first();
+
+        if(count($documento)>0){
+            $numero         =   (int)$documento->NRO_DOC +1;
+            //concatenar con ceros
+            $nro_documento = str_pad($numero, 8, "0", STR_PAD_LEFT);
+        }else{
+            $nro_documento = '00000001';   
+        }
+        return $nro_documento;               
+    }
+
+
+
     public function numero_documento_conteo($serie,$tipodocumento_id,$suma) {
 
         $nro_documento  =   '00000000';

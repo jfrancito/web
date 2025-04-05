@@ -5,11 +5,28 @@ use DOMDocument;
 use DB;
 use Session;
 use PDO;
-use App\CMPContrato,App\STDEmpresaDireccion,App\CMPCategoria,App\CMPDocumentoCtble,App\ALMProducto,App\CMPDetalleProducto,App\WEBDetalleDocumentoAsociados;
-USE App\WEBDocumentoNotaCredito,App\WEBDetallePedido,App\STDEmpresa,App\User;
-use App\CMPOrden,App\CMPReferecenciaAsoc;
 
-class Osiris{
+use App\Modelos\Grupoopcion;
+use App\Modelos\Opcion;
+use App\Modelos\Rol;
+use App\Modelos\RolOpcion;
+use App\Modelos\PlaMovilidad;
+use App\Modelos\PlaDetMovilidad;
+use App\Modelos\PlaSerie;
+use App\Modelos\STDTrabajador;
+use App\Modelos\CMPCategoria;
+use App\Modelos\PlaDocumentoHistorial;
+use App\Modelos\STDTipoDocumento;
+use App\Modelos\STDEmpresa;
+use App\Modelos\CMPContrato;
+use App\Modelos\CMPContratoCultivo;
+use App\Modelos\ALMCentro;
+use App\Modelos\LqgLiquidacionGasto;
+use App\Modelos\LqgDocumentoHistorial;
+use App\Modelos\LqgDetLiquidacionGasto;
+use App\Modelos\LqgDetDocumentoLiquidacionGasto;
+
+class OsirisLG{
 
 	public $msjerror;
 	public $orden_id;
@@ -547,7 +564,7 @@ class Osiris{
         /************** GUARDAR ORDEN DE PEDIDO ****************/
 
 
-        public function guardar_nota_credito($contrato_id,$direccion_id,$serie,$motivo_id,$glosa,$informacionadicional,$numero_documento,$funcion,$facturasnotacredito,$facturasrelacionada,$totalnotacredito,$documento_relacionado_id,$listaid,$notacredito,$documentonotacredito_id,$conexion) {
+        public function guardar_nota_credito($contrato_id,$direccion_id,$serie,$motivo_id,$glosa,$informacionadicional,$numero_documento,$funcion,$facturasnotacredito,$facturasrelacionada,$totalnotacredito,$documento_relacionado_id,$listaid,$notacredito,$documentonotacredito_id) {
 
 
                 $vacio                                          =       '';
@@ -624,7 +641,7 @@ class Osiris{
 
 
 
-                $stmt = DB::connection($conexion)->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DOCUMENTO_CTBLE_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?');
+                $stmt = DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DOCUMENTO_CTBLE_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?');
 
 
                 $stmt->bindParam(1, $accion ,PDO::PARAM_STR);                                   //@IND_TIPO_OPERACION='I',
@@ -860,7 +877,7 @@ class Osiris{
                         $COD_USUARIO_REGISTRO                   =       Session::get('usuario')->name;
 
 
-                        $stmt = DB::connection($conexion)->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DETALLE_PRODUCTO_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?');
+                        $stmt = DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DETALLE_PRODUCTO_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?');
                         $stmt->bindParam(1, $accion ,PDO::PARAM_STR);                                   //@IND_TIPO_OPERACION='I',
                         $stmt->bindParam(2, $coddocumento[0]  ,PDO::PARAM_STR);                             //@COD_TABLA='IILMVR0000002923',
                         $stmt->bindParam(3, $COD_PRODUCTO ,PDO::PARAM_STR);                             //@COD_PRODUCTO='PRD0000000016186',
@@ -959,7 +976,7 @@ class Osiris{
                 $TXT_TABLA              =       'CMP.DOCUMENTO_CTBLE';
                 $TXT_GLOSA              =       'NOTA DE CREDITO '.$serie.'-'.$nrodoc.' /';
 
-                $stmt = DB::connection($conexion)->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.REFERENCIA_ASOC_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?');
+                $stmt = DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.REFERENCIA_ASOC_IUD ?,?,?,?,?,?,?,?,?,?,?,?,?,?');
                 $stmt->bindParam(1, $accion ,PDO::PARAM_STR);                                   //@IND_TIPO_OPERACION='I',
                 $stmt->bindParam(2, $coddocumento[0]  ,PDO::PARAM_STR);                             //@COD_TABLA='IILMNC0000000495',
                 $stmt->bindParam(3, $documento_relacionado_id ,PDO::PARAM_STR);                 //@COD_TABLA_ASOC='IILMFC0000005728',

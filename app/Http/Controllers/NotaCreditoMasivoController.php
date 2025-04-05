@@ -12,6 +12,8 @@ use App\Biblioteca\OsirisMasivo;
 use App\WEBDocumentoNotaCredito;
 use App\CMPDetalleProducto;
 use App\CMPAprobarDoc;
+use App\CMPOrden;
+
 use View;
 use Session;
 use Hashids;
@@ -54,18 +56,27 @@ class NotaCreditoMasivoController extends Controller
 	            $lote                         			=   $this->funciones->generar_lote('WEB.documento_nota_credito',6);
 
 
-				DB::table('CMP.APROBAR_DOC')->where('COD_APROBAR_DOC','=',$cod_aprobar_doc)
+				$orden 									=	CMPOrden::where('COD_ORDEN','=',$data_cod_orden_venta)->first();
+		        $conexionbd         = 'sqlsrv';
+		        if($orden->COD_CENTRO == 'CEN0000000000004'){ //rioja
+		            $conexionbd         = 'sqlsrv_r';
+		        }else{
+		            if($orden->COD_CENTRO == 'CEN0000000000006'){ //bellavista
+		                $conexionbd         = 'sqlsrv_b';
+		            }
+		        }
+				DB::connection($conexionbd)->table('CMP.APROBAR_DOC')->where('COD_APROBAR_DOC','=',$cod_aprobar_doc)
 				                    ->update(['COD_CATEGORIA_ESTADO_DOC' => 'EOR0000000000018',
 				                    		'TXT_CATEGORIA_ESTADO_DOC' => 'ASOCIADO']);
 
 				foreach($array_lista_detalle_producto as $key => $obj){
 
-					$numero_documento					= 	$notacredito->numero_documento($serie,'TDO0000000000007');
+					$numero_documento					= 	$notacredito->numero_documento_con($serie,'TDO0000000000007',$conexionbd);
 					$totalnotacredito					= 	(float)$obj->total;
 					$documento_relacionado_id			= 	$obj->documento_id;
 					$array_productos					= 	$obj->detalle_productos;
 
-					$respuesta 							=  	$osirismasivo->guardar_nota_credito($contrato_id,$direccion_id,$serie,$motivo_id,$glosa,$informacionadicional,$numero_documento,$funcion,$totalnotacredito,$documento_relacionado_id,$array_productos,$data_cod_orden_venta,$lote,$cod_aprobar_doc);
+					$respuesta 							=  	$osirismasivo->guardar_nota_credito($contrato_id,$direccion_id,$serie,$motivo_id,$glosa,$informacionadicional,$numero_documento,$funcion,$totalnotacredito,$documento_relacionado_id,$array_productos,$data_cod_orden_venta,$lote,$cod_aprobar_doc,$conexionbd);
 
 
 				}	
@@ -132,18 +143,23 @@ class NotaCreditoMasivoController extends Controller
 		$cod_aprobar_doc 				= 	$request['cod_aprobar_doc'];
 		$idopcion 						= 	$request['idopcion'];
 
+		$orden 							=	CMPOrden::where('COD_ORDEN','=',$data_cod_orden_venta)->first();
+        $conexionbd         = 'sqlsrv';
+        if($orden->COD_CENTRO == 'CEN0000000000004'){ //rioja
+            $conexionbd         = 'sqlsrv_r';
+        }else{
+            if($orden->COD_CENTRO == 'CEN0000000000006'){ //bellavista
+                $conexionbd         = 'sqlsrv_b';
+            }
+        }
 
 		$tipodocumento 					= 	'TDO0000000000003';
 		$producto_id 					=   '';
-		$lista_documento_asociados 		= 	$this->funciones->lista_referencia_orden_venta($data_cod_orden_venta);
+		$lista_documento_asociados 		= 	$this->funciones->lista_referencia_orden_venta_con($data_cod_orden_venta,$conexionbd);//cambio zona(yala)
 		$array_documentos_id            = 	$this->funciones->colocar_en_array_id_documentos_asociados($lista_documento_asociados);
-		$lista_documento_boletas 		= 	$this->funciones->lista_documentos_contables_array($array_documentos_id,$tipodocumento);
+		$lista_documento_boletas 		= 	$this->funciones->lista_documentos_contables_array_con($array_documentos_id,$tipodocumento,$conexionbd);//cambio zona(yala)
 	
-
 		//dd($lista_documento_boletas);
-
-
-
 		$correlativo 					=	0;
 		$array_lista_detalle_producto 	=	array();
 		$estado_boleta 					=   'libre';
@@ -155,9 +171,9 @@ class NotaCreditoMasivoController extends Controller
 
 			$estado_boleta 				=   'libre';
 			//ver si la boleta esta libre o aun tiene cantidad
-			$nota_credito_asociada 		=  	$this->funciones->boleta_o_factura_asociada_nota_credito($item->COD_DOCUMENTO_CTBLE,'TDO0000000000007');				
+			$nota_credito_asociada 		=  	$this->funciones->boleta_o_factura_asociada_nota_credito_con($item->COD_DOCUMENTO_CTBLE,'TDO0000000000007',$conexionbd);//cambio zona yala				
 			if(count($nota_credito_asociada)>0){
-				$estado_boleta 			= 	$this->funciones->ind_faltante_en_boletas_nota_credito($item->COD_DOCUMENTO_CTBLE);
+				$estado_boleta 			= 	$this->funciones->ind_faltante_en_boletas_nota_credito_con($item->COD_DOCUMENTO_CTBLE,$conexionbd);//cambio zona yala
 			}
 
 			//tiene nota de credito
@@ -173,7 +189,7 @@ class NotaCreditoMasivoController extends Controller
 					//en caso aya diferencia de cantidad
 					$cantidad_diferencia 			= 	0.0;
 					if($estado_boleta =='parcialmente'){
-						$cantidad_nc_producto   	=   $this->funciones->data_detalle_producto_sum_cantidad($item->COD_DOCUMENTO_CTBLE,$obj['producto_id']);
+						$cantidad_nc_producto   	=   $this->funciones->data_detalle_producto_sum_cantidad_con($item->COD_DOCUMENTO_CTBLE,$obj['producto_id'],$conexionbd);//cambio zona
 						if(count($cantidad_nc_producto)>0){
 							$cantidad_diferencia 			= 	$cantidad_nc_producto->CAN_PRODUCTO;
 						}
@@ -190,7 +206,7 @@ class NotaCreditoMasivoController extends Controller
 
 					$cantidad_m 					= 	$cantidad;
 					// Detalle del documento
-					$lista_detalle_producto  		= 	$this->funciones->lista_detalle_producto_orden_venta($item->COD_DOCUMENTO_CTBLE,$producto_id);
+					$lista_detalle_producto  		= 	$this->funciones->lista_detalle_producto_orden_venta_con($item->COD_DOCUMENTO_CTBLE,$producto_id,$conexionbd);//cambio zona yala
 					$array_nuevo_producto 			=	array();
 					$sw 							=	0;
 
@@ -203,10 +219,8 @@ class NotaCreditoMasivoController extends Controller
 						if($producto_id == $row['COD_PRODUCTO']){
 
 							$sw 							=	1;
-
-
-							$detalle_producto_asoc 			=   CMPDetalleProducto::where('COD_TABLA','=',$item->COD_DOCUMENTO_CTBLE)
-															->where('COD_PRODUCTO','=',$obj['producto_id'])->first();
+							$detalle_producto_asoc 			=   CMPDetalleProducto::on($conexionbd)->where('COD_TABLA','=',$item->COD_DOCUMENTO_CTBLE)//cambio zona yala
+																->where('COD_PRODUCTO','=',$obj['producto_id'])->first();
 							$precio 						= 	(float)$detalle_producto_asoc->CAN_PRECIO_UNIT_IGV;
 
 							// que tenga cantidad por lo menos
@@ -363,16 +377,22 @@ class NotaCreditoMasivoController extends Controller
 		$data_cod_orden_venta 			= $request['data_cod_orden_venta'];
 		$data_cod_aprobacion 			= $request['data_cod_aprobacion'];
 		$producto_id 					=   '';
-
+		$orden 							=	CMPOrden::where('COD_ORDEN','=',$data_cod_orden_venta)->first();
+        $conexionbd         			= 'sqlsrv';
+        if($orden->COD_CENTRO == 'CEN0000000000004'){ //rioja
+            $conexionbd         = 'sqlsrv_r';
+        }else{
+            if($orden->COD_CENTRO == 'CEN0000000000006'){ //bellavista
+                $conexionbd         = 'sqlsrv_b';
+            }
+        }
 
 		$lista_detalle_producto 		= $this->funciones->lista_detalle_producto_orden_venta_ncm($data_cod_aprobacion,$producto_id);
-
-
 		//lista de boletas asociadas a una orden de venta (solo clientes otros)
-		$lista_documento_asociados 		= $this->funciones->lista_referencia_orden_venta($data_cod_orden_venta);
+		$lista_documento_asociados 		= $this->funciones->lista_referencia_orden_venta_con($data_cod_orden_venta,$conexionbd);
 		$tipodocumento 					= 'TDO0000000000003';
 		$array_documentos_id            = $this->funciones->colocar_en_array_id_documentos_asociados($lista_documento_asociados);
-		$lista_documento_boletas 		= $this->funciones->lista_documentos_contables_array($array_documentos_id,$tipodocumento);
+		$lista_documento_boletas 		= $this->funciones->lista_documentos_contables_array_con($array_documentos_id,$tipodocumento,$conexionbd);
 
 
 		$funcion 						= $this;

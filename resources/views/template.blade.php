@@ -62,6 +62,33 @@
 
   @yield('script')
  
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+<!--     <script type="module">
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+      createChat({
+        webhookUrl: 'http://localhost:5678/webhook/da259712-a41d-4207-ab02-94acd6b3a288/chat'
+      });
+
+      // Esperar a que el chat se cargue y modificar textos
+      setTimeout(() => {
+        document.querySelector('.chat-heading h1').innerText = "¡Hola! 👋";
+        document.querySelector('.chat-header p').innerText = "Inicia una conversación. Estamos aquí para ayudarte 24/7.";
+        
+        const botMessages = document.querySelectorAll('.chat-message-from-bot .chat-message-markdown p');
+        if (botMessages.length > 0) {
+          botMessages[0].innerText = "¡Hola! 👋";
+          if (botMessages.length > 1) {
+            botMessages[1].innerText = "Me llamo Chalancito. ¿En qué puedo ayudarte hoy?";
+          }
+        }
+
+        document.querySelector('.chat-input textarea').setAttribute('placeholder', "Escribe tu pregunta...");
+      }, 3000); // Asegura que el chat esté completamente cargado
+    </script> -->
+
+
+ 
 </body>
 
 </html>

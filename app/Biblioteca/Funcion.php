@@ -2934,6 +2934,24 @@ class Funcion{
 
 	}
 
+	public function data_detalle_producto_sum_cantidad_con($documento_id,$producto_id,$conexion) {
+
+		//devuelve las nota de credito asociada a la boletas
+		$nota_credito 					=	$this->boleta_o_factura_asociada_nota_credito_con($documento_id,'TDO0000000000007',$conexion);
+		$array_documentos_id 			= 	$this->colocar_en_array_id_documentos_asociados_foreach($nota_credito);
+
+		$producto    					=   CMPDetalleProducto::on($conexion)->where('CMP.DETALLE_PRODUCTO.COD_ESTADO','=',1)
+				                            ->whereIn('CMP.DETALLE_PRODUCTO.COD_TABLA',$array_documentos_id)
+				                            ->where('CMP.DETALLE_PRODUCTO.COD_PRODUCTO','=',$producto_id)
+				                            ->select(DB::raw('sum(CAN_PRODUCTO) as CAN_PRODUCTO, COD_PRODUCTO'))
+				                            ->groupBy('CMP.DETALLE_PRODUCTO.COD_PRODUCTO')
+				                            ->first();
+
+		return $producto;
+
+	}
+
+
 
 	public function ind_faltante_en_boletas_nota_credito($documento_id) {
 
@@ -2951,6 +2969,42 @@ class Funcion{
 
 			//detalle producto suma de cantidades
 			$producto    				=   CMPDetalleProducto::where('CMP.DETALLE_PRODUCTO.COD_ESTADO','=',1)
+				                            ->whereIn('CMP.DETALLE_PRODUCTO.COD_TABLA',$array_documentos_id)
+				                            ->where('CMP.DETALLE_PRODUCTO.COD_PRODUCTO','=',$item->COD_PRODUCTO)
+				                            ->select(DB::raw('sum(CAN_PRODUCTO) as CAN_PRODUCTO, COD_PRODUCTO'))
+				                            ->groupBy('CMP.DETALLE_PRODUCTO.COD_PRODUCTO')
+				                            ->first();
+			if(count($producto)>0){
+				if($item->CAN_PRODUCTO > $producto->CAN_PRODUCTO){
+					$ind_faltante 		= 	'parcialmente';
+				}
+			}else{
+				$ind_faltante 			= 	'parcialmente';
+			}                        
+
+		}
+
+		return $ind_faltante;
+
+	}
+
+
+	public function ind_faltante_en_boletas_nota_credito_con($documento_id,$conexion) {
+
+		//devuelve las nota de credito asociada a la boletas
+		$ind_faltante 					= 	'terminada';
+		$nota_credito 					=	$this->boleta_o_factura_asociada_nota_credito_con($documento_id,'TDO0000000000007',$conexion);
+		$array_documentos_id 			= 	$this->colocar_en_array_id_documentos_asociados_foreach($nota_credito);
+
+		//detalle producto de boletas
+		$detalle_producto_boleta    	=   CMPDetalleProducto::on($conexion)->where('CMP.DETALLE_PRODUCTO.COD_ESTADO','=',1)
+			                                ->where('CMP.DETALLE_PRODUCTO.COD_TABLA','=',$documento_id)
+			                                ->get();
+
+		foreach($detalle_producto_boleta as $index => $item){
+
+			//detalle producto suma de cantidades
+			$producto    				=   CMPDetalleProducto::on($conexion)->where('CMP.DETALLE_PRODUCTO.COD_ESTADO','=',1)
 				                            ->whereIn('CMP.DETALLE_PRODUCTO.COD_TABLA',$array_documentos_id)
 				                            ->where('CMP.DETALLE_PRODUCTO.COD_PRODUCTO','=',$item->COD_PRODUCTO)
 				                            ->select(DB::raw('sum(CAN_PRODUCTO) as CAN_PRODUCTO, COD_PRODUCTO'))
@@ -3062,6 +3116,18 @@ class Funcion{
 
 	}
 
+	public function lista_documentos_contables_array_con($array_documentos_id,$tipodocumento,$conexion) {
+
+		$lista_documento_contable 	= 	CMPDocumentoCtble::on($conexion)->whereIn('COD_DOCUMENTO_CTBLE',$array_documentos_id)
+										->where('COD_CATEGORIA_TIPO_DOC','=',$tipodocumento)
+										->where('COD_EMPR_RECEPTOR','=','IACHEM0000006957')
+										->orderBy('CAN_TOTAL', 'desc')
+										->get();
+
+		return 	$lista_documento_contable;							
+
+	}
+
 
 	public function data_documento_ctbl($documento_id) {
 
@@ -3114,6 +3180,31 @@ class Funcion{
 
 	}
 
+	public function lista_referencia_orden_venta_con($orden_venta_id,$conexion) {
+
+		$tipo_operacion = 'GEN';
+		$cod_tabla 		= $orden_venta_id;
+		$vacio 			= '';
+		$estado 		= 1;
+
+        $stmt = DB::connection($conexion)->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.REFERENCIA_ASOC_LISTAR ?,?,?,?,?,?,?,?,?,?,?');
+        $stmt->bindParam(1, $tipo_operacion ,PDO::PARAM_STR);                           //@IND_TIPO_OPERACION='GEN',
+        $stmt->bindParam(2, $vacio  ,PDO::PARAM_STR);                        			//@COD_TABLA='',
+        $stmt->bindParam(3, $vacio ,PDO::PARAM_STR);                           			//@COD_TIPO_TABLA='',
+        $stmt->bindParam(4, $cod_tabla  ,PDO::PARAM_STR);                        		//@COD_TABLA_ASOC='ISLMVR0000006713',
+        $stmt->bindParam(5, $vacio ,PDO::PARAM_STR);                           			//@COD_TIPO_TABLA_ASOC='',
+        $stmt->bindParam(6, $vacio  ,PDO::PARAM_STR);                        			//@TXT_TABLA='',
+        $stmt->bindParam(7, $vacio ,PDO::PARAM_STR);                           			//@TXT_TABLA_ASOC='',
+        $stmt->bindParam(8, $vacio  ,PDO::PARAM_STR);                        			//@TXT_GLOSA='',
+        $stmt->bindParam(9, $vacio ,PDO::PARAM_STR);                           			//@TXT_TIPO_REFERENCIA='',
+        $stmt->bindParam(10, $vacio  ,PDO::PARAM_STR);                       			//@TXT_REFERENCIA='',
+        $stmt->bindParam(11, $estado ,PDO::PARAM_STR);                          		//@COD_ESTADO=1,
+        $stmt->execute();
+        return $stmt;
+
+	}
+
+
 
 	public function lista_detalle_producto_orden_venta($orden_venta_id,$producto_id) {
 
@@ -3127,6 +3218,20 @@ class Funcion{
         return $stmt;
 
 	}
+
+	public function lista_detalle_producto_orden_venta_con($orden_venta_id,$producto_id,$conexion) {
+
+		$tipo_operacion = 'SEL';
+
+        $stmt = DB::connection($conexion)->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.DETALLE_PRODUCTO_LISTAR ?,?,?');
+        $stmt->bindParam(1, $tipo_operacion ,PDO::PARAM_STR);                           //@IND_TIPO_OPERACION='SEL',
+        $stmt->bindParam(2, $orden_venta_id  ,PDO::PARAM_STR);                        	//@COD_TABLA='ISLMGRR000003384',
+        $stmt->bindParam(3, $producto_id  ,PDO::PARAM_STR);                        		//@COD_PRODUCTO='',
+        $stmt->execute();
+        return $stmt;
+
+	}
+
 
 
 	public function lista_detalle_producto_orden_venta_ncm($orden_venta_id,$producto_id) {
@@ -3189,6 +3294,16 @@ class Funcion{
 
 		//devuelve nota de credito
 		$nota_credito 			=	WEBDocDoc::where('COD_CATEGORIA_TIPO_DOC','=',$tipo_documento_id)
+									->where('COD_DOCUMENTO_CTBLE_BF','=',$documento_id)
+									->get();
+
+		return $nota_credito;
+	}
+
+	public function boleta_o_factura_asociada_nota_credito_con($documento_id,$tipo_documento_id,$conexion) {
+
+		//devuelve nota de credito
+		$nota_credito 			=	WEBDocDoc::on($conexion)->where('COD_CATEGORIA_TIPO_DOC','=',$tipo_documento_id)
 									->where('COD_DOCUMENTO_CTBLE_BF','=',$documento_id)
 									->get();
 
