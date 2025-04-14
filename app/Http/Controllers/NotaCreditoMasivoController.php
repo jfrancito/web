@@ -142,8 +142,9 @@ class NotaCreditoMasivoController extends Controller
 		$informacionadicional 			= 	$request['informacionadicional'];
 		$cod_aprobar_doc 				= 	$request['cod_aprobar_doc'];
 		$idopcion 						= 	$request['idopcion'];
-
 		$orden 							=	CMPOrden::where('COD_ORDEN','=',$data_cod_orden_venta)->first();
+
+
         $conexionbd         = 'sqlsrv';
         if($orden->COD_CENTRO == 'CEN0000000000004'){ //rioja
             $conexionbd         = 'sqlsrv_r';
@@ -196,9 +197,6 @@ class NotaCreditoMasivoController extends Controller
 					}
 
 
-
-
-
 					$producto_id 					= 	$obj['producto_id'];
 					$cantidad 						= 	(float)$obj['cantidad'];
 					$precio 						= 	(float)$obj['precio'];
@@ -214,7 +212,6 @@ class NotaCreditoMasivoController extends Controller
 					while($row = $lista_detalle_producto->fetch())
 					{
 
-
 						//que el producto este dentro la lista
 						if($producto_id == $row['COD_PRODUCTO']){
 
@@ -226,7 +223,9 @@ class NotaCreditoMasivoController extends Controller
 							// que tenga cantidad por lo menos
 							if($cantidad>0){
 
-								$can_producto = (float)$row['CAN_PRODUCTO'] - $cantidad_diferencia;
+								$can_producto = round((float)$row['CAN_PRODUCTO'], 4) - $cantidad_diferencia;
+
+
 								//cantidad mayor al detalle
 								if($cantidad >= $can_producto){
 
@@ -236,7 +235,7 @@ class NotaCreditoMasivoController extends Controller
 															            "cantidad" 			=> $can_producto,
 															            "precio" 			=> $precio,
 															        );
-									$cantidad_m = $cantidad - $can_producto;
+									$cantidad_m = round($cantidad, 4)  - round($can_producto, 4);
 
 								}else{
 
@@ -249,30 +248,40 @@ class NotaCreditoMasivoController extends Controller
 									$cantidad_m = 0;
 
 								}
+
+								// print_r($cantidad.'/'.$can_producto.'/'.$cantidad_m);
+								// print_r('-');
+
+
+
+
 							}
 						}
 
 					}
 
-					//f($sw>0){
-						/************************************ Array sobrante *******************************/
-						$array_sobrante		= 		array(
-															"producto_id" 		=> $producto_id,
-															"cantidad" 			=> $cantidad_m,
-															"precio" 			=> $precio,
-														 );
-						array_push($datasproductos_actualizado,$array_sobrante);		
 
-						if(count($array_nuevo_producto)>0){
-							array_push($array_detalle_producto,$array_nuevo_producto);
-						}
+					/************************************ Array sobrante *******************************/
+					$array_sobrante		= 		array(
+														"producto_id" 		=> $producto_id,
+														"cantidad" 			=> $cantidad_m,
+														"precio" 			=> $precio,
+													 );
+					array_push($datasproductos_actualizado,$array_sobrante);		
 
-					//}
+					if(count($array_nuevo_producto)>0){
+						array_push($array_detalle_producto,$array_nuevo_producto);
+					}
+
+					//print_r($datasproductos_actualizado);
+
 
 
 
 
 				}
+
+
 
 				$datasproductos 	=  $datasproductos_actualizado;
 

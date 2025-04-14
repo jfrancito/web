@@ -201,6 +201,8 @@ class UserController extends Controller
 
 
 			$personal_id 	 		 	= 	$request['personal'];
+
+
 			$personal     				=   WEBListaPersonal::where('id', '=', $personal_id)->first();
 			$idusers 				 	=   $this->funciones->getCreateIdMaestra('users');
 			
