@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Crypt;
 use App\Biblioteca\NotaCredito;
-//use App\Biblioteca\OsirisMasivo;
+use App\Biblioteca\OsirisMasivo;
 use App\WEBDocumentoNotaCredito;
 use App\CMPDetalleProducto;
 use App\CMPAprobarDoc;
@@ -40,7 +40,7 @@ class NotaCreditoMasivoController extends Controller
 
 				DB::beginTransaction();
 
-				//$osirismasivo 							= 	new OsirisMasivo();
+				$osirismasivo 							= 	new OsirisMasivo();
 				$notacredito                    		=   new NotaCredito();
 
 				$array_lista_detalle_producto 			= 	json_decode($request['array_lista_detalle_producto']);
