@@ -13,7 +13,9 @@
         <th class= 'center tablaho' >ATENDIDO</th>
         <th class= 'center tablaho' >PRECIO</th>  
         <th class= 'center tablaho' >DESTINO</th>
-        <th class= 'center tablaho' >ESTADO</th>                            
+        <th class= 'center tablaho' >ESTADO</th> 
+        <th class= 'center tablaho' >AUTORIZADO</th> 
+
       </tr>
     </thead>
     <tbody>
@@ -33,16 +35,15 @@
                   @else
                     {{$item->atendido}}
                   @endif
-                  
                 </td>
                 <td>{{$item->precio}}</td>
-
                 <td>
                    {{$funcion->funciones->data_direccion($item->direccion_entrega_id)->NOM_DIRECCION}}
-                  
                 </td>
 
-                <td>{{$item->NOM_CATEGORIA}}</td>                 
+                <td>{{$item->NOM_CATEGORIA}}</td>   
+                <td>{{$item->nombre}}</td>
+                              
             </tr>
       @endforeach       
 

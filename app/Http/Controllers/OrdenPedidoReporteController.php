@@ -68,6 +68,7 @@ class OrdenPedidoReporteController extends Controller
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
 								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								->leftJoin('users', 'users.id', '=', 'WEB.pedidos.usuario_autorizacion')
 								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
 								->Centro($centro_id)
 			    				->where('WEB.pedidos.fecha_venta','>=', $finicio)
@@ -78,7 +79,7 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.pedidos.direccion_entrega_id,
-			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido'))
+			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,users.nombre'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -104,6 +105,7 @@ class OrdenPedidoReporteController extends Controller
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
 								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								->leftJoin('users', 'users.id', '=', 'WEB.pedidos.usuario_autorizacion')
 								//->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
 								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
 								->Centro($centro_id)
@@ -114,7 +116,7 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.pedidos.direccion_entrega_id,
-			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido'))
+			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,users.nombre'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -125,6 +127,7 @@ class OrdenPedidoReporteController extends Controller
 		    $listapedidos	= 	WEBDetallePedido::join('WEB.pedidos', 'WEB.pedidos.id', '=', 'WEB.detallepedidos.pedido_id')
 								->leftJoin('CMP.CATEGORIA', 'CMP.CATEGORIA.COD_CATEGORIA', '=', 'web.detallepedidos.estado_id')
 								->leftJoin('ALM.CENTRO', 'ALM.CENTRO.COD_CENTRO', '=', 'web.detallepedidos.centro_id')
+								->leftJoin('users', 'users.id', '=', 'WEB.pedidos.usuario_autorizacion')
 								->whereIn('WEB.detallepedidos.estado_id', [$estado_id])
 								//->where('WEB.detallepedidos.centro_id','=',Session::get('centros')->COD_CENTRO)
 								->Centro($centro_id)
@@ -136,7 +139,7 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.cantidad,WEB.detallepedidos.precio,
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.pedidos.direccion_entrega_id,
-			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido'))
+			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,users.nombre'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -146,10 +149,6 @@ class OrdenPedidoReporteController extends Controller
 
 
 		}
-
-
-
-
 
 
 		$funcion 									= 	$this;
