@@ -281,8 +281,6 @@ class NotaCreditoMasivoController extends Controller
 
 				}
 
-
-
 				$datasproductos 	=  $datasproductos_actualizado;
 
 				if(count($array_detalle_producto)>0){

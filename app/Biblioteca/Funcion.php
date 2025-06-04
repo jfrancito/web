@@ -2891,7 +2891,7 @@ class Funcion{
 
 		$tipo_operacion = 'LIS';
 		$tipo_orden_id 	= 'TOR0000000000024';
-
+		
 
         $stmt 	= 	DB::connection('sqlsrv')->getPdo()->prepare('SET NOCOUNT ON;EXEC CMP.ORDEN_LISTAR 
         			@IND_TIPO_OPERACION = ?, 
@@ -4748,7 +4748,7 @@ class Funcion{
 	public function combo_clientes_cuenta() {
 
 		$listaclientes   		=	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
-					    			->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
+					    			//->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
 									->pluck('NOM_EMPR','COD_CONTRATO')
 									->toArray();
 
