@@ -1524,6 +1524,8 @@ class OrdenPedidoController extends Controller
 				$cabecera->tipopago_id   				= 	$request['condicion_pago'];
 				$cabecera->tipo_documento   			= 	$c_tipo_documento;
 				$cabecera->tipo_venta   				= 	$c_tipo_venta;
+				$cabecera->contacto_gestion_transporte   			= 	$request['contatogestiontransporte'];
+
 
 
 				$cabecera->recibo_conformidad  			= 	$request['recibo'];

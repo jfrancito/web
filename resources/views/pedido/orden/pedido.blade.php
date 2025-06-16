@@ -66,6 +66,15 @@
                 <input id="irecibo" type="number" class="form-control input-sm" placeholder="" >
               </div>
       </div>
+
+      <div class="form-group">
+           <label class="col-sm-12 control-label labelleft"> Contacto Gestion Transporte: </label>
+              <div class="col-xs-12 abajocaja">
+                <input id="contatogestiontransporte" type="text" class="form-control input-sm" placeholder="" >
+              </div>
+      </div>
+
+
       <div class="form-group">
            <label class="col-sm-12 control-label labelleft"> Observación </label>
               <div class="col-xs-12 abajocaja">

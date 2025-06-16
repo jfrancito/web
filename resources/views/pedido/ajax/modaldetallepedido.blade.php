@@ -4,6 +4,8 @@
   <h5 class="modal-title">{{$pedido->empresa->NRO_DOCUMENTO}} / {{$funcion->funciones->cuenta_cliente($pedido->cliente_id)}}</h5>
   <h5 class="modal-title"> Dirección entrega : {{$pedido->direccionentrega->NOM_DIRECCION}}</h5>
   <h5 class="modal-title"> Tipo de Pago : {{$funcion->funciones->data_categoria($pedido->tipopago_id)->NOM_CATEGORIA}}</h5>
+  <h5 class="modal-title"> Fecha de Entrega : {{date_format(date_create($pedido->fecha_despacho), 'd-m-Y')}}</h5>
+  <h5 class="modal-title"> Contacto Gestion Transporte : {{$pedido->contacto_gestion_transporte}}</h5>
   <h5 class="modal-title"> Glosa : {{$pedido->glosa}}</h5>
   <input type="hidden" name="id_pedido_modal" id="id_pedido_modal" value="{{$pedido_id}}">
 
