@@ -70,7 +70,8 @@
           <th class= 'center tablaho'>CENTRO</th>
 
           <th class= 'center tablaho'>CODIGO</th>             
-          <th class= 'center tablaho'>FECHA</th> 
+          <th class= 'center tablaho'>FECHA</th>
+          <th class= 'center tablaho'>FECHA ENTREGA</th>  
           <th class= 'center tablaho'>VENDEDOR</th>
           <th class= 'center tablaho'>CLIENTE</th>
           <th class= 'center tablaho' >PRODUCTO</th>
@@ -87,6 +88,7 @@
                 <td width="15">{{$item->NOM_CENTRO}}</td>
                 <td width="15">{{$item->codigo}}</td>
                 <td width="15">{{date_format(date_create($item->fecha_venta), 'd-m-Y')}}</td>
+                <td width="15">{{date_format(date_create($item->fecha_despacho), 'd-m-Y')}}</td>
                 <td width="25">{{$funcion->funciones->data_usuario($item->usuario_crea)->nombre}}</td>
                 <td width="40">{{$funcion->funciones->data_empresa($item->cliente_id)->NOM_EMPR}}</td>
                 <td width="60">{{$item->producto->NOM_PRODUCTO}}</td>
