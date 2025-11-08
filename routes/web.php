@@ -217,9 +217,11 @@ Route::group(['middleware' => ['authaw']], function () {
 	//Route::any('/ajax-reporte-precio-canal-mayorista', 'ProductoReporteController@actionAjaxPrecioCanalMayorista');
 	//Route::any('/precio-producto-canal-mayorista-excel/{fechadia}', 'ProductoReporteController@actionPrecioCanalMayoristaExcel');
 	Route::any('/anticipo-prestamo-masivo-pdf/{centro_id}/{fechainicio}/{fechafin}', 'ContablilidadReporteController@actionAnticipoPrestamoPDF');
-
 	Route::any('/reporte-estado-cuenta-vendedor/{idopcion}', 'EstadoCuentaReporteController@actionEstadoCuentaVendedor');
-
+	Route::any('/ajax-combo-cliente-xjefe', 'EstadoCuentaReporteController@actionComboClientexJefe');
+	Route::any('/ajax-buscar-documento-estado-cuenta', 'EstadoCuentaReporteController@actionReporteEstadoCuenta');
+	Route::any('/estado-cuenta-excel/{fechainicio}/{fechafin}/{jefeventa_id}/{cliente_id}', 'EstadoCuentaReporteController@actionEstadoCuentaVendedorExcel');
+	Route::any('/estado-cuenta-pdf/{fechainicio}/{fechafin}/{jefeventa_id}/{cliente_id}', 'EstadoCuentaReporteController@actionEstadoCuentaVendedorPDF');
 
 
 	Route::any('/reporte-pedidos-estados/{idopcion}', 'OrdenPedidoReporteController@actionPedidoXEstado');

@@ -102,7 +102,7 @@ class CarteraController extends Controller
 
 		$saldocuenta=DB::select('exec RPS.SALDO_TRAMO_CUENTA ?,?,?,?,?,?,?,?,?,?,?', array('','','','',date("Y-m-d"),$cliente,'TCO0000000000068','','','',''));
 
-		
+	
 
 		return [
 		

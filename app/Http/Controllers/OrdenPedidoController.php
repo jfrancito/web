@@ -1645,7 +1645,7 @@ class OrdenPedidoController extends Controller
 				$id_vendedor_adicionar = 'adicionarm';
 			}
 
-
+			//dd(Session::get('usuario'));
 		    $listaclientes 		= 	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
 									->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
 									->Adicionarvendedor($id_vendedor_adicionar)

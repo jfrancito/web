@@ -887,6 +887,8 @@ class Funcion{
 			->get();
 
 
+
+
 		//centro
 		$array_centros 		=	array();
 	    foreach($listacomision as $index => $item){
@@ -917,7 +919,6 @@ class Funcion{
 	    }
 		$array_jefes = 	array_unique($array_jefes, SORT_REGULAR);
 
-
 		//comision jefe
 		$array_comision_jefes 		=	array();
 	    foreach($listacomision as $index => $item){
@@ -929,7 +930,6 @@ class Funcion{
 			array_push($array_comision_jefes,$array_nuevo_comision_jefe);
 	    }
 		$array_comision_jefes  		= 	array_unique($array_comision_jefes, SORT_REGULAR);
-
 
 
 		//vendedores
