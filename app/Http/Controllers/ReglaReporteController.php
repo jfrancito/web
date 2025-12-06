@@ -62,6 +62,7 @@ class ReglaReporteController extends Controller
 		$listacliente 					= 	WEBListaCliente::join('WEB.reglaproductoclientes', 'WEB.reglaproductoclientes.contrato_id', '=', 'WEB.LISTACLIENTE.COD_CONTRATO')
 											//->where('COD_CONTRATO','=',$cuenta_id)
 											->Contrato($cuenta_id)
+											->where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
 											->where('WEB.reglaproductoclientes.activo','=','1')
 											->select('WEB.LISTACLIENTE.COD_CONTRATO','WEB.LISTACLIENTE.NOM_EMPR')
 											->groupBy('WEB.LISTACLIENTE.COD_CONTRATO')
@@ -110,13 +111,14 @@ class ReglaReporteController extends Controller
 			}					
 		}
 
-		$funcion 				= 	$this;	
+		$funcion 				= 	$this;
 
 
 		// lista de clientes
 		$listacliente 					= 	WEBListaCliente::join('WEB.reglaproductoclientes', 'WEB.reglaproductoclientes.contrato_id', '=', 'WEB.LISTACLIENTE.COD_CONTRATO')
 											//->where('COD_CONTRATO','=',$cuenta_id)
 											->Contrato($cuenta_id)
+											->where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
 											->where('WEB.reglaproductoclientes.activo','=','1')
 											->select('WEB.LISTACLIENTE.COD_CONTRATO','WEB.LISTACLIENTE.NOM_EMPR')
 											->groupBy('WEB.LISTACLIENTE.COD_CONTRATO')
