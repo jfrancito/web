@@ -1760,8 +1760,8 @@ function agregar_cliente(nombrecliente,ruc,cuenta,nombre_direccion_select,nombre
     cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Sub Canal:</strong> <small>"+data_subca+"</small></span>";
     cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Fecha de entrega:</strong> <small>"+fechadespacho+"</small></span>";
     cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Dirección de entrega:</strong> <small>"+nombre_direccion_select+"</small></span>";
-    cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Condición de pago :</strong> <small>"+nombre_tipopago_select+"</small></span>";
-    cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Limite de credito :</strong> <small class='lc_i'>"+data_lic+"</small></span>";
+    cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega ocultar'><strong>Condición de pago :</strong> <small>"+nombre_tipopago_select+"</small></span>";
+    cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega ocultar'><strong>Limite de credito :</strong> <small class='lc_i'>"+data_lic+"</small></span>";
     cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Adicional Limite de credito :</strong> <small class='alc_i'>"+data_alic+"</small></span>";    
     cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Deuda del cliente general :</strong> <small class='dg_i'>"+data_decg+"</small></span>";
     cadena += "             <span class='panel-subtitle cell-detail-direccion-entrega'><strong>Deuda del oryza pendiente :</strong> <small class='dg_o'>"+data_deory+"</small></span>";

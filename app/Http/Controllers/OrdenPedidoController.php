@@ -1645,12 +1645,22 @@ class OrdenPedidoController extends Controller
 				$id_vendedor_adicionar = 'adicionarm';
 			}
 
-			//dd(Session::get('usuario'));
-		    $listaclientes 		= 	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
-									->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
-									->Adicionarvendedor($id_vendedor_adicionar)
-									->orderBy('NOM_EMPR', 'asc')
-									->get();
+
+
+			if(Session::get('usuario')->id == '1CIX00000001'){
+			    $listaclientes 		= 	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
+										->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
+										->orderBy('NOM_EMPR', 'asc')
+										->get();
+			}else{
+			    $listaclientes 		= 	WEBListaCliente::where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
+										->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
+										->Adicionarvendedor($id_vendedor_adicionar)
+										->orderBy('NOM_EMPR', 'asc')
+										->get();
+			}
+
+
 	
 			$tipo_comp 			=	'';
 			$combotipocom      	=   array('' => "Seleccione Tipo de comprobante",'SIN_COMPROBANTE' => "SIN COMPROBANTE",
