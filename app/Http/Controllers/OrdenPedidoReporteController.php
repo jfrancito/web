@@ -309,6 +309,7 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.total,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  WEB.pedidos.fecha_despacho,
+			    								  WEB.pedidos.glosa,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
@@ -347,6 +348,7 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.total,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  WEB.pedidos.fecha_despacho,
+			    								  WEB.pedidos.glosa,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
@@ -370,6 +372,7 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.detallepedidos.total,
 			    								  WEB.pedidos.fecha_despacho,
+			    								  WEB.pedidos.glosa,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')

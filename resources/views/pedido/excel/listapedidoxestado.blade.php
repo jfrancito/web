@@ -81,6 +81,8 @@
           <th class= 'center tablaho' >TOTAL</th>
           <th class= 'center tablaho' >DESTINO</th>
           <th class= 'center tablaho' >ESTADO</th>
+          <th class= 'center tablaho' >GLOSA</th>
+
         </tr>
 
       @foreach($listapedidos as $index => $item) 
@@ -107,6 +109,7 @@
                   
                 </td>
                 <td width="15">{{$item->NOM_CATEGORIA}}</td>  
+                <td width="15">{{$item->glosa}}</td> 
           </tr>
       @endforeach       
 
