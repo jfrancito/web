@@ -408,6 +408,15 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-asignar-cliente-regla-limite-credito', 'ReglaController@actionAjaxAsignarReglaLimiteCredito');
 	Route::any('/eliminar-regla-limite-credito/{asignarregla_id}/{idopcion}', 'ReglaController@actionAjaxEliminarReglaLimiteCredito');
 
+	// REPORTE COMPROMISO PAGO
+	Route::any('/gestion-de-regla-compromiso-pago/{idopcion}', 'ReglaController@actionListarReglaCompromisoPago');
+	Route::any('/ajax-lista-reglas-compromiso-pago', 'ReglaController@actionListaAjaxReglasCompromisoPago');
+	Route::any('/regla-compromiso-pago-excel/{fechainicio}/{fechafin}', 'ReglaController@actionReglaCompromisoPagoExcel');
+
+	// BARRAS MASIVO GRANDE
+	Route::any('/gestion-de-barra-masivo-grande/{idopcion}', 'BarraMasivoController@actionGestionBarraMasivoGrande');
+	Route::any('/procesar-barra-masivo-grande/{idopcion}', 'BarraMasivoController@actionProcesarBarraMasivoGrande');
+
 	//Route::any('/ajax-modal-lista-orden-venta-nc', 'NotaCreditoMasivoController@actionAjaxModalListaOrdenVentaCuenta');
 
 	Route::any('/gestion-de-comisiones-periodo/{idopcion}', 'ComisionReporteController@actionComisionPeriodo');

@@ -373,7 +373,18 @@ var App = (function () {
 
 
 
+    $("#tablereportecp").dataTable({
+        "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+        "ordering": true,
+        "order": [[ 2, "desc" ]],
+        responsive: true,
+        "oLanguage": {
+            "sSearch": "Buscar:"
+        }
+    });
+
   };
+
 
   return App;
 })(App || {});

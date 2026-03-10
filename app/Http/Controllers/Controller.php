@@ -18,9 +18,19 @@ class Controller extends BaseController
 	public $fin;
 	public $prefijomaestro;
 	public $fechaActual;
+	public $fechaactual;
 	public $fechavacia;
 	public $anio;
 	public $mes;
+	public $fecha_mas_uno;
+	public $fecha_menos_quince;
+	public $fecha_menos_treinta_dias;
+	public $messiguiente;
+	public $fecha_sin_hora;
+	public $fechaactualinput;
+	public $fecha_hora;
+	public $fecha_pa;
+	public $fechaactuallc;
 
 
 	public function __construct()

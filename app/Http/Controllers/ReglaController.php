@@ -11,6 +11,7 @@ use App\CMPCategoria,App\WEBPrecioProducto,App\WEBPrecioProductoHistorial,App\WE
 use App\ALMProducto;
 use App\WEBAsignarRegla;
 use App\CMPContrato;
+use Maatwebsite\Excel\Facades\Excel;
 
 use View;
 use Session;
@@ -560,5 +561,85 @@ class ReglaController extends Controller
 		}
 	}
 
+
+	public function actionListarReglaCompromisoPago($idopcion)
+	{
+
+		/******************* validar url **********************/
+		$validarurl = $this->funciones->getUrl($idopcion,'Ver');
+	    if($validarurl <> 'true'){return $validarurl;}
+	    /******************************************************/
+
+	    $fechainicio  		= 	$this->fecha_menos_treinta_dias;
+	    $fechafin  			= 	$this->fin;
+
+	    $fechainicio_c 		= 	date_format(date_create($fechainicio), 'Y-m-d');
+	    $fechafin_c 		= 	date_format(date_create($fechafin), 'Y-m-d');
+
+	    $lista_reglas 		= 	DB::table('Regla_Compromiso_Pago')
+	    						->where('Fecha_Orden', '>=', $fechainicio_c)
+	    						->where('Fecha_Orden', '<=', $fechafin_c)
+	    						->get();
+
+		return View::make('regla/listacompromisopago',
+						 [
+						 	'idopcion' 			=> $idopcion,					
+							'fechainicio'		=> $fechainicio,
+							'fechafin'			=> $fechafin,
+							'lista_reglas' 		=> $lista_reglas,
+						 ]);
+
+	}
+
+	public function actionListaAjaxReglasCompromisoPago(Request $request)
+	{
+
+		$fechainicio 				=  	$request['fechainicio'];
+		$fechafin 					=  	$request['fechafin'];
+		$idopcion 					=  	$request['idopcion'];
+
+	    $fechainicio_c 		= 	date_format(date_create($fechainicio), 'Y-m-d');
+	    $fechafin_c 		= 	date_format(date_create($fechafin), 'Y-m-d');
+
+	    $lista_reglas 		= 	DB::table('Regla_Compromiso_Pago')
+	    						->where('Fecha_Orden', '>=', $fechainicio_c)
+	    						->where('Fecha_Orden', '<=', $fechafin_c)
+	    						->get();
+
+		return View::make('regla/ajax/listacompromisopago',
+						 [
+						 	'lista_reglas' 			=> $lista_reglas,
+						 	'idopcion'	 			=> $idopcion,					 	
+						 ]);
+	}
+
+	public function actionReglaCompromisoPagoExcel($fechainicio,$fechafin)
+	{
+		set_time_limit(0);
+
+	    $fechainicio_c 		= 	date_format(date_create($fechainicio), 'Y-m-d');
+	    $fechafin_c 		= 	date_format(date_create($fechafin), 'Y-m-d');
+
+	    $lista_reglas 		= 	DB::table('Regla_Compromiso_Pago')
+	    						->where('Fecha_Orden', '>=', $fechainicio_c)
+	    						->where('Fecha_Orden', '<=', $fechafin_c)
+	    						->get();
+
+		$titulo 		=   'Reporte Compromiso Pago';
+		$empresa 		= 	Session::get('empresas')->NOM_EMPR;
+		$centro 		= 	Session::get('centros')->NOM_CENTRO;
+		$funcion 		= 	$this;
+
+	    Excel::create($titulo, function($excel) use ($lista_reglas,$titulo,$empresa,$centro,$funcion) {
+	        $excel->sheet('Compromisos', function($sheet) use ($lista_reglas,$titulo,$empresa,$centro,$funcion) {
+	            $sheet->loadView('regla/excel/listacompromisopago')->with('lista_reglas',$lista_reglas)
+	                                         		 ->with('titulo',$titulo)
+	                                         		 ->with('empresa',$empresa)
+	                                         		 ->with('centro',$centro)
+	                                         		 ->with('funcion',$funcion);
+	        });
+	    })->export('xls');
+
+	}
 
 }
