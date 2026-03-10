@@ -63,12 +63,15 @@ class BarraMasivoController extends Controller
                             $groupedLPNs[$lpn] = [];
                         }
 
-                        $row_number = $index + 2;
+                        $cod_ean = isset($row->cod_ean) ? (string)$row->cod_ean : '';
+
+                        // Fila debe ser los últimos 3 dígitos del cod_ean
+                        $fila_value = strlen($cod_ean) >= 3 ? substr($cod_ean, -3) : $cod_ean;
 
                         $groupedLPNs[$lpn][] = [
-                            'fila'      => (string)$row_number,
+                            'fila'      => (string)$fila_value,
                             'nro_orden' => isset($row->nro_orden) ? (string)$row->nro_orden : '',
-                            'cod_ean'   => isset($row->cod_ean) ? (string)$row->cod_ean : '',
+                            'cod_ean'   => $cod_ean,
                             'cod_tienda'=> isset($row->cod_tienda) ? (string)$row->cod_tienda : '',
                             'producto'  => isset($row->producto) ? (string)$row->producto : '',
                             'cantidad'  => isset($row->cantidad) ? (string)$row->cantidad : '',

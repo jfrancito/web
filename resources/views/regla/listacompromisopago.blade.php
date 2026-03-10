@@ -2,6 +2,7 @@
 @section('style')
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/dataTables.bootstrap.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/buttons.bootstrap.min.css') }} "/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} "/>
 @stop
 @section('section')
 
@@ -23,7 +24,7 @@
 
                         <div class="form-group" style="margin-bottom: 0;">
                           <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Fecha Inicio:</label>
-                          <div class="input-group date datetimepicker">
+                          <div class="input-group date datetimepicker" data-min-view="2" data-date-format="dd-mm-yyyy">
                             <input size="16" type="text" value="{{$fechainicio}}" name="fechainicio" id="fechainicio" class="form-control input-sm" style="border-radius: 4px 0 0 4px;">
                             <span class="input-group-addon btn btn-primary" style="background-color: #4285f4; border-color: #4285f4; color: white;"><i class="icon-th mdi mdi-calendar"></i></span>
                           </div>
@@ -31,7 +32,7 @@
 
                         <div class="form-group" style="margin-bottom: 0;">
                           <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Fecha Fin:</label>
-                          <div class="input-group date datetimepicker">
+                          <div class="input-group date datetimepicker" data-min-view="2" data-date-format="dd-mm-yyyy">
                             <input size="16" type="text" value="{{$fechafin}}" name="fechafin" id="fechafin" class="form-control input-sm" style="border-radius: 4px 0 0 4px;">
                             <span class="input-group-addon btn btn-primary" style="background-color: #4285f4; border-color: #4285f4; color: white;"><i class="icon-th mdi mdi-calendar"></i></span>
                           </div>
@@ -77,10 +78,16 @@
   <script src="{{ asset('public/lib/datatables/plugins/buttons/js/buttons.bootstrap.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/app-tables-datatables.js?v='.$version) }}" type="text/javascript"></script>
 
+  <script src="{{ asset('public/lib/jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/moment.js/min/moment.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datetimepicker/js/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/app-form-elements.js') }}" type="text/javascript"></script>
+
   <script type="text/javascript">
     $(document).ready(function(){
       //initialize the responsive datatables helper
       App.init();
+      App.formElements();
       App.dataTables();
       $('[data-toggle="tooltip"]').tooltip();
     });
