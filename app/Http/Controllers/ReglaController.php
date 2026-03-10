@@ -111,6 +111,14 @@ class ReglaController extends Controller
 
 	    $data_cod_orden_venta 		= 	$request['data_cod_orden_venta'];
 	    $regla_id 					= 	$request['regla_id'];
+	    $fecha_compromiso 			= 	$request['fecha_compromiso'];
+	    $autorizado_id 				= 	$request['autorizado_id'];
+	    $glosa 						= 	$request['glosa'];
+	    $cuenta_id 					= 	$request['cuenta_id'];
+	    $idopcion 					= 	$request['idopcion'];
+
+	    $user_autorizado 			= 	DB::table('users')->where('id','=',$autorizado_id)->first();
+
 
 		$idreglaproductocliente 	= 	$this->funciones->getCreateIdMaestra('WEB.asignarreglas');
 
@@ -120,11 +128,63 @@ class ReglaController extends Controller
 		$cabecera->prefijo 	    	=  	'RDV'; // REGLAS DIAS VENCIMIENTO
 		$cabecera->tabla 	    	=  	'CMP.ORDEN';
 		$cabecera->tabla_id 	    =  	$data_cod_orden_venta;
+
+		$cabecera->fecha_compromiso =  	date_format(date_create($fecha_compromiso), 'Y-m-d');
+		$cabecera->autorizado_id 	=  	$user_autorizado->id;
+		$cabecera->autorizado_nombre=  	$user_autorizado->nombre;
+		$cabecera->glosa 		    =  	$glosa;
+
 		$cabecera->fecha_crea 	    =  	$this->fechaactual;
 		$cabecera->empresa_id 		=  	Session::get('empresas')->COD_EMPR;
 		$cabecera->centro_id 		=  	Session::get('centros')->COD_CENTRO;
 		$cabecera->usuario_crea 	=  	Session::get('usuario')->id;
 		$cabecera->save();
+
+		// Actualizar la lista del modal
+	    $tipo_documento_id 		= 	'TDO0000000000003'; //boletas
+	    $contrato 				=	CMPContrato::where('COD_CONTRATO','=',$cuenta_id)->first();
+		$array_orden 			= 	$this->funciones->array_orden_venta_documento_fechas_cuenta_regla_nuevo($tipo_documento_id,$cuenta_id);
+		$lista_deuda 			= 	$this->funciones->lista_deuda_cliente($contrato->COD_EMPR_CLIENTE,$this->fechaactual);
+		$comboregla	 			= 	$this->funciones->combo_regla_descuento();
+
+		$comboautorizados 		= 	DB::table('users')
+									->whereIn('id', ['1CIX00000032', '1CIX00000046', '1CIX00000218'])
+									->pluck('nombre', 'id')
+									->toArray();
+
+		$funcion 				= 	$this;
+
+		$lista_modal_html 		= 	View::make('regla/modal/ajax/listaordenventa',
+									 [
+									 	'lista_deuda' 	=> $lista_deuda,
+									 	'array_orden' 	=> $array_orden,
+									 	'cuenta_id' 	=> $cuenta_id,
+									 	'funcion' 		=> $funcion,
+									 	'comboregla' 	=> $comboregla,
+									 	'comboautorizados' => $comboautorizados,
+									 ])->render();
+
+		// Actualizar la lista del dashboard (fondo)
+	    $lista_reglas 		= 	WEBAsignarRegla::join('WEB.reglas', 'WEB.reglas.id', '=', 'WEB.asignarreglas.regla_id')
+	    						->join('CMP.ORDEN', 'CMP.ORDEN.COD_ORDEN', '=', 'WEB.asignarreglas.tabla_id')
+	    						->leftjoin('CMP.REFERENCIA_ASOC', 'CMP.REFERENCIA_ASOC.COD_TABLA', '=', 'CMP.ORDEN.COD_ORDEN')
+	    						->leftjoin('CMP.DOCUMENTO_CTBLE', 'CMP.DOCUMENTO_CTBLE.COD_DOCUMENTO_CTBLE', '=', 'CMP.REFERENCIA_ASOC.COD_TABLA_ASOC')
+	    						->select('WEB.reglas.*','CMP.ORDEN.*','CMP.DOCUMENTO_CTBLE.TXT_CATEGORIA_TIPO_PAGO as CP','WEB.asignarreglas.id as asignarregla_id')
+	    						->where('WEB.asignarreglas.prefijo','=','RDV')
+	    						->where('WEB.asignarreglas.activo','=','1')
+	    						->where('CMP.REFERENCIA_ASOC.TXT_GLOSA','like','%DOCUMENTO INTERNO VENTAS%')
+	    						->get();
+
+	    $lista_background_html 	= 	View::make('regla/ajax/listaasignardv',
+						 			[
+						 				'lista_reglas' 		=> $lista_reglas,
+						 				'idopcion' 			=> $idopcion,
+						 			])->render();
+
+	    return response()->json([
+	        'lista_modal' 		=> $lista_modal_html,
+	        'lista_background' 	=> $lista_background_html
+	    ]);
 
 	}
 
@@ -150,6 +210,11 @@ class ReglaController extends Controller
 
 		$comboregla	 			= 	$this->funciones->combo_regla_descuento();
 
+		$comboautorizados 		= 	DB::table('users')
+									->whereIn('id', ['1CIX00000032', '1CIX00000046', '1CIX00000218'])
+									->pluck('nombre', 'id')
+									->toArray();
+
 		$funcion 				= 	$this;
 
 		return View::make('regla/modal/ajax/ordenventa',
@@ -159,6 +224,7 @@ class ReglaController extends Controller
 						 	'cuenta_id' 	=> $cuenta_id,
 						 	'funcion' 		=> $funcion,
 						 	'comboregla' 	=> $comboregla,
+						 	'comboautorizados' => $comboautorizados,
 						 ]);
 
 	}

@@ -112,14 +112,13 @@ return [
 
         'sqlsrv_a' => [
             'driver' => 'sqlsrv',
-            'host' => '10.1.0.200\INVICTUS',
+            'host' => '10.1.1.180\INVICTUS',
             'database' => 'REPORTES',
             'username' => 'sa',
-            'password' => 'Sistem@s1ndu19',
+            'password' => 'Indu@m3r1c@',
             'charset' => 'utf8',
             'prefix' => '',
         ],
-
 
         'sqlsrv_w' => [
             'driver' => 'sqlsrv',

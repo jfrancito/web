@@ -2,181 +2,212 @@
 @section('style')
 
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/dataTables.bootstrap.min.css') }} "/>
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/responsive.dataTables.min.css') }} "/>
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} "/>
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/select2/css/select2.min.css') }} "/>
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/bootstrap-slider/css/bootstrap-slider.css') }} "/>
+<link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/dataTables.bootstrap.min.css') }} " />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/responsive.dataTables.min.css') }} " />
+<link rel="stylesheet" type="text/css"
+  href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} " />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/lib/select2/css/select2.min.css') }} " />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/lib/bootstrap-slider/css/bootstrap-slider.css') }} " />
+
+<style>
+  .modal-detalledocumento {
+    width: 95% !important;
+  }
+  .modal-body .listatabla thead th {
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    border-bottom: 2px solid #eee;
+  }
+  .modal-body .listatabla tbody tr:hover {
+    background-color: #f9f9fb !important;
+  }
+  .modal-body .form-control {
+    border-radius: 4px;
+    border: 1px solid #d5d8de;
+    transition: all 0.3s ease;
+  }
+  .modal-body .form-control:focus {
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.1);
+  }
+  .modal-body .select2-container--default .select2-selection--single {
+    border-radius: 4px;
+    border: 1px solid #d5d8de;
+  }
+  .btn-asignar {
+    background-color: #34a853;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-asignar:hover {
+    background-color: #2d8e47;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+  }
+  .btn-asignar .icon {
+    font-size: 1.2em;
+  }
+  .input-group.date .input-group-addon {
+    background-color: #f5f5f5;
+    border: 1px solid #d5d8de;
+    border-left: none;
+  }
+  .scroll_text {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+  /* Custom scrollbar */
+  .scroll_text::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scroll_text::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+  }
+</style>
 @stop
 @section('section')
 
-  <div class="be-content reglaasignardv">
-    <div class="main-content container-fluid">
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="panel panel-default panel-table">
+<div class="be-content reglaasignardv">
+  <div class="main-content container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panel panel-default panel-table">
 
-                <div class="panel-heading">Asignar Regla de dias vencimiento
-                  <div class="tools tooltiptop">
+          <div class="panel-heading">Asignar Regla de dias vencimiento
+            <div class="tools tooltiptop">
 
-                    <a href="#" class="tooltipcss" id='buscarordenventa'>
-                      <span class="tooltiptext">Buscar</span>
-                      <span class="icon mdi mdi-search"></span>
-                    </a>
+              <a href="#" class="tooltipcss" id='buscarordenventa'>
+                <span class="tooltiptext">Buscar</span>
+                <span class="icon mdi mdi-search"></span>
+              </a>
 
-                  </div>
-                </div>
-                <div class="panel-body selectfiltro">
-
-                  <div class='filtrotabla row'>
-                    <div class="col-xs-12">
-
-
-<!--                       <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 cajareporte">
-
-                          <div class="form-group ">
-                            <label class="col-sm-12 control-label labelleft" >Fecha Inicio:</label>
-                            <div class="col-sm-12 abajocaja" >
-
-                                <div data-min-view="2" 
-                                     data-date-format="dd-mm-yyyy"  
-                                     class="input-group date datetimepicker " style = 'padding: 0px 0;margin-top: -3px;'>
-                                     <input size="16" type="text" 
-                                            value="{{$fechainicio}}" 
-                                            placeholder="Fecha Inicio"
-                                            id='fechainicio' 
-                                            name='fechainicio' 
-                                            required = ""
-                                            class="form-control"/>
-                                      <span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
-                                </div>
-
-
-                            </div>
-                          </div>
-                      </div> 
-
-                      <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 cajareporte">
-
-                          <div class="form-group ">
-                            <label class="col-sm-12 control-label labelleft" >Fecha Fin:</label>
-                            <div class="col-sm-12 abajocaja" >
-                              <div data-min-view="2" 
-                                     data-date-format="dd-mm-yyyy"  
-                                     class="input-group date datetimepicker " style = 'padding: 0px 0;margin-top: -3px;'>
-                                     <input size="16" type="text" 
-                                            value="{{$fechafin}}" 
-                                            placeholder="Fecha Fin"
-                                            id='fechafin' 
-                                            name='fechafin' 
-                                            required = ""
-                                            class="form-control"/>
-                                      <span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
-                                </div>
-                            </div>
-                          </div>
-                      </div>  -->
-
-
-
-                      <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 cajareporte">
-
-                          <div class="form-group">
-                            <label class="col-sm-12 control-label labelleft" >Clientes :</label>
-                            <div class="col-sm-12 abajocaja" >
-                              {!! Form::select( 'cuenta_id', $comboclientes, array(),
-                                                [
-                                                  'class'       => 'select2 form-control control input-sm' ,
-                                                  'id'          => 'cuenta_id',
-                                                  'required'    => '',
-                                                  'data-aw'     => '1',
-                                                ]) !!}
-                            </div>
-                          </div>
-                      </div> 
-
-                      <input type="hidden" name="opcion" id='opcion' value='{{$idopcion}}'>
-                      <input type="hidden" name="buscar" id='buscar' value='1'>
-                  </div>
-
-                  <div class="col-xs-12">
-                    <div class='listafacturas listajax reporteajax'>
-                        <div class='ajaxvacio'>
-                          
-
-                          @include('regla.ajax.listaasignardv')
-
-
-                        </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
             </div>
           </div>
+          <div class="panel-body selectfiltro">
+
+            <div class='filtrotabla row'>
+              <div class="col-xs-12">
+
+                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 cajareporte">
+
+                  <div class="form-group">
+                    <label class="col-sm-12 control-label labelleft">Clientes :</label>
+                    <div class="col-sm-12 abajocaja">
+                      {!! Form::select(
+  'cuenta_id',
+  $comboclientes,
+  array(),
+  [
+    'class' => 'select2 form-control control input-sm',
+    'id' => 'cuenta_id',
+    'required' => '',
+    'data-aw' => '1',
+  ]
+) !!}
+                    </div>
+                  </div>
+                </div>
+
+                <input type="hidden" name="opcion" id='opcion' value='{{$idopcion}}'>
+                <input type="hidden" name="buscar" id='buscar' value='1'>
+              </div>
+
+              <div class="col-xs-12">
+                <div class='listafacturas listajax reporteajax'>
+                  <div class='ajaxvacio'>
+
+
+                    @include('regla.ajax.listaasignardv')
+
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-  @include('notacreditomasivo.modal.mlistaoredenventa')
-  @include('notacreditomasivo.modal.mlistadetalleproducto')
-  @include('notacreditomasivo.modal.mlistanotacreditos')
+    @include('notacreditomasivo.modal.mlistaoredenventa')
+    @include('notacreditomasivo.modal.mlistadetalleproducto')
+    @include('notacreditomasivo.modal.mlistanotacreditos')
 
   </div>
 
-@stop
+  @stop
 
-@section('script')
+  @section('script')
 
-    <script src="{{ asset('public/js/general/inputmask/inputmask.js') }}" type="text/javascript"></script> 
-    <script src="{{ asset('public/js/general/inputmask/inputmask.extensions.js') }}" type="text/javascript"></script> 
-    <script src="{{ asset('public/js/general/inputmask/inputmask.numeric.extensions.js') }}" type="text/javascript"></script> 
-    <script src="{{ asset('public/js/general/inputmask/inputmask.date.extensions.js') }}" type="text/javascript"></script> 
-    <script src="{{ asset('public/js/general/inputmask/jquery.inputmask.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/general/inputmask/inputmask.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/general/inputmask/inputmask.extensions.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/general/inputmask/inputmask.numeric.extensions.js') }}"
+    type="text/javascript"></script>
+  <script src="{{ asset('public/js/general/inputmask/inputmask.date.extensions.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/general/inputmask/jquery.inputmask.js') }}" type="text/javascript"></script>
 
 
   <script src="{{ asset('public/lib/datatables/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/dataTables.buttons.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datatables/plugins/buttons/js/dataTables.buttons.js') }}"
+    type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/dataTables.responsive.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datatables/js/responsive.bootstrap.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/js/app-tables-datatables.js?v='.$version) }}" type="text/javascript"></script>
+  <script src="{{ asset('public/js/app-tables-datatables.js?v=' . $version) }}" type="text/javascript"></script>
 
   <script src="{{ asset('public/lib/jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/jquery.nestable/jquery.nestable.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/moment.js/min/moment.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/lib/datetimepicker/js/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"
+    type="text/javascript"></script>
   <script src="{{ asset('public/lib/select2/js/select2.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/bootstrap-slider/js/bootstrap-slider.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/app-form-elements.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/parsley/parsley.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/jquery.niftymodals/dist/jquery.niftymodals.js') }}" type="text/javascript"></script>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
 
 
-      $.fn.niftyModal('setDefaults',{
-        overlaySelector: '.modal-overlay',
-        closeSelector: '.modal-close',
-        classAddAfterOpen: 'modal-show',
+    $.fn.niftyModal('setDefaults', {
+      overlaySelector: '.modal-overlay',
+      closeSelector: '.modal-close',
+      classAddAfterOpen: 'modal-show',
+    });
+
+    $(document).ready(function () {
+      //initialize the javascript
+      App.init();
+      App.formElements();
+      App.dataTables();
+      $('[data-toggle="tooltip"]').tooltip();
+      $('form').parsley();
+
+      $('.dinero').inputmask({
+        'alias': 'numeric',
+        'groupSeparator': ',', 'autoGroup': true, 'digits': 2,
+        'digitsOptional': false,
+        'prefix': '',
+        'placeholder': '0'
       });
 
-      $(document).ready(function(){
-        //initialize the javascript
-        App.init();
-        App.formElements();
-        App.dataTables();
-        $('[data-toggle="tooltip"]').tooltip();
-        $('form').parsley();
 
-        $('.dinero').inputmask({ 'alias': 'numeric', 
-        'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 
-        'digitsOptional': false, 
-        'prefix': '', 
-        'placeholder': '0'});
+    });
+  </script>
 
-
-      });
-    </script> 
-
-    <script src="{{ asset('public/js/regla/diasvencimiento.js?v='.$version) }}" type="text/javascript"></script> 
-@stop
+  <script src="{{ asset('public/js/regla/diasvencimiento.js?v=' . $version) }}" type="text/javascript"></script>
+  @stop
