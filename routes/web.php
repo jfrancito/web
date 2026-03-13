@@ -400,6 +400,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/gestion-de-asignar-regla-dias-vencimiento/{idopcion}', 'ReglaController@actionAsignarReglaDiasVencimiento');
 	Route::any('/ajax-modal-lista-orden-venta-regla', 'ReglaController@actionAjaxModalListaOrdenVentaCuenta');
 	Route::any('/ajax-modal-asignar-orden-venta-regla-dias-vencimiento', 'ReglaController@actionAjaxAsignarReglaDiasVencimiento');
+	Route::any('/ajax-modal-asignar-masivo-orden-venta-regla-dias-vencimiento', 'ReglaController@actionAjaxAsignarMasivoReglaDiasVencimiento');
 	Route::any('/eliminar-regla-dias-vencimiento/{asignarregla_id}/{idopcion}', 'ReglaController@actionAjaxEliminarReglaDiasVencimiento');
 
 
@@ -411,7 +412,8 @@ Route::group(['middleware' => ['authaw']], function () {
 	// REPORTE COMPROMISO PAGO
 	Route::any('/gestion-de-regla-compromiso-pago/{idopcion}', 'ReglaController@actionListarReglaCompromisoPago');
 	Route::any('/ajax-lista-reglas-compromiso-pago', 'ReglaController@actionListaAjaxReglasCompromisoPago');
-	Route::any('/regla-compromiso-pago-excel/{fechainicio}/{fechafin}', 'ReglaController@actionReglaCompromisoPagoExcel');
+	Route::any('/regla-compromiso-pago-excel/{fechainicio}/{fechafin}/{sede?}', 'ReglaController@actionReglaCompromisoPagoExcel');
+	Route::any('/ajax-modal-detalle-pagos-periodo', 'ReglaController@actionAjaxModalDetallePagosPeriodo');
 
 	// BARRAS MASIVO GRANDE
 	Route::any('/gestion-de-barra-masivo-grande/{idopcion}', 'BarraMasivoController@actionGestionBarraMasivoGrande');

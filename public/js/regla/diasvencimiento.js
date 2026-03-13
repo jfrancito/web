@@ -8,17 +8,6 @@ $(document).ready(function(){
 
         var _token              = $('#token').val();
         var cuenta_id           = $('#cuenta_id').select2().val();
-        // var fechainicio         = $('#fechainicio').val();        
-        // var fechafin            = $('#fechafin').val(); 
-
-        // if(fechainicio == ''){
-        //     alerterrorajax("Seleccione una fecha de inicio");
-        //     return false;
-        // }
-        // if(fechafin == ''){
-        //     alerterrorajax("Seleccione una fecha de fin");
-        //     return false;
-        // } 
         /****** VALIDACIONES ********/
         if(cuenta_id.length<=0){
             alerterrorajax("Seleccione un cliente");
@@ -52,9 +41,9 @@ $(document).ready(function(){
 
         var _token                  = $('#token').val();
         var data_cod_orden_venta    = $(this).parent().parent('.filaorden').attr('data_cod_orden_venta');
-        var regla_id                = $(this).parent().parent('.filaorden').find('.seledtregla').find('.select_regla').select2().val();
+        var regla_id                = $(this).parent().parent('.filaorden').find('.seledtregla').find('.select_regla').val();
         var fecha_compromiso        = $(this).parent().parent('.filaorden').find('.sedfecha_compromiso').find('.fecha_compromiso').val();
-        var autorizado_id           = $(this).parent().parent('.filaorden').find('.sedautorizado').find('.select_autorizado').select2().val();
+        var autorizado_id           = $(this).parent().parent('.filaorden').find('.sedautorizado').find('.select_autorizado').val();
         var glosa                   = $(this).parent().parent('.filaorden').find('.sedglosa').find('.glosa').val();
 
         var cuenta_id               = $('#cuenta_id').val();
@@ -113,21 +102,64 @@ $(document).ready(function(){
 
     });
 
+    // MASIVO: Seleccionar todos
+    $(document).on('change', '#check_all_ov', function() {
+        var checked = $(this).prop('checked');
+        $('.check_ov').prop('checked', checked);
+    });
 
+    // MASIVO: Asignar
+    $(document).on('click', '.btn-asignar-masivo', function(e) {
+        e.preventDefault();
 
+        var selected = [];
+        $('.check_ov:checked').each(function() {
+            selected.push($(this).val());
+        });
+
+        if(selected.length == 0) {
+            alerterrorajax("Seleccione al menos una orden de venta");
+            return false;
+        }
+
+        var regla_id         = $('#regla_id_masivo').val();
+        var fecha_compromiso = $('#fecha_compromiso_masivo').val();
+        var autorizado_id    = $('#autorizado_id_masivo').val();
+        var glosa            = $('#glosa_masivo').val();
+        var _token           = $('#token').val();
+        var cuenta_id        = $('#cuenta_id').val();
+        var idopcion         = $('#opcion').val();
+
+        if(regla_id == "") {
+            alerterrorajax("Seleccione una regla para la asignación masiva");
+            return false;
+        }
+
+        abrircargando();
+        $.ajax({
+            type    : "POST",
+            url     : carpeta + "/ajax-modal-asignar-masivo-orden-venta-regla-dias-vencimiento",
+            data    : {
+                _token: _token,
+                selected_ids: selected,
+                regla_id: regla_id,
+                fecha_compromiso: fecha_compromiso,
+                autorizado_id: autorizado_id,
+                glosa: glosa,
+                cuenta_id: cuenta_id,
+                idopcion: idopcion
+            },
+            success: function (data) {
+                cerrarcargando();
+                $('.ajax_lista_orden_venta').html(data.lista_modal);
+                $('.reporteajax').html(data.lista_background);
+                alertsuccessajax("Reglas asignadas masivamente con éxito");
+            },
+            error: function (data) {
+                cerrarcargando();
+                error500(data);
+            }
+        });
+    });
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-

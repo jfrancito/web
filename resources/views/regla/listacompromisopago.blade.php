@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/dataTables.bootstrap.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datatables/css/buttons.bootstrap.min.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/datetimepicker/css/bootstrap-datetimepicker.min.css') }} "/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/lib/jquery.niftymodals/dist/jquery.niftymodals.css') }} "/>
 @stop
 @section('section')
 
@@ -19,8 +20,18 @@
                 <div class="col-xs-12">
                   <div class="panel panel-default border-gradient" style="border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     <div class="panel-body" style="padding: 20px;">
-                      <form method="POST" action="{{ url('/gestion-de-regla-compromiso-pago/'.$idopcion) }}" style="display: flex; align-items: flex-end; flex-wrap: wrap; gap: 10px;">
+                      <form method="POST" action="{{ url('/gestion-de-regla-compromiso-pago/'.$idopcion) }}" style="display: flex; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
                         {{ csrf_field() }}
+
+                        <div class="form-group" style="margin-bottom: 4px; min-width: 200px;">
+                          <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Sede:</label>
+                          {!! Form::select( 'sede', $combo_sedes, array(),
+                                            [
+                                              'class'       => 'select2 form-control control input-sm' ,
+                                              'id'          => 'sede',
+                                              'data-aw'     => '1',
+                                            ]) !!}
+                        </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                           <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Fecha Inicio:</label>
@@ -64,6 +75,14 @@
 	</div>
 </div>
 
+<div id="modal-detalle-pagos" class="modal-container colored-header colored-header-primary modal-effect-8">
+    <div class="modal-content">
+        <div class='modal-result'>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay"></div>
+
 @stop
 
 @section('script')
@@ -81,13 +100,31 @@
   <script src="{{ asset('public/lib/jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/moment.js/min/moment.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/lib/datetimepicker/js/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('public/js/app-form-elements.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('public/lib/jquery.niftymodals/dist/jquery.niftymodals.js') }}" type="text/javascript"></script>
 
   <script type="text/javascript">
+
+    $.fn.niftyModal('setDefaults',{
+      overlaySelector: '.modal-overlay',
+      closeSelector: '.modal-close',
+      classAddAfterOpen: 'modal-show',
+    });
+
     $(document).ready(function(){
       //initialize the responsive datatables helper
       App.init();
-      App.formElements();
+
+      // Initialize datetimepicker manually to avoid unused dependency errors (select2/slider)
+      $(".datetimepicker").datetimepicker({
+        autoclose: true,
+        pickerPosition: "bottom-left",
+        componentIcon: '.mdi.mdi-calendar',
+        navIcons:{
+            rightIcon: 'mdi mdi-chevron-right',
+            leftIcon: 'mdi mdi-chevron-left'
+        }
+      });
+
       App.dataTables();
       $('[data-toggle="tooltip"]').tooltip();
     });
