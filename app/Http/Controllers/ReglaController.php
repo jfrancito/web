@@ -743,7 +743,12 @@ class ReglaController extends Controller
 	    								$query->where('Sede', '=', $sede);
 	    							}
 	    						})
+	    						->orderby('Vendedor','asc')
+	    						->orderby('Cliente','asc')
 	    						->get();
+
+
+
 
 	    $lista_consolidado 	= 	DB::table('Regla_Compromiso_Pago_Consolidado')
 	    						->whereRaw('CAST(Fecha_Regla AS DATE) >= ?', [$fechainicio_c])
@@ -753,6 +758,8 @@ class ReglaController extends Controller
 	    								$query->where('Sede', '=', $sede);
 	    							}
 	    						})
+	    						->orderby('Vendedor','asc')
+	    						->orderby('Cliente','asc')
 	    						->get();
 
 		$titulo 		=   'Reporte Compromiso Pago';

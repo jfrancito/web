@@ -71,7 +71,7 @@
               <th>FEC. ORDEN / FEC. PAGO / DIAS</th>
               <th>F. Regla / F. Compr.</th>
               <th class="text-right">Pagos en Periodo</th>
-              <th class="text-right">Pagado Total / Pago Tot.</th>
+              <th class="text-right">Monto Compromiso</th>
               <th></th>
             </tr>
           </thead>
@@ -160,14 +160,7 @@
                 </td>
                 <td class="text-right">
                   <div style="font-weight: 700; color: #2c5282;">
-                    {{number_format($item->Monto_Total_Pagado, 2, '.', ',')}}
-                  </div>
-                  <div style="margin-top: 4px;">
-                    @if($item->Pago_Totalidad == 'SI')
-                      <span class="badge-status badge-si" style="padding: 2px 8px; font-size: 9px;" title="Pago Totalidad">SI (Totalidad)</span>
-                    @else
-                      <span class="badge-status badge-no" style="padding: 2px 8px; font-size: 9px;" title="Pago Totalidad">NO (Totalidad)</span>
-                    @endif
+                    {{number_format($item->Saldo_Pendiente_Al_Crear_Regla, 2, '.', ',')}}
                   </div>
                 </td>
                 <td class="text-right">
@@ -203,7 +196,7 @@
               <th>FEC. ORDEN / FEC. PAGO / DIAS</th>
               <th>F. Regla / F. Compr.</th>
               <th class="text-right">Pagos en Periodo</th>
-              <th class="text-right">Pagado Total / Pago Tot.</th>
+              <th class="text-right">Monto de Compromiso</th>
               <th></th>
             </tr>
           </thead>
@@ -295,14 +288,7 @@
                 </td>
                 <td class="text-right">
                   <div style="font-weight: 700; color: #2c5282;">
-                    {{number_format($item->Monto_Total_Pagado, 2, '.', ',')}}
-                  </div>
-                  <div style="margin-top: 4px;">
-                    @if($item->Pago_Totalidad == 'SI')
-                      <span class="badge-status badge-si" style="padding: 2px 8px; font-size: 9px;" title="Pago Totalidad">SI (Totalidad)</span>
-                    @else
-                      <span class="badge-status badge-no" style="padding: 2px 8px; font-size: 9px;" title="Pago Totalidad">NO (Totalidad)</span>
-                    @endif
+                    {{number_format($item->Saldo_Pendiente_Al_Crear_Regla, 2, '.', ',')}}
                   </div>
                 </td>
                 <td class="text-right">
