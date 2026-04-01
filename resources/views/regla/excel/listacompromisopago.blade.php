@@ -60,8 +60,11 @@
 	          <td>{{$item->Fecha_Compromiso ? date_format(date_create($item->Fecha_Compromiso), 'd-m-Y') : ''}}</td>
 	          <td>{{number_format($item->Saldo_Pendiente_Al_Crear_Regla, 2, '.', '')}}</td>
 	          <td>{{number_format($item->Pago_Realizado_En_Rango, 2, '.', '')}}</td>
-	          <td>{{$item->Se_Pago_Todo_El_Saldo_En_Rango}} 
-                @if($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI' && isset($item->Ultima_Fecha_Rango) && $item->Ultima_Fecha_Rango)
+	          @php
+                $mostrar_fecha_excel = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+              @endphp
+              <td>{{ $mostrar_fecha_excel ? 'SI' : $item->Se_Pago_Todo_El_Saldo_En_Rango }} 
+                @if($mostrar_fecha_excel && isset($item->Ultima_Fecha_Rango) && $item->Ultima_Fecha_Rango)
                   ({{ date_format(date_create($item->Ultima_Fecha_Rango), 'd-m-Y') }})
                 @endif
             </td>

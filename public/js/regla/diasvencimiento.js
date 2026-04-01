@@ -122,6 +122,8 @@ $(document).ready(function(){
             return false;
         }
 
+
+
         var regla_id         = $('#regla_id_masivo').val();
         var fecha_compromiso = $('#fecha_compromiso_masivo').val();
         var autorizado_id    = $('#autorizado_id_masivo').val();
@@ -134,6 +136,11 @@ $(document).ready(function(){
             alerterrorajax("Seleccione una regla para la asignación masiva");
             return false;
         }
+        if(autorizado_id == "") {
+            alerterrorajax("Seleccione quien autorizo");
+            return false;
+        }
+        
 
         abrircargando();
         $.ajax({

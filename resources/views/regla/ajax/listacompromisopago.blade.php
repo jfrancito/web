@@ -144,7 +144,10 @@
                         {{number_format($item->Pago_Realizado_En_Rango, 2, '.', ',')}}
                       </div>
                       <div style="margin-top: 4px;">
-                        @if($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI')
+                        @php
+                          $mostrar_fecha_c = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+                        @endphp
+                        @if($mostrar_fecha_c)
                           <span class="badge-status badge-si" style="padding: 2px 8px; font-size: 9px;">SI</span>
                           @if(isset($item->Ultima_Fecha_Rango) && $item->Ultima_Fecha_Rango)
                             <div class="text-muted-xs" style="margin-top: 3px; font-weight: 600; color: #2c5282;">
@@ -271,7 +274,10 @@
                       </div>
                       <div style="margin-top: 4px;">
     
-                        @if($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI')
+                        @php
+                          $mostrar_fecha_d = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+                        @endphp
+                        @if($mostrar_fecha_d)
                           <span class="badge-status badge-si" style="padding: 2px 8px; font-size: 9px;">SI</span>
                           @if(isset($item->Ultima_Fecha_Rango) && $item->Ultima_Fecha_Rango)
                             <div class="text-muted-xs" style="margin-top: 3px; font-weight: 600; color: #2c5282;">

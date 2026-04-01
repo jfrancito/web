@@ -296,6 +296,7 @@ class ReglaController extends Controller
 									->whereIn('id', ['1CIX00000032', '1CIX00000046', '1CIX00000218'])
 									->pluck('nombre', 'id')
 									->toArray();
+		$comboautorizados 		=   array(''=>'Seleccione Autorizado') + $comboautorizados;						
 
 		$funcion 				= 	$this;
 
