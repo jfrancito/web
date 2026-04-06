@@ -13,3 +13,4 @@ yarn-error.log
 /public/js/app.js
 /resources/assets/js/app.js
 /app/Console/Kernel.php
+/config/database.php
