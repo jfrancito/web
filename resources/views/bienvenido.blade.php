@@ -17,30 +17,30 @@
 
 @section('section')
 
-  <div class="be-content">
+  <div class="be-content premium-dashboard-bg">
     <div class="main-content container-fluid">
-        <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-4">
-                <div class="widget widget-tile">
-                  <div id="spark1" class="sparkline"></div>
-                  <div class="data-info">
-                    <div class="desc">Pedidos</div>
-                    <div class="value">
-                        <span class="indicator indicator-equal mdi mdi-chevron-right"></span>
-                        <span data-toggle="counter" data-end="{{$countpedidos}}" class="number">0</span>
-                    </div>
-                  </div>
+        <div class="row" style="text-align: left !important;">
+            <div class="col-xs-12 col-md-8 col-lg-5">
+                <a href="{{ url('/gestion-de-toma-de-pedido/vm') }}" class="premium-card-link">
+                    <div class="premium-widget-modern">
+                      <div class="icon-bg"></div>
+                      
+                      <div class="card-content">
+                        <span class="card-label">Pedidos del Sistema</span>
+                        <div class="card-value">
+                            <span data-toggle="counter" data-end="{{$countpedidos}}" class="number">0</span>
+                            <span class="trend">Activos</span>
+                        </div>
+                      </div>
 
-                  <div class="data-info">
-                    <div class="desc iropcion"> 
-                        <a href="{{ url('/gestion-de-toma-de-pedido/vm') }}">
-                            <span class="mdi mdi-arrow-right"></span>
-                        </a>
-                        
+                      <div class="card-footer">
+                        <span>Ver todos los pedidos</span>
+                        <div class="arrow-circle">
+                            <i class="mdi mdi-arrow-right"></i>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-
-                </div>
+                </a>
             </div>
         </div>
 
@@ -53,25 +53,14 @@
 
 @section('script')
 
-    <script src="{{ asset('public/lib/jquery-flot/jquery.flot.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jquery-flot/jquery.flot.pie.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jquery-flot/jquery.flot.resize.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jquery-flot/plugins/jquery.flot.orderBars.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jquery-flot/plugins/curvedLines.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jquery.sparkline/jquery.sparkline.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/countup/countUp.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jqvmap/jquery.vmap.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/lib/jqvmap/maps/jquery.vmap.world.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('public/js/app-dashboard.js') }}" type="text/javascript"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
+    {{-- Librerías del dashboard antiguo removidas (app-dashboard.js no se usa) --}}
+    {{-- Si en el futuro se necesitan gráficas Flot, se deberán agregar aquí --}}
 
     <script type="text/javascript">
       $(document).ready(function(){
         App.init();
-        App.dashboard();
+        // App.dashboard() fue removido porque los contenedores de gráficas 
+        // del tema antiguo ya no existen en el dashboard premium actual.
       });
     </script>   
 

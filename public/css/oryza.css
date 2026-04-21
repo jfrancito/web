@@ -253,6 +253,15 @@
     border-bottom-color: #b0c4de !important;
 }
 
+
+      /* Company Category Colors as full box backgrounds */
+      .color-iin { background-color: #cc0000 !important; color: white !important; }
+      .color-ico { background-color: #34a853 !important; color: white !important; }
+      .color-itr { background-color: #7f8c8d !important; color: white !important; }
+      .color-ich { background-color: #0ea5e9 !important; color: white !important; }
+      .color-iaa { background-color: #6366f1 !important; color: white !important; }
+
+
 .be-top-header a,.be-color-header .be-top-header .page-title{
   color: #000000 !important;
 }

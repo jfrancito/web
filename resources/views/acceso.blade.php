@@ -20,48 +20,42 @@
     <![endif]-->
     <link rel="stylesheet" href="{{ asset('public/css/style.css') }}" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('public/css/oryza.css?v='.$version) }} "/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/premium.css?v='.$version) }} "/>
 
 
 
   </head>
-  <body class="be-splash-screen">
+  <body class="be-splash-screen premium-login">
 
-    <div class="be-wrapper be-login">
-      <div class="be-content ajaxpersonal">  
-        <div class="main-content container-fluid">
-          <div class="splash-acceso-container">
-            <div class="panel panel-default panel-border-color panel-border-color-primary">
-              <div class="panel-heading">
-               
-              <span class="splash-description">Por favor seleccione un acceso.</span>
-              </div>
-              <div class="panel-body">
+    <div class="premium-login-card" style="max-width: 600px;">
+      <div class="logo-container">
+        <img src="{{ asset('public/img/oryza.png') }}" alt="Induamerica Logo" class="logo-img">
+      </div>
+      
+      <h2>INDUAMERICA</h2>
+      <p class="subtitle">Seleccione su perfil de acceso</p>
 
-                <div class="panel-body listaaccesos">
-                  <table class="table table-striped table-borderless">
-                    <thead>
-                      <tr>
-                        <th>Empresa</th>
-                        <th>Centro</th>
-                      </tr>
-                    </thead>
-                    <tbody class="no-border-x table-hover">
-                      @foreach($accesos as $item)
-                        <tr class='empresa-centro {{$funcion->funciones->color_empresa($item->empresa_id)}}'
-                            data-empresa='{{$item->empresa_id}}'
-                            data-centro='{{$item->centro_id}}'>
-                          <td>{{$item->empresa->NOM_EMPR}}</td>
-                          <td>{{$item->centro->NOM_CENTRO}}</td>
-                        </tr>
-                      @endforeach
-                    </tbody>
-                  </table>
-                </div>
-
-             
-              </div>
-            </div>
-          </div>
+      <div class="panel-body">
+        <div class="listaaccesos">
+          <table class="table table-hover table-striped custom-premium-table">
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Centro</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($accesos as $item)
+                <tr class='empresa-centro {{$funcion->funciones->color_empresa($item->empresa_id)}}'
+                    data-empresa='{{$item->empresa_id}}'
+                    data-centro='{{$item->centro_id}}'
+                    style="cursor: pointer;">
+                  <td><strong>{{$item->empresa->NOM_EMPR}}</strong></td>
+                  <td>{{$item->centro->NOM_CENTRO}}</td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
