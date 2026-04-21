@@ -14,3 +14,4 @@ yarn-error.log
 /resources/assets/js/app.js
 /app/Console/Kernel.php
 /config/database.php
+/config/mail.php

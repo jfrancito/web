@@ -1,12 +1,25 @@
 
 <nav class="navbar navbar-default navbar-fixed-top be-top-header {{Session::get('color')}}">
   <div class="container-fluid">
-    <div class="navbar-header"></div>
-    <!-- <a href="{{ url('/bienvenido') }}" class="navbar-brand"></a>-->
-    <!-- <div class="page-title"><span>{{Session::get('empresas')->NOM_EMPR}} - {{Session::get('centros')->NOM_CENTRO}}</span></div> -->
+    <div class="navbar-header">
+      <a href="{{ url('/bienvenido') }}" class="navbar-brand premium-navbar-brand">
+        <span class="brand-text-main">INDUAMERICA</span>
+        <span class="brand-text-sub">SISTEMA DE VENTAS</span>
+      </a>
+    </div>
+
     <div class="be-right-navbar {{Session::get('color')}}">
+      <ul class="nav navbar-nav navbar-left hide-mobile">
+        <li class="nav-welcome-text">
+          Bienvenido al Portal Comercial de Induamerica
+        </li>
+      </ul>
+
       <ul class="nav navbar-nav navbar-right be-user-nav">
-        <li><div class="page-title"><span style="font-size: 0.45em;font-weight: bold;">{{Session::get('empresas')->NOM_EMPR}} - {{Session::get('centros')->NOM_CENTRO}}</span></div></li>
+        <li class="date-display hide-mobile">
+          <span class="mdi mdi-calendar-alt"></span>
+          {{ date('d-m-Y') }}
+        </li>
 
 
         <li class="dropdown">
@@ -30,27 +43,7 @@
         </h3>
       </div> -->
 
-    </div><a href="#" data-toggle="collapse" data-target="#be-navbar-collapse" class="be-toggle-top-header-menu collapsed">Opciones</a>
-    <div id="be-navbar-collapse" class="navbar-collapse collapse">
-      
-            <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ url('/bienvenido') }}"><i class="icon mdi mdi-home"></i><span>&nbsp;Inicio</span></a></li>
-           
-            @foreach(Session::get('listamenu') as $grupo)
+    <div id="be-navbar-collapse" class="navbar-collapse collapse"></div>
 
-                <li  class="dropdown active"  ><a href="#" @click="menu='{{$grupo->id}}'" style="font-size: 12px;" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><i class="icon mdi {{$grupo->icono}}"></i><span>&nbsp;{{$grupo->nombre}}</span></a>
-                  <ul role="menu" class="dropdown-menu">
-                    @foreach($grupo->opcion as $opcion)
-                      @if(in_array($opcion->id, Session::get('listaopciones')))
-                        <li>
-                          <a href="{{ url('/'.$opcion->pagina.'/'.Hashids::encode(substr($opcion->id, -8))) }}" style="font-size: 12px;">{{$opcion->nombre}}</a>
-                        </li>
-                      @endif
-                    @endforeach
-                  </ul>
-                </li>
-            @endforeach
-            </ul>
-    </div>
   </div>
 </nav>

@@ -27,13 +27,14 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/jquery-confirm.min.css') }} "/>
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/style.css?v='.$version) }} " />
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/oryza.css?v='.$version) }} " />
+  <link rel="stylesheet" type="text/css" href="{{ asset('public/css/premium.css?v='.$version) }} " />
 
 </head>
 
 <body>
 
 
-  <div class="be-wrapper be-color-header be-nosidebar-left"  id="app">
+  <div class="be-wrapper be-color-header"  id="app">
 
     @include('success.ajax-alert')
     @include('success.bienhecho', ['bien' => Session::get('bienhecho')])
@@ -41,7 +42,8 @@
     @include('error.erroresbd', ['error' => Session::get('errorbd')])
 
     @include('menu.nav-top')
-    <!-- @include('menu.nav-left') -->
+    @include('menu.nav-left')
+
 
     @include('success.xml', ['xml' => Session::get('xmlmsj')])
 
@@ -59,6 +61,41 @@
   <script src="{{ asset('public/lib/scroll/js/scroll.js') }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/general/general.js?v='.$version) }}" type="text/javascript"></script>
   <script src="{{ asset('public/js/general/jquery-confirm.min.js?v='.$version) }}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.be-toggle-left-sidebar').on('click', function(e){
+        e.preventDefault();
+        var $wrapper = $('.be-wrapper');
+        $wrapper.toggleClass('sidebar-collapsed');
+        
+        // Fix for charts resizing
+        setTimeout(function(){
+          $(window).trigger('resize');
+        }, 310);
+
+        // Change icon based on state
+        var $icon = $(this).find('i, span.icon');
+        if($wrapper.hasClass('sidebar-collapsed')){
+          $icon.removeClass('mdi-menu').addClass('mdi-chevron-right');
+        } else {
+          $icon.removeClass('mdi-chevron-right').addClass('mdi-menu');
+        }
+      });
+
+      // Manual initialization of tooltips to ensure they look "Premium"
+      function initPremiumTooltips() {
+        $('.be-left-sidebar [data-toggle="tooltip"]').tooltip({
+          container: 'body',
+          placement: 'right',
+          trigger: 'hover',
+          template: '<div class="tooltip premium-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+        });
+      }
+
+      initPremiumTooltips();
+    });
+  </script>
 
   @yield('script')
  
@@ -89,6 +126,24 @@
 
 
  
+  <script type="text/javascript">
+    // Parche global preventivo para corregir el error de dimensiones en gráficas Flot
+    // Esto evita que el sistema falle si las gráficas intentan dibujarse antes de que 
+    // el contenedor tenga dimensiones reales (ej. durante transiciones del menú).
+    $(window).on('load', function() {
+      if (typeof $.plot === 'function') {
+        var _originalPlot = $.plot;
+        $.plot = function(placeholder, data, options) {
+          var $el = $(placeholder);
+          if ($el.length && ($el.width() <= 0 || $el.height() <= 0)) {
+            setTimeout(function() { $.plot(placeholder, data, options); }, 300);
+            return { shutdown: function() {}, setData: function() {}, draw: function() {}, getPlaceholder: function() { return $el; } };
+          }
+          return _originalPlot.apply(this, arguments);
+        };
+      }
+    });
+  </script>
 </body>
 
 </html>

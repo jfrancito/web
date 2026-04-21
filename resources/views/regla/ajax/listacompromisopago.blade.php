@@ -145,9 +145,12 @@
                       </div>
                       <div style="margin-top: 4px;">
                         @php
-                          $mostrar_fecha_c = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+                          $pago_en_rango = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || 
+                                           (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+                          $pago_total = (isset($item->Monto_Total_Pagado) && round((float)$item->Monto_Total_Pagado, 2) == round((float)$item->Monto, 2) && (float)$item->Monto > 0);
                         @endphp
-                        @if($mostrar_fecha_c)
+
+                        @if($pago_en_rango)
                           <span class="badge-status badge-si" style="padding: 2px 8px; font-size: 9px;">SI</span>
                           @if(isset($item->Ultima_Fecha_Rango) && $item->Ultima_Fecha_Rango)
                             <div class="text-muted-xs" style="margin-top: 3px; font-weight: 600; color: #2c5282;">
@@ -156,6 +159,11 @@
                           @endif
                         @else
                           <span class="badge-status badge-no" style="padding: 2px 8px; font-size: 9px;">NO</span>
+                          @if($pago_total && isset($item->Ultima_Fecha_Pago) && $item->Ultima_Fecha_Pago)
+                            <div class="text-muted-xs" style="margin-top: 3px; font-weight: 600; color: #2c5282;">
+                              F. Fin: {{ date_format(date_create($item->Ultima_Fecha_Pago), 'd-m-Y') }}
+                            </div>
+                          @endif
                         @endif
                       </div>
                     </div>
@@ -275,9 +283,12 @@
                       <div style="margin-top: 4px;">
     
                         @php
-                          $mostrar_fecha_d = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+                          $pago_en_rango_d = ($item->Se_Pago_Todo_El_Saldo_En_Rango == 'SI') || 
+                                             (round((float)$item->Pago_Realizado_En_Rango, 2) == round((float)$item->Saldo_Pendiente_Al_Crear_Regla, 2) && (float)$item->Pago_Realizado_En_Rango > 0);
+                          $pago_total_d = (isset($item->Monto_Total_Pagado) && round((float)$item->Monto_Total_Pagado, 2) == round((float)$item->Monto, 2) && (float)$item->Monto > 0);
                         @endphp
-                        @if($mostrar_fecha_d)
+
+                        @if($pago_en_rango_d)
                           <span class="badge-status badge-si" style="padding: 2px 8px; font-size: 9px;">SI</span>
                           @if(isset($item->Ultima_Fecha_Rango) && $item->Ultima_Fecha_Rango)
                             <div class="text-muted-xs" style="margin-top: 3px; font-weight: 600; color: #2c5282;">
@@ -286,6 +297,11 @@
                           @endif
                         @else
                           <span class="badge-status badge-no" style="padding: 2px 8px; font-size: 9px;">NO</span>
+                          @if($pago_total_d && isset($item->Ultima_Fecha_Pago) && $item->Ultima_Fecha_Pago)
+                            <div class="text-muted-xs" style="margin-top: 3px; font-weight: 600; color: #2c5282;">
+                              F. Fin: {{ date_format(date_create($item->Ultima_Fecha_Pago), 'd-m-Y') }}
+                            </div>
+                          @endif
                         @endif
                       </div>
                     </div>
