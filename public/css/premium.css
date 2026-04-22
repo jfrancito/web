@@ -133,7 +133,7 @@ body {
 
 /* Navbar Premium styles */
 .be-top-header {
-    background: var(--primary) !important;
+    background: #627468 !important;
     border-bottom: 1px solid rgba(0,0,0,0.05);
     height: 60px;
 }
