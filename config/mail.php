@@ -57,7 +57,7 @@ return [
 
 
     'from' => [
-        'address' => 'alertassys@induamerica.com.pe',
+        'address' => 'avisos.ia@induamerica.com.pe',
         //'address' => env('MAIL_FROM_ADDRESS', 'alertassys@induamerica.com.pe'),
         'name' => env('MAIL_FROM_NAME', 'Administrador'),
     ],
@@ -88,7 +88,7 @@ return [
 
     //'username' => env('MAIL_USERNAME'),
     //'password' => env('MAIL_PASSWORD'),
-    'username' => 'alertassys@induamerica.com.pe',
+    'username' => 'avisos.ia@induamerica.com.pe',
     'password' => 'Y$Sfl(xSwfhlj0_V',
 
 

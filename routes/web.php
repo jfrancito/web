@@ -386,6 +386,12 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/exportar-formato-iach/{idopcion}', 'ExportarFormatoIachController@exportarFormatoIACH');	 	
 
 	Route::any('/gestion-cuadro-comisiones/{idopcion}', 'ComisionPlanillaController@actionCuadroComisiones');
+	Route::any('/gestion-de-configurar-comision/{idopcion}', 'ComisionConfiguracionController@actionConfigurarComision');
+	Route::any('/ajax-guardar-comision-configuracion', 'ComisionConfiguracionController@actionAjaxGuardarComision');
+	Route::any('/ajax-eliminar-comision-configuracion', 'ComisionConfiguracionController@actionAjaxEliminarComision');
+	Route::any('/ajax-guardar-jefe-subcanal', 'ComisionConfiguracionController@actionAjaxGuardarJefeSubcanal');
+
+
 
 
 
