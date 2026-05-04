@@ -10,4 +10,7 @@ class WEBSubcanalJefeVenta extends Model
     public $timestamps = false;
 
     protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 }
+

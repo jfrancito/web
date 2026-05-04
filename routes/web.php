@@ -22,12 +22,12 @@ Route::group(['middleware' => ['guestaw']], function () {
 	Route::any('/login', 'UserController@actionLogin');
 	Route::any('/acceso', 'UserController@actionAcceso');
 	Route::any('/accesobienvenido/{idempresa}/{idcargo}', 'UserController@actionAccesoBienvenido');
-	
-}); 
+
+});
 
 Route::get('/cerrarsession', 'UserController@actionCerrarSesion');
 Route::get('/cambiarperfil', 'UserController@actionCambiarPerfil');
-Route::get('/despacho/print-pdf', [ 'as' => 'despacho.printpdf', 'uses' => 'OrdenPedidoController@RepSalida']);
+Route::get('/despacho/print-pdf', ['as' => 'despacho.printpdf', 'uses' => 'OrdenPedidoController@RepSalida']);
 Route::any('/excel-orden-despacho-email/{idopcion}/{idordendespacho}', 'AtenderPedidoDespachoController@actionExcelOrdenDespachoEmail');
 Route::any('/pedido-estado-excel-automatico', 'OrdenPedidoReporteController@actionPedidoEstadoExcelAutomatico');
 Route::any('/contrato-pendiente', 'OrdenPedidoReporteController@actionContratoPendiente');
@@ -85,7 +85,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::get('/gestion-de-regla-del-producto/{idopcion}', 'AsignarReglaController@actionListarClienteRegla');
 	Route::any('/ajax-modal-detalle', 'AsignarReglaController@actionAjaxModalDetalle');
 	Route::any('/ajax-modal-detalle-precio-regular', 'AsignarReglaController@actionAjaxModalDetallePrecioRegular');
-	Route::any('/ajax-detalle-regla', 'AsignarReglaController@actionAjaxDetalleRegla');	
+	Route::any('/ajax-detalle-regla', 'AsignarReglaController@actionAjaxDetalleRegla');
 	Route::any('/ajax-agregar-regla', 'AsignarReglaController@actionAjaxAgregarRegla');
 	Route::any('/ajax-agregar-regla-precio-regular', 'AsignarReglaController@actionAjaxAgregarReglaPrecioRegular');
 	Route::any('/ajax-precio-regular-descuento', 'AsignarReglaController@actionAjaxPrecioRegularDescuento');
@@ -131,7 +131,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/agregar-regla-cupon/{idopcion}', 'ProductoController@actionAgregarCupon');
 	Route::any('/modificar-regla-cupon/{idopcion}/{idregla}', 'ProductoController@actionModificarCupon');
 	Route::any('/ajax-tramo-deuda', 'OrdenPedidoController@actionAjaxDeudaSectorizada');
-	
+
 	Route::any('/gestion-de-regla-de-precio-regular/{idopcion}', 'ProductoController@actionListarReglaPrecioRegular');
 	Route::any('/agregar-regla-precio-regular/{idopcion}', 'ProductoController@actionAgregarReglaPrecioRegular');
 	Route::any('/modificar-regla-precio-regular/{idopcion}/{idregla}', 'ProductoController@actionModificarPrecioRegular');
@@ -242,9 +242,9 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/gestion-de-cuentas/{idopcion}', 'CarteraController@index');
 	Route::any('/cartera', 'CarteraController@ListarCuentas');
 	Route::any('/cartera/saldos', 'CarteraController@SaldoCuenta');
-	Route::any('/categoria/listarCategoria','CategoriaController@ListarCategoria');
-	Route::any('/reglacredito/actualizar','AsignarReglaController@ActualizarReglaCredito');
-	Route::any('/reglacredito-actualizar-masivo','AsignarReglaController@ActualizarReglaCreditoMasivo');
+	Route::any('/categoria/listarCategoria', 'CategoriaController@ListarCategoria');
+	Route::any('/reglacredito/actualizar', 'AsignarReglaController@ActualizarReglaCredito');
+	Route::any('/reglacredito-actualizar-masivo', 'AsignarReglaController@ActualizarReglaCreditoMasivo');
 
 
 
@@ -286,7 +286,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-actualizar-precio-producto-masivas', 'GestionProductoController@actionAjaxActualizarPrecioProductoMasivas');*/
 
 
-    //DESPACHO (generar pedido)
+	//DESPACHO (generar pedido)
 	Route::any('/gestion-de-generar-pedido/{idopcion}', 'PedidoDespachoController@actionListarGeneracionPedido');
 
 	Route::any('/ajax-lista-pedidos-despacho', 'PedidoDespachoController@actionAjaxListaPedidosDespacho');
@@ -335,7 +335,7 @@ Route::group(['middleware' => ['authaw']], function () {
 
 	Route::any('/ajax-imprimir-pedido-despacho-xcantidad', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespachoxCantidad');
 	Route::any('/ajax-imprimir-pedido-despacho-xpalets', 'AtenderPedidoDespachoController@actionAjaxImprimirPedidoDespachoxPalets');
-	
+
 	Route::any('/ajax-modal-detalle-pedido-imprimir', 'AtenderPedidoDespachoController@actionModalDetalleImprimir');
 	Route::any('/ajax-quitar-agregar-pedido-producto', 'AtenderPedidoDespachoController@actionAjaxQuitarAgregarPedidoProducto');
 
@@ -380,20 +380,27 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/gestion-almacen-activos-transferidos/{idopcion}', 'AlmacenActivoFijoTransferidoController@actionListarActivosFijosTransferidos');
 	Route::any('/modificar-activo-fijo/{idactivofijo}', 'ActivoFijoController@modificarActivoFijo');
 	Route::any('/depreciacion-activo-fijo/{idopcion}', 'DepreciacionActivoFijoController@index');
-	Route::any('/catalogo-activos-fijos/{idopcion}', 'ActivoFijoController@catalogoActivosFijos');	
-	Route::any('/registrar-obra-activo-fijo/', 'ActivoFijoController@registrarObraActivoFijo');	
-	Route::any('/exportar-formato-iatr/{idopcion}', 'ExportarFormatoIatrController@exportarFormatoIATR');	 
-	Route::any('/exportar-formato-iach/{idopcion}', 'ExportarFormatoIachController@exportarFormatoIACH');	 	
+	Route::any('/catalogo-activos-fijos/{idopcion}', 'ActivoFijoController@catalogoActivosFijos');
+	Route::any('/registrar-obra-activo-fijo/', 'ActivoFijoController@registrarObraActivoFijo');
+	Route::any('/exportar-formato-iatr/{idopcion}', 'ExportarFormatoIatrController@exportarFormatoIATR');
+	Route::any('/exportar-formato-iach/{idopcion}', 'ExportarFormatoIachController@exportarFormatoIACH');
 
 	Route::any('/gestion-cuadro-comisiones/{idopcion}', 'ComisionPlanillaController@actionCuadroComisiones');
 	Route::any('/gestion-de-configurar-comision/{idopcion}', 'ComisionConfiguracionController@actionConfigurarComision');
 	Route::any('/ajax-guardar-comision-configuracion', 'ComisionConfiguracionController@actionAjaxGuardarComision');
+	Route::any('/ajax-modificar-comision-configuracion', 'ComisionConfiguracionController@actionAjaxModificarComision');
 	Route::any('/ajax-eliminar-comision-configuracion', 'ComisionConfiguracionController@actionAjaxEliminarComision');
+
 	Route::any('/ajax-guardar-jefe-subcanal', 'ComisionConfiguracionController@actionAjaxGuardarJefeSubcanal');
-
-
-
-
+	Route::get('/exportar-excel-comisiones-configuracion', 'ComisionConfiguracionController@actionExportarExcelComisiones');
+	Route::any('/gestion-de-aplicar-comision/{idopcion}', 'ComisionConfiguracionController@actionAplicarComision');
+	Route::any('/gestion-de-aprobar-comision-administrativo/{idopcion}', 'ComisionConfiguracionController@actionAprobarComisionAdministrativo');
+	Route::any('/ajax-guardar-fechas-periodo-comision', 'ComisionConfiguracionController@actionAjaxGuardarFechasPeriodo');
+	Route::any('/ajax-listar-comisiones-vendedor', 'ComisionConfiguracionController@actionAjaxListarComisionesVendedor');
+	Route::any('/ajax-aplicar-comisiones-vendedor', 'ComisionConfiguracionController@actionAjaxAplicarComisionesVendedor');
+	Route::get('/exportar-excel-aplicar-comision', 'ComisionConfiguracionController@actionExportarExcelAplicarComision');
+	Route::get('/exportar-excel-comision-administrativo', 'ComisionConfiguracionController@actionExportarExcelComisionAdministrativo');
+	Route::any('/ajax-aprobar-comisiones-masivo', 'ComisionConfiguracionController@actionAjaxAprobarComisionesMasivo');
 
 	Route::any('/gestion-de-regla-de-ampliacion-linea-credito/{idopcion}', 'ReglaController@actionListarReglaLineaCredito');
 	Route::any('/agregar-regla-linea-credito/{idopcion}', 'ReglaController@actionAgregarReglaLineaCredito');
@@ -430,6 +437,13 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/gestion-de-comisiones-periodo/{idopcion}', 'ComisionReporteController@actionComisionPeriodo');
 	Route::any('/comision-periodo-producto-excel/{periodoinicio}/{periodofin}/{vendedor_id}', 'ComisionReporteController@actionComisionPeriodoExcel');
 
+	    Route::get('gestion-de-comisiones-x-periodo/{idopcion}', 'ComisionConfiguracionController@actionComisionMercadoMayorista');
+    Route::post('ajax-buscar-comisiones-x-periodo', 'ComisionConfiguracionController@actionAjaxBuscarComisionesxPeriodo');
+
+    // Dashboard Mayorista
+    Route::get('gestion-de-dashboard-comisiones-mayorista/{idopcion}', 'ComisionConfiguracionController@actionDashboardComisionesMayorista');
+    Route::post('ajax-dashboard-comisiones-mayorista', 'ComisionConfiguracionController@actionAjaxDashboardComisionesMayorista');
+
 	//bonos
 	Route::any('/gestion-de-bonos/{idopcion}', 'BonosController@actionListarBonos');
 	Route::any('/agregar-bono/{idopcion}', 'BonosController@actionAgregarBono');
@@ -451,16 +465,16 @@ Route::group(['middleware' => ['authaw']], function () {
 
 	//Excel Exportar
 	Route::any('/gestion-import-excel/{idopcion}', 'ImportExcelController@actionGestionImportExcel');
-    Route::post('/gestion-import-excel/{idopcion}/import', 'ImportExcelController@actionImportExcel');
-    Route::post('/gestion-import-excel/{idopcion}/validate', 'ImportExcelController@actionValidateExcel');
-    Route::post('/ajax-listar-archivo-autoservicio', 'ImportExcelController@actionAjaxListarArchivoAutoservicio');
-    Route::post('/descargar-reporte-refuerzo/{idopcion}', 'ImportExcelController@actionDescargarReporteRefuerzo');
-    Route::any('/ajax-combo-periodo-xanio-xempresa', 'ImportExcelController@actionAjaxComboPeriodoAnioEmpresa');
+	Route::post('/gestion-import-excel/{idopcion}/import', 'ImportExcelController@actionImportExcel');
+	Route::post('/gestion-import-excel/{idopcion}/validate', 'ImportExcelController@actionValidateExcel');
+	Route::post('/ajax-listar-archivo-autoservicio', 'ImportExcelController@actionAjaxListarArchivoAutoservicio');
+	Route::post('/descargar-reporte-refuerzo/{idopcion}', 'ImportExcelController@actionDescargarReporteRefuerzo');
+	Route::any('/ajax-combo-periodo-xanio-xempresa', 'ImportExcelController@actionAjaxComboPeriodoAnioEmpresa');
 
 	//-- Picking
 	Route::any('/gestion-transferencia/{idopcion}', 'TransferenciaController@actionListarTransferencia');
 	Route::any('/ajax-listado-transferencia', 'TransferenciaController@actionAjaxListarTransferencia');
-	Route::any('/agregar-transferencia/{idopcion}/{idtranferencia}', 'TransferenciaController@actionAgregarTransferencia');	
+	Route::any('/agregar-transferencia/{idopcion}/{idtranferencia}', 'TransferenciaController@actionAgregarTransferencia');
 	Route::any('/modificar-transferencia/{idopcion}/{idtransferencia}', 'TransferenciaController@actionModificarTransferencia');
 	Route::any('/ajax-transferencia-cliente', 'TransferenciaController@actionAjaxTransferenciaCliente');
 	Route::any('/ajax-detalle-producto', 'TransferenciaController@actionAjaxDetalleProducto');
@@ -477,7 +491,7 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/ajax-modal-agregar-producto-picking', 'TransferenciaController@actionAjaxModalAgregarProductosPicking');
 	Route::any('/ajax-modal-producto-individual', 'TransferenciaController@actionAjaxModalProductoIndividual');
 	Route::any('/ajax-agregar-producto-individual', 'TransferenciaController@actionAjaxAgregarProductoIndividual');
-	
+
 	Route::any('/ajax-validar-cantidad-atender-picking', 'TransferenciaController@actionAjaxValidarCantidadesAtenderPicking');
 	Route::any('/ajax-picking-eliminar-fila/', 'TransferenciaController@actionAjaxPickingEliminarFila');
 	Route::any('/ajax-modal-detalle-picking', 'TransferenciaController@actionAjaxDetallePicking');
@@ -485,7 +499,7 @@ Route::group(['middleware' => ['authaw']], function () {
 
 	Route::any('/atender-picking/{idopcion}', 'PickingController@actionListarAtenderPicking');
 	Route::any('/ajax-listado-atender-picking', 'PickingController@actionAjaxListarAtenderPicking');
-	Route::any('/atender-picking/{idopcion}/{idpicking}', 'PickingController@actionAtenderPicking');	
+	Route::any('/atender-picking/{idopcion}/{idpicking}', 'PickingController@actionAtenderPicking');
 	Route::any('/ajax-lista-productos-transferencia-picking', 'PickingController@actionAjaxListaProductosTransferenciaPicking');
 	Route::any('/ajax-lista-productos-ordensalida-picking', 'PickingController@actionAjaxListaProductosOrdenSalidaPicking');
 	Route::any('/crear-transferencia-picking/{idopcion}/{idpicking}', 'PickingController@actionCrearTransferenciaPicking');
@@ -493,17 +507,17 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/generar-detraccion-picking/{idopcion}/{idpicking}', 'PickingController@actionGenerarDetraccionPicking');
 	Route::any('/ajax-calcular-detraccion', 'PickingController@actionAjaxCalcularDetraccion');
 	Route::any('/guardar-detraccion-picking/{idopcion}', 'PickingController@actionGuardarDetraccionPicking');
-	
+
 	Route::any('/imprimir-picking-detraccion/{idpicking}', 'PickingReporteController@actionImprimirPickingDetraccion');
 	Route::any('/imprimir-picking/{idpicking}', 'PickingReporteController@actionImprimirPicking');
-	
+
 	Route::any('/reporte-detraccion-diario/{idopcion}', 'PickingReporteController@actionDetraccionDiario');
 	Route::any('/ajax-reporte-detraccion-diario', 'PickingReporteController@actionAjaxDetraccionDiario');
 	Route::any('/reporte-detraccion-diario-pdf/{fechadia}', 'PickingReporteController@actionDetraccionDiarioPDF');
 	Route::any('/ajax-combo-almacen-destino-pk', 'PickingController@actionAjaxComboAlmacenDestinoPk');
 	Route::any('/ajax-combo-almacen-origen-pk', 'PickingController@actionAjaxComboAlmacenOrigenPk');
-	
- 	//----------------------------------------
+
+	//----------------------------------------
 
 
 
@@ -511,79 +525,79 @@ Route::group(['middleware' => ['authaw']], function () {
 
 
 
-   	Route::get('buscarcliente', function (Illuminate\Http\Request  $request) {
-        $term = $request->term ?: '';
-        $tags = App\WEBListaCliente::where('NOM_EMPR', 'like', '%'.$term.'%')
-				->where('COD_EMPR','=',Session::get('empresas')->COD_EMPR)
-				->where('COD_CENTRO','=',Session::get('centros')->COD_CENTRO)
-				->take(100)
-        		->pluck('NOM_EMPR', 'NOM_EMPR');
-        $valid_tags = [];
-        foreach ($tags as $id => $tag) {
-            $valid_tags[] = ['id' => $id, 'text' => $tag];
-        }
-        return \Response::json($valid_tags);
-    });
+	Route::get('buscarcliente', function (Illuminate\Http\Request $request) {
+		$term = $request->term ?: '';
+		$tags = App\WEBListaCliente::where('NOM_EMPR', 'like', '%' . $term . '%')
+			->where('COD_EMPR', '=', Session::get('empresas')->COD_EMPR)
+			->where('COD_CENTRO', '=', Session::get('centros')->COD_CENTRO)
+			->take(100)
+			->pluck('NOM_EMPR', 'NOM_EMPR');
+		$valid_tags = [];
+		foreach ($tags as $id => $tag) {
+			$valid_tags[] = ['id' => $id, 'text' => $tag];
+		}
+		return \Response::json($valid_tags);
+	});
 
 
-   	Route::get('buscarproducto', function (Illuminate\Http\Request  $request) {
-        $term = $request->term ?: '';
-        $tags = App\WEBPrecioProducto::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
-        								->where('NOM_PRODUCTO', 'like', '%'.$term.'%')
-										->where('empresa_id','=',Session::get('empresas')->COD_EMPR)
-										->where('centro_id','=',Session::get('centros')->COD_CENTRO)
-										->take(100)
-										->pluck('NOM_PRODUCTO','producto_id');
+	Route::get('buscarproducto', function (Illuminate\Http\Request $request) {
+		$term = $request->term ?: '';
+		$tags = App\WEBPrecioProducto::join('WEB.LISTAPRODUCTOSAVENDER', 'COD_PRODUCTO', '=', 'producto_id')
+			->where('NOM_PRODUCTO', 'like', '%' . $term . '%')
+			->where('empresa_id', '=', Session::get('empresas')->COD_EMPR)
+			->where('centro_id', '=', Session::get('centros')->COD_CENTRO)
+			->take(100)
+			->pluck('NOM_PRODUCTO', 'producto_id');
 
-        $valid_tags = [];
-        foreach ($tags as $id => $tag) {
-            $valid_tags[] = ['id' => $id, 'text' => $tag];
-        }
-        return \Response::json($valid_tags);
-    });
-
-
-
-   	Route::get('buscarempresadespacho', function (Illuminate\Http\Request  $request) {
-
-        $term = $request->term ?: '';
-        $tags = App\STDEmpresa::where('NOM_EMPR', 'like', '%'.$term.'%')
-				->take(100)
-        		->pluck('NOM_EMPR', 'NOM_EMPR');
-        $valid_tags = [];
-        foreach ($tags as $id => $tag) {
-            $valid_tags[] = ['id' => $id, 'text' => $tag];
-        }
-        return \Response::json($valid_tags);
-
-    });
-
-
-   	Route::get('buscarempresaserviciodespacho', function (Illuminate\Http\Request  $request) {
-
-        $term = $request->term ?: '';
-        $tags = App\STDEmpresa::where('NOM_EMPR', 'like', '%'.$term.'%')
-				->take(100)
-				->select('COD_EMPR', DB::raw("(NOM_EMPR + ' ' + NRO_DOCUMENTO) AS NOM_EMPR_N"))
-        		->pluck( 'NOM_EMPR_N','COD_EMPR');
-
-        $valid_tags = [];
-        foreach ($tags as $id => $tag) {
-            $valid_tags[] = ['id' => $id, 'text' => $tag];
-        }
-        return \Response::json($valid_tags);
-
-    });
+		$valid_tags = [];
+		foreach ($tags as $id => $tag) {
+			$valid_tags[] = ['id' => $id, 'text' => $tag];
+		}
+		return \Response::json($valid_tags);
+	});
 
 
 
+	Route::get('buscarempresadespacho', function (Illuminate\Http\Request $request) {
+
+		$term = $request->term ?: '';
+		$tags = App\STDEmpresa::where('NOM_EMPR', 'like', '%' . $term . '%')
+			->take(100)
+			->pluck('NOM_EMPR', 'NOM_EMPR');
+		$valid_tags = [];
+		foreach ($tags as $id => $tag) {
+			$valid_tags[] = ['id' => $id, 'text' => $tag];
+		}
+		return \Response::json($valid_tags);
+
+	});
+
+
+	Route::get('buscarempresaserviciodespacho', function (Illuminate\Http\Request $request) {
+
+		$term = $request->term ?: '';
+		$tags = App\STDEmpresa::where('NOM_EMPR', 'like', '%' . $term . '%')
+			->take(100)
+			->select('COD_EMPR', DB::raw("(NOM_EMPR + ' ' + NRO_DOCUMENTO) AS NOM_EMPR_N"))
+			->pluck('NOM_EMPR_N', 'COD_EMPR');
+
+		$valid_tags = [];
+		foreach ($tags as $id => $tag) {
+			$valid_tags[] = ['id' => $id, 'text' => $tag];
+		}
+		return \Response::json($valid_tags);
+
+	});
 
 
 
 
-   	Route::any('/enviocorreos', 'CorreoController@enviocorreo');
-   	Route::any('/pruebaquery', 'PruebaController@pruebas');
-   	Route::any('/power-bi', 'PruebaController@indicadoresISL');
+
+
+
+	Route::any('/enviocorreos', 'CorreoController@enviocorreo');
+	Route::any('/pruebaquery', 'PruebaController@pruebas');
+	Route::any('/power-bi', 'PruebaController@indicadoresISL');
 
 });
 

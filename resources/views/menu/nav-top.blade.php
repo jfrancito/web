@@ -1,5 +1,5 @@
-
-<nav class="navbar navbar-default navbar-fixed-top be-top-header {{Session::get('color')}}">
+<!-- Menú Superior (Solo Escritorio) -->
+<nav class="navbar navbar-default navbar-fixed-top be-top-header {{Session::get('color')}} desktop-only-nav">
   <div class="container-fluid">
     <div class="navbar-header">
       <a href="{{ url('/bienvenido') }}" class="navbar-brand premium-navbar-brand">
@@ -46,4 +46,4 @@
     <div id="be-navbar-collapse" class="navbar-collapse collapse"></div>
 
   </div>
-</nav>
+</nav>

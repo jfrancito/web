@@ -34,7 +34,7 @@
 <body>
 
 
-  <div class="be-wrapper be-color-header"  id="app">
+  <div class="be-wrapper be-color-header be-fixed-sidebar"  id="app">
 
     @include('success.ajax-alert')
     @include('success.bienhecho', ['bien' => Session::get('bienhecho')])
@@ -43,7 +43,21 @@
 
     @include('menu.nav-top')
     @include('menu.nav-left')
+    @include('menu.nav-mobile')
 
+    <style>
+      @media (max-width: 1000px) {
+        .desktop-only-nav {
+          display: none !important;
+        }
+        .be-wrapper.be-color-header {
+          padding-top: 60px !important; /* Asegurar espacio para la barra móvil */
+        }
+        body .be-wrapper .be-content {
+          margin-left: 0 !important; /* Eliminar el espacio en blanco del sidebar de escritorio */
+        }
+      }
+    </style>
 
     @include('success.xml', ['xml' => Session::get('xmlmsj')])
 

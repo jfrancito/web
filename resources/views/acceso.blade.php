@@ -35,9 +35,34 @@
       <h2>INDUAMERICA</h2>
       <p class="subtitle">Seleccione su perfil de acceso</p>
 
+      <style>
+        .listaaccesos-scroll {
+          max-height: 350px;
+          overflow-y: auto;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
+        }
+
+        /* Custom Premium Scrollbar para la tabla */
+        .listaaccesos-scroll::-webkit-scrollbar {
+          width: 6px;
+        }
+        .listaaccesos-scroll::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 4px;
+        }
+        .listaaccesos-scroll::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 4px;
+        }
+        .listaaccesos-scroll::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+      </style>
+
       <div class="panel-body">
-        <div class="listaaccesos">
-          <table class="table table-hover table-striped custom-premium-table">
+        <div class="listaaccesos listaaccesos-scroll">
+          <table class="table table-hover table-striped custom-premium-table" style="margin-bottom: 0;">
             <thead>
               <tr>
                 <th>Empresa</th>
