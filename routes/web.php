@@ -437,12 +437,14 @@ Route::group(['middleware' => ['authaw']], function () {
 	Route::any('/gestion-de-comisiones-periodo/{idopcion}', 'ComisionReporteController@actionComisionPeriodo');
 	Route::any('/comision-periodo-producto-excel/{periodoinicio}/{periodofin}/{vendedor_id}', 'ComisionReporteController@actionComisionPeriodoExcel');
 
-	    Route::get('gestion-de-comisiones-x-periodo/{idopcion}', 'ComisionConfiguracionController@actionComisionMercadoMayorista');
-    Route::post('ajax-buscar-comisiones-x-periodo', 'ComisionConfiguracionController@actionAjaxBuscarComisionesxPeriodo');
+	Route::get('gestion-de-comisiones-x-periodo/{idopcion}', 'ComisionConfiguracionController@actionComisionMercadoMayorista');
+	Route::post('ajax-buscar-comisiones-x-periodo', 'ComisionConfiguracionController@actionAjaxBuscarComisionesxPeriodo');
 
-    // Dashboard Mayorista
-    Route::get('gestion-de-dashboard-comisiones-mayorista/{idopcion}', 'ComisionConfiguracionController@actionDashboardComisionesMayorista');
-    Route::post('ajax-dashboard-comisiones-mayorista', 'ComisionConfiguracionController@actionAjaxDashboardComisionesMayorista');
+	// Dashboard Mayorista
+	Route::get('gestion-de-dashboard-comisiones-mayorista/{idopcion}', 'ComisionConfiguracionController@actionDashboardComisionesMayorista');
+	Route::post('ajax-dashboard-comisiones-mayorista', 'ComisionConfiguracionController@actionAjaxDashboardComisionesMayorista');
+
+	Route::get('excel-comision-mayorista', 'ComisionConfiguracionController@actionExcelComisionMayorista');
 
 	//bonos
 	Route::any('/gestion-de-bonos/{idopcion}', 'BonosController@actionListarBonos');

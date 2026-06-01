@@ -1965,4 +1965,178 @@ class ComisionConfiguracionController extends Controller
             ]
         ]);
     }
+
+    public function actionExcelComisionMayorista()
+    {
+        set_time_limit(0);
+        $periodos = [
+            'ISCHPE0000000114',
+            'ISCHPE0000000115',
+            'ISCHPE0000000116',
+            'ISCHPE0000000117'
+        ];
+
+        // 1. Obtener la data base (Ventas realizadas)
+        $queryComisiones = "SELECT COD_PERIODO, TXT_CODIGO, NOM_EMPR, CLIENTE, COD_ORDEN, PRODUCTO, MARCA_COD_CATEGORIA,
+                         MARCA_NOM_CATEGORIA, COD_CATEGORIA_SUB_CANAL, TXT_CATEGORIA_SUB_CANAL,
+                         COD_CATEGORIA_JEFE_VENTA, TXT_CATEGORIA_JEFE_VENTA,
+                         FEC_ORDEN AS FECHA_VENTA, FEC_HABILITACION AS FECHA_PAGO, 
+                         DIFF AS DIFERENCIA_DIAS, PLAZO_PAGO, TOTAL_P AS TOTAL, 
+                         CAN_PRODUCTO, PESO_ORDEN_50, TOTAL_COBRO, VAL, TASA_COMISION, TOTAL_COMISION 
+                  FROM WEB_COMISION_MERCADO_MAYORISTA_BD_REAL 
+                  WHERE COD_PERIODO IN ('" . implode("','", $periodos) . "')";
+
+        $listadoComisiones = DB::select($queryComisiones);
+
+        // 2. Obtener la matriz de configuración (Nuevas reglas para simular)
+        $queryConfig = "SELECT jv.cod_jefe_venta, cc.cod_marca, cc.cod_sub_canal, cc.nom_tiempo_cobranza, cc.porcentaje
+                        FROM WEB.comision_configuraciones cc
+                        INNER JOIN WEB.subcanal_jefe_venta jv ON cc.cod_sub_canal = jv.cod_sub_canal
+                        WHERE jv.cod_estado = 1";
+
+        $listadoConfig = DB::select($queryConfig);
+
+        // Agrupar configuraciones para búsqueda rápida: [jefe|marca|subcanal] => list of {term, percent}
+        $configMap = [];
+        foreach ($listadoConfig as $cfg) {
+            $key = trim($cfg->cod_jefe_venta) . '|' . trim($cfg->cod_marca) . '|' . trim($cfg->cod_sub_canal);
+            $configMap[$key][] = [
+                'term' => (int) $cfg->nom_tiempo_cobranza,
+                'percent' => (float) $cfg->porcentaje
+            ];
+        }
+
+        // Ordenar términos de menor a mayor para aplicar la lógica de "menor o igual a lo que hay"
+        foreach ($configMap as $key => &$cfgs) {
+            usort($cfgs, function($a, $b) {
+                return $a['term'] <=> $b['term'];
+            });
+        }
+
+        $finalData = [];
+        foreach ($listadoComisiones as $row) {
+            $rowData = (array) $row;
+            
+            $jefe = trim($rowData['COD_CATEGORIA_JEFE_VENTA']);
+            $marca = trim($rowData['MARCA_COD_CATEGORIA']);
+            $subcanal = trim($rowData['COD_CATEGORIA_SUB_CANAL']);
+            $diff = (int) $rowData['DIFERENCIA_DIAS'];
+            $cantidad = (float) $rowData['CAN_PRODUCTO'];
+            $peso = (float) $rowData['PESO_ORDEN_50'];
+            $cobro = (float) $rowData['TOTAL_COBRO'];
+
+            // Asegurar que los campos originales sean numéricos para el Excel
+            $rowData['TOTAL'] = (float)$rowData['TOTAL'];
+            $rowData['CAN_PRODUCTO'] = $cantidad;
+            $rowData['PESO_ORDEN_50'] = $peso;
+            $rowData['TOTAL_COBRO'] = $cobro;
+            $rowData['TASA_COMISION'] = (float)$rowData['TASA_COMISION'];
+            $rowData['TOTAL_COMISION'] = (float)$rowData['TOTAL_COMISION'];
+
+            $key = $jefe . '|' . $marca . '|' . $subcanal;
+            
+            $plazoNuevo = '';
+            $tasaNueva = 0;
+            $comisionNueva = 0;
+
+            $esNotaCredito = (strpos($rowData['CLIENTE'], '(NOTA DE CREDITO)') !== false);
+
+            if (isset($configMap[$key])) {
+                $configs = $configMap[$key];
+                $bestCfg = null;
+                $maxTermCfg = end($configs); // El de mayor plazo para mostrar en caso de exceder
+                
+                if ($esNotaCredito) {
+                    // "si contiene (NOTA DE CREDITO) solo hay que sacar la comison... sin restriccion alguna"
+                    // Usamos la tasa del plazo máximo (la estándar)
+                    $plazoNuevo = $maxTermCfg['term'];
+                    $tasaNueva = $maxTermCfg['percent'];
+                    // "para la nota de credito... es TOTAL_COBRO * porcentaje ya no se utiliza ahi CAN_PRODUCTO"
+                    // "se pone el campo TOTAL_COMISION_NUEVO en negativo"
+                    $comisionNueva = abs($cobro * $tasaNueva) * -1;
+                } else {
+                    // Lógica de validación 02: 
+                    // "si la DIFERENCIA_DIAS es 15 y si hay 15,30,45 cogeremos 15"
+                    // "si la DIFERENCIA_DIAS es 20 cogeremos el de 30" (el menor >= a diff)
+                    foreach ($configs as $cfg) {
+                        if ($diff <= $cfg['term']) {
+                            $bestCfg = $cfg;
+                            break;
+                        }
+                    }
+
+                    if ($bestCfg) {
+                        $plazoNuevo = $bestCfg['term'];
+                        $tasaNueva = $bestCfg['percent'];
+                        
+                        // Validación 01: "para que reciba la comision CAN_PRODUCTO tiene que ser igual a TOTAL_COBRO"
+                        if ($cantidad == $cobro) {
+                            // "TOTAL_COMISION_NUEVO este tiene que ser la multiplicacion de PESO_ORDEN_50... con porcentaje"
+                            $comisionNueva = $peso * $tasaNueva;
+                        } else {
+                            $comisionNueva = 0;
+                        }
+                    } else {
+                        // "si la DIFERENCIA_DIAS es mayor ya no coge ninguna comision... cogeremos la mayor solo para mostrar"
+                        $plazoNuevo = $maxTermCfg['term'];
+                        $tasaNueva = $maxTermCfg['percent'];
+                        $comisionNueva = 0;
+                    }
+                }
+            } else {
+                $plazoNuevo = 'SIN CONFIG';
+                $tasaNueva = 0;
+                $comisionNueva = 0;
+            }
+
+            $rowData['PLAZO_PAGO_NUEVO'] = $plazoNuevo;
+            $rowData['TASA_COMISION_NUEVO'] = (float)$tasaNueva;
+            $rowData['TOTAL_COMISION_NUEVO'] = (float)$comisionNueva;
+
+            $finalData[] = $rowData;
+        }
+
+        $titulo = 'Simulacion_Comisiones_Mayorista_' . date('Ymd_His');
+
+        return Excel::create($titulo, function ($excel) use ($finalData) {
+            $excel->sheet('Simulacion', function ($sheet) use ($finalData) {
+                $sheet->fromArray($finalData, null, 'A1', true);
+                
+                // Formato numérico
+                $sheet->setColumnFormat([
+                    'Q' => '0.00',    // TOTAL
+                    'R' => '0.00',    // CAN_PRODUCTO
+                    'S' => '0.00',    // PESO_ORDEN_50
+                    'T' => '0.00',    // TOTAL_COBRO
+                    'V' => '0.0000',  // TASA_COMISION
+                    'W' => '0.00',    // TOTAL_COMISION
+                    'Y' => '0.0000',  // TASA_COMISION_NUEVO
+                    'Z' => '0.00',    // TOTAL_COMISION_NUEVO
+                ]);
+
+                // Estilo para la cabecera general
+                $sheet->row(1, function($row) {
+                    $row->setBackground('#1f497d');
+                    $row->setFontColor('#ffffff');
+                    $row->setFontWeight('bold');
+                });
+
+                // Estilo diferenciado para los nuevos campos en la cabecera (X, Y, Z)
+                $sheet->cells('X1:Z1', function($cells) {
+                    $cells->setBackground('#27ae60'); // Verde
+                    $cells->setFontColor('#ffffff');
+                });
+
+                // Resaltar las celdas de la simulación
+                $lastRow = count($finalData) + 1;
+                if ($lastRow > 1) {
+                    $sheet->cells('X2:Z' . $lastRow, function($cells) {
+                        $cells->setBackground('#ebf5fb'); // Azul muy claro
+                    });
+                }
+
+                $sheet->setAutoSize(true);
+            });
+        })->export('xls');
+    }
 }
