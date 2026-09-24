@@ -22,17 +22,19 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
         View::share('capeta', '/web');
-        View::share('version', '691.25');
+        View::share('version', '691.27');
 
-        if (config('app.env') === 'production' && !request()->is('10.1.50.2*')) {
+        if (config('app.env') === 'production' && !request()->is('10.1.50.2*') && !request()->is('216.244.171.14*')) {
             URL::forceScheme('https');
             $this->app['url']->forceScheme('https'); // Esto fuerza también asset()
         }
 
         // Forzar que asset() genere URLs relativas en entorno local
         if (request()->getHost() === '10.1.50.2' || 
+            request()->getHost() === '216.244.171.14' ||
             request()->getHost() === 'localhost' ||
-            strpos(request()->getHost(), '10.1.50.2') !== false) {
+            strpos(request()->getHost(), '10.1.50.2') !== false ||
+            strpos(request()->getHost(), '216.244.171.14') !== false) {
             
             // En local: reemplazar la raíz de las URLs por vacío para que sean relativas
             \URL::forceRootUrl('');
