@@ -50,6 +50,7 @@ class PedidoNotificacionDespacho extends Command
                                             ->where('WEB.pedidos.centro_id','=','CEN0000000000002')
                                             ->get();
 
+        //dd($lista_pedidos);
 
         foreach($lista_pedidos as $item){
 
