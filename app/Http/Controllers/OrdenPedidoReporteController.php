@@ -81,7 +81,8 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,users.nombre,
-			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+			    								  WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -120,7 +121,8 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,users.nombre,
-			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+			    								  WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -145,7 +147,8 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,users.nombre,
-			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+			    								  WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -262,7 +265,8 @@ class OrdenPedidoReporteController extends Controller
                                               WEB.detallepedidos.empresa_receptora_id,CMP.CATEGORIA.NOM_CATEGORIA,
                                               WEB.pedidos.direccion_entrega_id,
                                               ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,
-                                              CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+                                              CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+                                              WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
                             ->orderBy('WEB.detallepedidos.centro_id', 'asc')
                             ->orderBy('WEB.pedidos.fecha_venta', 'desc')
                             ->get();
@@ -320,7 +324,8 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.pedidos.fecha_despacho,
 			    								  WEB.pedidos.glosa,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,
-			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+			    								  WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -361,7 +366,8 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.pedidos.fecha_despacho,
 			    								  WEB.pedidos.glosa,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,
-			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+			    								  WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
@@ -388,7 +394,8 @@ class OrdenPedidoReporteController extends Controller
 			    								  WEB.pedidos.glosa,
 			    								  WEB.pedidos.direccion_entrega_id,
 			    								  ALM.CENTRO.NOM_CENTRO,WEB.detallepedidos.atendido,
-			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL'))
+			    								  CMP.CONTRATO.TXT_CATEGORIA_CANAL_VENTA,CMP.CONTRATO.TXT_CATEGORIA_SUB_CANAL,
+			    								  WEB.pedidos.cuenta_id,CMP.CONTRATO.COD_EMPR_CLIENTE'))
 			    				->orderBy('WEB.detallepedidos.centro_id', 'asc')
 								->orderBy('WEB.pedidos.fecha_venta', 'desc')
 								->get();
