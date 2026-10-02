@@ -3472,6 +3472,34 @@ class Funcion{
 
 	}
 
+	public function data_distrito_direccion($direccion_id, $cod_empr_cliente = '') {
+		static $cache_distritos_direccion = [];
+		$key = $direccion_id . '_' . $cod_empr_cliente;
+		if (isset($cache_distritos_direccion[$key])) {
+			return $cache_distritos_direccion[$key];
+		}
+
+		$nombre_distrito = '';
+
+		if (!empty($direccion_id)) {
+			$direccion = STDEmpresaDireccion::where('COD_DIRECCION', '=', $direccion_id)->first();
+			if ($direccion && !empty($direccion->COD_DISTRITO)) {
+				$distrito = CMPCategoria::where('COD_CATEGORIA', '=', $direccion->COD_DISTRITO)->first();
+				if ($distrito) {
+					$nombre_distrito = $distrito->NOM_CATEGORIA;
+				}
+			}
+		}
+
+		// Fallback al cliente si no se encontro en la direccion especifica
+		if (empty($nombre_distrito) && !empty($cod_empr_cliente)) {
+			$nombre_distrito = $this->data_distrito_cliente($cod_empr_cliente);
+		}
+
+		$cache_distritos_direccion[$key] = $nombre_distrito;
+		return $nombre_distrito;
+	}
+
 	public function data_distrito_cliente($cod_empr_cliente) {
 		static $cache_distritos_cliente = [];
 		if (isset($cache_distritos_cliente[$cod_empr_cliente])) {

@@ -41,7 +41,7 @@
                     @endif
                   </td>
                   <td>{{$item->precio}}</td>
-                  <td>{{$funcion->funciones->data_distrito_cliente($item->COD_EMPR_CLIENTE)}}</td>
+                  <td>{{$funcion->funciones->data_distrito_direccion($item->direccion_entrega_id, $item->COD_EMPR_CLIENTE)}}</td>
                   <td>
                      {{$funcion->funciones->data_direccion($item->direccion_entrega_id)->NOM_DIRECCION}}
                   </td>
