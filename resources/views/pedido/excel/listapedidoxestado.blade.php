@@ -106,7 +106,7 @@
                   @endif
                 </td>
                 <td width="15">{{$item->precio}}</td>
-                <td width="25">{{$funcion->funciones->data_distrito_cliente($item->COD_EMPR_CLIENTE)}}</td>
+                <td width="25">{{$funcion->funciones->data_distrito_direccion($item->direccion_entrega_id, $item->COD_EMPR_CLIENTE)}}</td>
                 <td width="15">{{$item->total}}</td>
                 <td width="40">
                    {{$funcion->funciones->data_direccion($item->direccion_entrega_id)->NOM_DIRECCION}}

@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
         View::share('capeta', '/web');
-        View::share('version', '691.28');
+        View::share('version', '691.29');
 
         if (config('app.env') === 'production' && !request()->is('10.1.50.2*') && !request()->is('216.244.171.14*')) {
             URL::forceScheme('https');
