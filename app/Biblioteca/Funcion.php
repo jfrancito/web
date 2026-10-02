@@ -3472,6 +3472,61 @@ class Funcion{
 
 	}
 
+	public function data_distrito_cliente($cod_empr_cliente) {
+		static $cache_distritos_cliente = [];
+		if (isset($cache_distritos_cliente[$cod_empr_cliente])) {
+			return $cache_distritos_cliente[$cod_empr_cliente];
+		}
+		if (empty($cod_empr_cliente)) {
+			return '';
+		}
+
+		$direccion = STDEmpresaDireccion::where('COD_EMPR', '=', $cod_empr_cliente)
+						->where('COD_ESTADO', '=', 1)
+						->orderBy('IND_DIRECCION_FISCAL', 'desc')
+						->first();
+
+		if (!$direccion) {
+			$direccion = STDEmpresaDireccion::where('COD_EMPR', '=', $cod_empr_cliente)
+							->orderBy('IND_DIRECCION_FISCAL', 'desc')
+							->first();
+		}
+
+		if ($direccion && !empty($direccion->COD_DISTRITO)) {
+			$distrito = CMPCategoria::where('COD_CATEGORIA', '=', $direccion->COD_DISTRITO)->first();
+			$nombre_distrito = $distrito ? $distrito->NOM_CATEGORIA : '';
+		} else {
+			$nombre_distrito = '';
+		}
+
+		$cache_distritos_cliente[$cod_empr_cliente] = $nombre_distrito;
+		return $nombre_distrito;
+	}
+
+	public function data_distrito_contrato($cuenta_id, $cod_empr_cliente = '') {
+		if (!empty($cod_empr_cliente)) {
+			return $this->data_distrito_cliente($cod_empr_cliente);
+		}
+		static $cache_distritos_contrato = [];
+		if (isset($cache_distritos_contrato[$cuenta_id])) {
+			return $cache_distritos_contrato[$cuenta_id];
+		}
+		if (empty($cuenta_id)) {
+			return '';
+		}
+
+		$contrato = DB::table('CMP.CONTRATO')->where('COD_CONTRATO', '=', $cuenta_id)->first();
+		if (!$contrato || empty($contrato->COD_EMPR_CLIENTE)) {
+			$cache_distritos_contrato[$cuenta_id] = '';
+			return '';
+		}
+
+		$nombre_distrito = $this->data_distrito_cliente($contrato->COD_EMPR_CLIENTE);
+		$cache_distritos_contrato[$cuenta_id] = $nombre_distrito;
+		return $nombre_distrito;
+	}
+
+
 	public function data_cliente($contrato_id) {
 
 		$direccion 		= 		WEBListaCliente::where('COD_CONTRATO','=',$contrato_id)->first();
