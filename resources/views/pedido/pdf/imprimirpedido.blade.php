@@ -352,38 +352,11 @@
 
 			    <div class="right">
 			    		<p class='descripcion izquierda'>
-			    			SUB TOTAL 
-			    		</p>
-			    		<p class='monto izquierda'>
-			    			{{number_format($pedido->subtotal,2,'.',',')}}
-			    		</p>
-
-			    		<br>
-			    		<p class='descripcion izquierda'>
-			    			OP. GRAVADA
-			    		</p>
-			    		<p class='monto izquierda'>
-			    			{{number_format($pedido->subtotal,2,'.',',')}}
-			    		</p>
-
-
-			    		<br>
-			    		<p class='descripcion izquierda'>
-			    			I.G.V. 18%
-			    		</p>
-			    		<p class='monto izquierda'>
-			    			{{number_format($pedido->igv,2,'.',',')}}
-			    		</p>
-
-			    		<br>
-			    		<p class='descripcion izquierda'>
 			    			IMPORTE TOTAL
 			    		</p>
 			    		<p class='monto izquierda'>
 			    			{{number_format($pedido->total,2,'.',',')}}
 			    		</p>
-
-
 			    </div>
 
 			</div>
