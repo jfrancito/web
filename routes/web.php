@@ -241,6 +241,7 @@ Route::group(['middleware' => ['authaw']], function () {
 
 	Route::any('/gestion-de-cuentas/{idopcion}', 'CarteraController@index');
 	Route::any('/cartera', 'CarteraController@ListarCuentas');
+	Route::any('/cartera/modal-detalle-cuenta', 'CarteraController@modalDetalleCuenta');
 	Route::any('/cartera/saldos', 'CarteraController@SaldoCuenta');
 	Route::any('/categoria/listarCategoria', 'CategoriaController@ListarCategoria');
 	Route::any('/reglacredito/actualizar', 'AsignarReglaController@ActualizarReglaCredito');
